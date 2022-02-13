@@ -18,6 +18,8 @@ Audio Processing Server
 - [_] Audio Thumbnails 
 - [_] Mastering Music 
 
+- [_] [File Caching](https://gist.github.com/ruanbekker/75d98a0d5cab5d6a562c70b4be5ba86d)
+
 # Storage Options
 
 - Local
