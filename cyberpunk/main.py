@@ -1,7 +1,7 @@
 
 from typing import Generator
 from pydub import AudioSegment
-from flask import Flask, Response, stream_with_context, jsonify
+from flask import Flask, Response, stream_with_context, jsonify, request
 
 ##############################
 
@@ -31,8 +31,11 @@ def healthcheck():
     return 200
 
 
-@app.route("/audio/<filename>")
+@app.route("/unsafe/<filename>", methods=["GET"])
 def stream_mp3(filename: str):
+    args = request.args
+    print(args)
+
     return Response(stream_audio_file(f"{filename}"), mimetype="audio/mp3")
 
 
@@ -67,14 +70,9 @@ def stream_slice(filename: str, start: int, end: int):
     )
 
 
-@app.route("/params/<path:query>")
-def params_route(query: str):
-    return jsonify(parse_url(query))
-
-
-@app.route("/unsafe/<path:query>")
-def unsafe_route(query: str):
-    return query
+@app.route("/params/<filename>")
+def params_route(filename: str):
+    return jsonify(parse_query(filename, request.args))
 
 
 if __name__ == "__main__":

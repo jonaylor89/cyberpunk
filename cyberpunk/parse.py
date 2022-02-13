@@ -1,7 +1,7 @@
 from typing import Dict
 
 
-def parse_url(query: str) -> Dict:
+def parse_query(query: str, args: Dict) -> Dict:
     return {
         "reverse": False,
         "repeat": 0,
