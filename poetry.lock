@@ -90,6 +90,14 @@ async = ["asgiref (>=3.2)"]
 dotenv = ["python-dotenv"]
 
 [[package]]
+name = "flaskr"
+version = "1.0.0"
+description = ""
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "gunicorn"
 version = "20.1.0"
 description = "WSGI HTTP Server for UNIX"
@@ -299,7 +307,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "9711b4435736ff5599ffc03986fb0f13b2ec3d7e327a5575c1e73df24e2bdca4"
+content-hash = "8cfe7e63447626cf7619f6cf7890750aa9c9799d69508d0db5fe44b8deb3cfd2"
 
 [metadata.files]
 atomicwrites = [
@@ -329,6 +337,9 @@ colorama = [
 flask = [
     {file = "Flask-2.0.2-py3-none-any.whl", hash = "sha256:cb90f62f1d8e4dc4621f52106613488b5ba826b2e1e10a33eac92f723093ab6a"},
     {file = "Flask-2.0.2.tar.gz", hash = "sha256:7b2fb8e934ddd50731893bdcdb00fc8c0315916f9fcd50d22c7cc1a95ab634e2"},
+]
+flaskr = [
+    {file = "flaskr-1.0.0-py3.6.egg", hash = "sha256:53a291da375d37d08dc34490fe56dbb2c979e51b9cb170a7fed62cf91ac25868"},
 ]
 gunicorn = [
     {file = "gunicorn-20.1.0-py3-none-any.whl", hash = "sha256:9dcc4547dbb1cb284accfb15ab5667a0e5d1881cc443e0677b4882a4067a807e"},

@@ -31,7 +31,7 @@ Audio Processing Server
 
 PORT: 8000
 
-SOUNDBISS_SECRET: mysecret # secret key for URL signature
+CYBERPUNK_SECRET: mysecret # secret key for URL signature
 
 AWS_ACCESS_KEY_ID: ...
 
