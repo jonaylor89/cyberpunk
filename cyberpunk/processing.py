@@ -2,7 +2,9 @@ from typing import Dict, Tuple
 
 
 def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
-    print(args)
+
+    for (k, v) in args.items():
+        print(f"{k} = {v}")
 
     return base_filename, "audio/mp3"
 
