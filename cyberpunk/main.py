@@ -1,13 +1,19 @@
+
 from typing import Generator
 from pydub import AudioSegment
+from flask import Flask, Response, stream_with_context, jsonify
 
-from flask import Flask, Response, stream_with_context
+##############################
+
+from .parse import parse_url
+
+##############################
 
 app = Flask(__name__)
 
 
 @stream_with_context
-def stream_audio_file(filename: str, chunk_size: int = 1024) -> Generator:
+def stream_audio_file(filename: str, chunk_size: int = 2048) -> Generator:
     with open(f"testdata/{filename}", "rb") as faudio:
         data = faudio.read(chunk_size)
         while data:
@@ -63,7 +69,7 @@ def stream_slice(filename: str, start: int, end: int):
 
 @app.route("/params/<path:query>")
 def params_route(query: str):
-    return query
+    return jsonify(parse_url(query))
 
 
 @app.route("/unsafe/<path:query>")
