@@ -1,5 +1,5 @@
 from pydub import AudioSegment
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Type
 
 from .transformations import Transformation, Reverse, Repeat, Slice
 
@@ -7,23 +7,23 @@ from .transformations import Transformation, Reverse, Repeat, Slice
 def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
 
     lookup_table: Dict[str, Transformation] = {
-        "reverse": Reverse,
-        "repeat": Repeat,
-        "slice": Slice,
+        "reverse": Reverse(),
+        "repeat": Repeat(),
+        "slice": Slice(),
     }
 
     # Create Audio Segment
-    audio_segment = AudioSegment.from_file(f"testdata/{base_filename}")
+    audio_segment: AudioSegment = AudioSegment.from_file(f"testdata/{base_filename}")
 
     # Pass Audio Segment through Each Stage
     for (k, v) in args.items():
         print(f"{k} = {v}")
 
         if k in lookup_table.keys():
-            transformation = lookup_table[k]
+            transformation: Transformation = lookup_table[k]
             assert transformation is not None
 
-            inputs = transformation.parse_input_from_str(v)
+            inputs: Dict[str, Any] = transformation.parse_input_from_str(v)
             audio_segment = transformation.process(audio_segment, inputs)
 
     # TODO: export with Filename unique to the stages run (for caching)
@@ -35,6 +35,8 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
     return processed_filename, "audio/mp3"
 
 
+# TODO: This function should return the users input as json
+# It'll help them debug
 def parse_query(filename: str, args: Dict) -> Dict:
     return {
         "reverse": False,

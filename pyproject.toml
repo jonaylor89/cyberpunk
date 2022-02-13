@@ -17,6 +17,8 @@ requests = "^2.27.1"
 pytest = "^5.2"
 mypy = "^0.931"
 types-requests = "^2.27.9"
+pydub-stubs = "^0.25.1"
+boto3-stubs = "^1.20.54"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
