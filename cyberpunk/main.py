@@ -1,11 +1,10 @@
-
 from typing import Generator
 from pydub import AudioSegment
 from flask import Flask, Response, stream_with_context, jsonify, request
 
 ##############################
 
-from .parse import parse_url
+from .processing import parse_query, process_args
 
 ##############################
 
@@ -32,11 +31,11 @@ def healthcheck():
 
 
 @app.route("/unsafe/<filename>", methods=["GET"])
-def stream_mp3(filename: str):
+def unsafe_processing(filename: str):
     args = request.args
-    print(args)
+    processed_file, file_type = process_args(filename, args)
 
-    return Response(stream_audio_file(f"{filename}"), mimetype="audio/mp3")
+    return Response(stream_audio_file(processed_file), mimetype=file_type)
 
 
 @app.route("/reverse/<filename>")

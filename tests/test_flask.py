@@ -18,8 +18,9 @@ def client():
     # os.close(db_fd)
     # os.unlink(db_path)
 
+
 def test_root(client):
     """Start with an empty route."""
 
-    rv = client.get('/')
-    assert b'Hello World' == rv.data
+    rv = client.get("/")
+    assert b"Hello World" == rv.data
