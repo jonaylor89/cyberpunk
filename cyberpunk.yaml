@@ -1,0 +1,25 @@
+
+port: 8000
+
+# local | s3 | audius
+audio_source: local
+
+cloud:
+  s3:
+    # enable S3 loader by specifyign bucket
+    s3_loader_bucket: mybucket
+
+    # optional
+    s3_loader_base_dir: audio
+
+    # enable S3 storage by specifying bucket
+    s3_storage_bucket: mybucket
+
+    # optional
+    s3_storage_base_dir: audio
+
+    # enable s3 result storage by specifying bucket
+    s3_result_storage_bucket: mybucket
+
+    # optional
+    s3_results_storage_base_dir: audio/result
