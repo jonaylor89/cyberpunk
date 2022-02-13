@@ -1,33 +1,43 @@
-
 from pydub import AudioSegment
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Callable
 
 
 def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
 
-    lookup_table = {
-        "reverse": reverse_segment,
-        "repeat": repeat_segment,
-        "slice": slice_segment,
+    lookup_table: Dict[str, Dict[str, Callable]] = {
+        "reverse": {
+            "parser": parse_reverse_segment_input,
+            "processor": reverse_segment,
+        },
+        "repeat": {
+            "parser": parse_repeat_segement_input,
+            "processor": repeat_segment,
+        },
+        "slice": {
+            "parser": parse_slice_segement_input,
+            "processor": slice_segment,
+        },
     }
 
     # Create Audio Segment
-    audio_segment = AudioSegment.from_mp3(f"testdata/{base_filename}")
+    audio_segment = AudioSegment.from_file(f"testdata/{base_filename}")
 
     # Pass Audio Segment through Each Stage
     for (k, v) in args.items():
         print(f"{k} = {v}")
 
-        if k in lookup_table.keys(): 
-            audio_segment = lookup_table[k](audio_segment, v)
+        if k in lookup_table.keys():
+            inputs = lookup_table[k]["parser"](v)
+            audio_segment = lookup_table[k]["processor"](audio_segment, inputs)
 
     # TODO: export with Filename unique to the stages run (for caching)
     # TODO: All for exporting different file type (e.g. mp3, wav, etc.)
-    processed_filename = f"processed_{base_filename}" 
+    processed_filename = f"processed_{base_filename}"
     audio_segment.export(f"testdata/{processed_filename}", format="mp3")
 
     # Return Filename and Audio Type
     return processed_filename, "audio/mp3"
+
 
 def parse_query(filename: str, args: Dict) -> Dict:
     return {
@@ -40,11 +50,25 @@ def parse_query(filename: str, args: Dict) -> Dict:
     }
 
 
-def reverse_segment(segment: AudioSegment, args: str) -> AudioSegment:
+def parse_reverse_segment_input(args: str) -> Dict:
+    return {}
+
+
+def reverse_segment(segment: AudioSegment, inputs: Dict) -> AudioSegment:
     return segment
 
-def repeat_segment(args: str) -> AudioSegment:
+
+def parse_repeat_segement_input(args: str) -> Dict:
+    return {}
+
+
+def repeat_segment(segment: AudioSegment, inputs: Dict) -> AudioSegment:
     return segment
 
-def slice_segment(segment: AudioSegment, args: str) -> AudioSegment:
+
+def parse_slice_segement_input(args: str) -> Dict:
+    return {}
+
+
+def slice_segment(segment: AudioSegment, inputs: Dict) -> AudioSegment:
     return segment
