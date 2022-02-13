@@ -5,6 +5,8 @@ Audio Processing Server
 
 # Features
 
+- [x] Audio Streaming
+
 - [ ] Change encodings (e.g. mp3 -> wav) 
 - [x] Audio slicing 
 - [ ] Change Volume 
