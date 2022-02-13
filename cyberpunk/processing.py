@@ -1,5 +1,5 @@
 from pydub import AudioSegment
-from typing import Dict, Tuple, Callable
+from typing import Any, Dict, Tuple, Callable
 
 
 def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
@@ -50,25 +50,42 @@ def parse_query(filename: str, args: Dict) -> Dict:
     }
 
 
-def parse_reverse_segment_input(args: str) -> Dict:
+def parse_reverse_segment_input(arg: str) -> Dict:
     return {}
 
 
-def reverse_segment(segment: AudioSegment, inputs: Dict) -> AudioSegment:
-    return segment
+def reverse_segment(segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
+    reversed_segment = segment.reverse()
+
+    return reversed_segment
 
 
-def parse_repeat_segement_input(args: str) -> Dict:
-    return {}
+def parse_repeat_segement_input(arg: str) -> Dict:
+
+    multiplier = int(arg)
+
+    return {
+        "multiplier": multiplier,
+    }
 
 
-def repeat_segment(segment: AudioSegment, inputs: Dict) -> AudioSegment:
-    return segment
+def repeat_segment(segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
+    multiplier = inputs["multiplier"]
+
+    repeated_segment = segment * multiplier
+    return repeated_segment
 
 
-def parse_slice_segement_input(args: str) -> Dict:
-    return {}
+def parse_slice_segement_input(arg: str) -> Dict:
+    return {
+        "start": 1000,
+        "end": 5000,
+    }
 
 
-def slice_segment(segment: AudioSegment, inputs: Dict) -> AudioSegment:
-    return segment
+def slice_segment(segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
+    start = inputs["start"]
+    end = inputs["end"]
+
+    sliced_segment = segment[start:end]
+    return sliced_segment
