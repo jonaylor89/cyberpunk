@@ -6,7 +6,7 @@ Audio Processing Server
 # Features
 
 - [ ] Change encodings (e.g. mp3 -> wav) 
-- [ ] Audio slicing 
+- [x] Audio slicing 
 - [ ] Change Volume 
 - [ ] Concat Audio 
 - [x] Repeat Audio 
