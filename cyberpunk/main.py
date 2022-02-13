@@ -1,5 +1,4 @@
 from typing import Generator
-from pydub import AudioSegment
 from flask import Flask, Response, stream_with_context, jsonify, request
 
 ##############################

@@ -20,6 +20,10 @@ Audio Processing Server
 - [ ] Audio Thumbnails 
 - [ ] Mastering Music 
 
+- [ ] Sound/Vocal Isolation
+
+- [ ] [Cool ML Stuff](https://github.com/spotify/pedalboard)
+
 - [ ] [File Caching](https://gist.github.com/ruanbekker/75d98a0d5cab5d6a562c70b4be5ba86d)
 
 # Storage Options
