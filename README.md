@@ -5,20 +5,20 @@ Audio Processing Server
 
 # Features
 
-- [] Change encodings (e.g. mp3 -> wav) 
-- [] Audio slicing 
-- [] Change Volume 
-- [] Concat Audio 
+- [ ] Change encodings (e.g. mp3 -> wav) 
+- [ ] Audio slicing 
+- [ ] Change Volume 
+- [ ] Concat Audio 
 - [x] Repeat Audio 
 - [x] Reverse Audio 
-- [] Crossfade 
-- [] Fade in/out   
-- [] Audio Quality 
-- [] Audio Tagging 
-- [] Audio Thumbnails 
-- [] Mastering Music 
+- [ ] Crossfade 
+- [ ] Fade in/out   
+- [ ] Audio Quality 
+- [ ] Audio Tagging 
+- [ ] Audio Thumbnails 
+- [ ] Mastering Music 
 
-- [] [File Caching](https://gist.github.com/ruanbekker/75d98a0d5cab5d6a562c70b4be5ba86d)
+- [ ] [File Caching](https://gist.github.com/ruanbekker/75d98a0d5cab5d6a562c70b4be5ba86d)
 
 # Storage Options
 
