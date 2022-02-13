@@ -18,6 +18,13 @@ Audio Processing Server
 - [_] Audio Thumbnails 
 - [_] Mastering Music 
 
+# Storage Options
+
+- Local
+- Cloud (e.g. S3)
+- Blockchain (Audius)
+
+
 # Environment
 
 PORT: 8000
