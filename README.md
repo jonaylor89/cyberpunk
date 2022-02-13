@@ -5,19 +5,18 @@ Audio Processing Server
 
 # Features
 
-- Change encodings (e.g. mp3 -> wav) 
-- Audio slicing 
-- Change Volume 
-- Concat Audio 
-- Repeat Audio 
-- Reverse Audio 
-- Crossfade 
-- Repeat  
-- Fade in/out   
-- Audio Quality 
-- Audio Tagging 
-- Audio Thumbnails 
-- Mastering Music 
+- [_] Change encodings (e.g. mp3 -> wav) 
+- [_] Audio slicing 
+- [_] Change Volume 
+- [_] Concat Audio 
+- [x] Repeat Audio 
+- [x] Reverse Audio 
+- [_] Crossfade 
+- [_] Fade in/out   
+- [_] Audio Quality 
+- [_] Audio Tagging 
+- [_] Audio Thumbnails 
+- [_] Mastering Music 
 
 # Environment
 

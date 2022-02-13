@@ -30,9 +30,8 @@ def stream_reverse(filename: str):
     reversed_song = song.reverse()
     reversed_song.export(f"testdata/reversed_{filename}", format="mp3")
 
-    return Response(
-        stream_audio_file(f"reversed_{filename}"), mimetype="audio/mp3"
-    )
+    return Response(stream_audio_file(f"reversed_{filename}"), mimetype="audio/mp3")
+
 
 @app.route("/repeat/<int:multiplier>/<filename>")
 def stream_repeat(filename: str, multiplier: int):
@@ -42,6 +41,17 @@ def stream_repeat(filename: str, multiplier: int):
 
     return Response(
         stream_audio_file(f"repeat_{multiplier}_{filename}"), mimetype="audio/mp3"
+    )
+
+
+@app.route("/slice/<int:start>/<int:end>/<filename>")
+def stream_repeat(filename: str, start: int, end: int):
+    song = AudioSegment.from_mp3(f"testdata/{filename}")
+    sliced_song = song[start:end]
+    sliced_song.export(f"testdata/slice_{start}_{end}_{filename}", format="mp3")
+
+    return Response(
+        stream_audio_file(f"slice_{start}_{end}_{filename}"), mimetype="audio/mp3"
     )
 
 
