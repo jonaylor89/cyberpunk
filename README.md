@@ -22,9 +22,9 @@ Audio Processing Server
 
 # Storage Options
 
-- Local
-- Cloud (e.g. S3)
-- Blockchain (Audius)
+- [x] Local
+- [ ] Cloud (e.g. S3)
+- [ ] Blockchain (Audius)
 
 
 # Environment
