@@ -61,7 +61,6 @@ def reverse_segment(segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegme
 
 
 def parse_repeat_segement_input(arg: str) -> Dict:
-
     multiplier = int(arg)
 
     return {
@@ -77,9 +76,11 @@ def repeat_segment(segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegmen
 
 
 def parse_slice_segement_input(arg: str) -> Dict:
+    start, end = tuple(arg.split(":"))
+
     return {
-        "start": 1000,
-        "end": 5000,
+        "start": start,
+        "end": end,
     }
 
 
