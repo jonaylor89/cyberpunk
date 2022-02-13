@@ -2,9 +2,9 @@
 from pydub import AudioSegment
 from typing import Protocol, Dict, Any
 
-from .reverse import Reverse
-from .repeat import Repeat 
-from .slice import Slice
+from transformations.reverse import Reverse
+from transformations.repeat import Repeat 
+from transformations.slice import Slice
 
 class Transformation(Protocol):
 

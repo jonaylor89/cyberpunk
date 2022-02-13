@@ -3,7 +3,7 @@ from flask import Flask, Response, stream_with_context, jsonify, request
 
 ##############################
 
-from .processing import parse_query, process_args
+from processing import parse_query, process_args
 
 ##############################
 

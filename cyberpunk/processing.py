@@ -1,7 +1,7 @@
 from pydub import AudioSegment
 from typing import Any, Dict, Tuple, Type
 
-from .transformations import Transformation, Reverse, Repeat, Slice
+from transformations import Transformation, Reverse, Repeat, Slice
 
 
 def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:

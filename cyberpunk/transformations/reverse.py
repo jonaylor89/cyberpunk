@@ -2,8 +2,6 @@
 from pydub import AudioSegment
 from typing import Dict, Any
 
-from . import Transformation
-
 class Reverse(object):
 
     def __call__(self, segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
