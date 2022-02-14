@@ -2,6 +2,7 @@ from pydub import AudioSegment
 from typing import Any, Dict, Tuple, Type
 
 from transformations import Transformation, Reverse, Repeat, Slice
+from audio_source import AudioSource
 
 
 def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
@@ -13,7 +14,7 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
     }
 
     # Create Audio Segment
-    audio_segment: AudioSegment = AudioSegment.from_file(f"testdata/{base_filename}")
+    audio_segment: AudioSegment = AudioSource.get_segment(base_filename)
 
     # Pass Audio Segment through Each Stage
     for (k, v) in args.items():
@@ -24,10 +25,7 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
             inputs: Dict[str, Any] = transformation.parse_input_from_str(v)
             audio_segment = transformation.process(audio_segment, inputs)
 
-    # TODO: export with Filename unique to the stages run (for caching)
-    # TODO: All for exporting different file type (e.g. mp3, wav, etc.)
-    processed_filename = f"processed_{base_filename}"
-    audio_segment.export(f"testdata/{processed_filename}", format="mp3")
+    processed_filename = AudioSource.save_segment(base_filename, audio_segment)
 
     # Return Filename and Audio Type
     return processed_filename, "audio/mp3"

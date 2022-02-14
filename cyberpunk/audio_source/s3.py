@@ -1,6 +1,14 @@
 import boto3
+from pydub import AudioSegment
 
 
-def get_buckets():
-    s3 = boto3.resource("s3")
-    return s3.get_buckets.all()
+class S3Storage(object):
+
+    def __init__(self):
+        self.s3 = boto3.resource("s3")
+
+    def get_segment(self, key: str) -> AudioSegment:
+        pass
+
+    def save_segment(self, base_filename: str, segment: AudioSegment):
+        pass

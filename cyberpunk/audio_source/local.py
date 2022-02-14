@@ -18,12 +18,10 @@ class LocalStorage(object):
         self,
         base_filename: str,
         segment: AudioSegment,
-        save_results=False,
-    ):
+    ) -> str:
         # TODO: export with Filename unique to the stages run (for caching)
         # TODO: All for exporting different file type (e.g. mp3, wav, etc.)
         processed_filename = f"processed_{base_filename}"
         segment.export(f"{self.base_dir}{processed_filename}", format="mp3")
 
-        if save_results:
-            segment.export(f"{self.base_dir}{self.results_dir}{processed_filename}")
+        return processed_filename

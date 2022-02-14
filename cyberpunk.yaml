@@ -9,7 +9,7 @@ local:
   storage_base_dir: testdata/
 
   # enable local result storage by specifying directory
-  results_storage_base_dir: processed/
+  # results_storage_base_dir: processed/
 
 cloud:
   s3:
@@ -17,17 +17,17 @@ cloud:
     s3_loader_bucket: mybucket
 
     # optional
-    s3_loader_base_dir: audio
+    s3_loader_base_dir: audio/
 
     # enable S3 storage by specifying bucket
     s3_storage_bucket: mybucket
 
     # optional
-    s3_storage_base_dir: audio
+    s3_storage_base_dir: audio/
 
     # enable s3 result storage by specifying bucket
-    s3_result_storage_bucket: mybucket
+    # s3_result_storage_bucket: mybucket
 
     # optional
-    s3_results_storage_base_dir: audio/result
+    # s3_results_storage_base_dir: audio/result
 
