@@ -7,6 +7,8 @@ class Slice(object):
         return self.process(segment, inputs)
 
     def parse_input_from_str(self, arg: str) -> Dict:
+        # TODO: Slices can have no start (implied 0) or no end (implied length of segment)
+
         start_str, end_str = tuple(arg.split(":"))
 
         start = int(start_str)
@@ -18,6 +20,7 @@ class Slice(object):
         }
 
     def process(self, segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
+
         start = inputs["start"]
         end = inputs["end"]
 

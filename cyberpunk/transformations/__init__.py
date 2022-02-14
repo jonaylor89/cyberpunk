@@ -4,6 +4,7 @@ from typing import Protocol, Dict, Any
 from transformations.reverse import Reverse
 from transformations.repeat import Repeat
 from transformations.slice import Slice
+from transformations.concat import Concat
 
 
 class Transformation(Protocol):
