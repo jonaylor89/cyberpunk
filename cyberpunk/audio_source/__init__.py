@@ -1,0 +1,2 @@
+class AudioSource(object):
+    pass

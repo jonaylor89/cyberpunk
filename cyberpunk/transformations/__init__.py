@@ -1,13 +1,12 @@
-
 from pydub import AudioSegment
 from typing import Protocol, Dict, Any
 
 from transformations.reverse import Reverse
-from transformations.repeat import Repeat 
+from transformations.repeat import Repeat
 from transformations.slice import Slice
 
-class Transformation(Protocol):
 
+class Transformation(Protocol):
     def __call__(self, segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
         """runs the tranformation on the given AudioSegment and returns the output"""
 

@@ -1,9 +1,8 @@
-
 from pydub import AudioSegment
 from typing import Dict, Any
 
-class Reverse(object):
 
+class Reverse(object):
     def __call__(self, segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
         return self.process(segment, inputs)
 
@@ -14,6 +13,3 @@ class Reverse(object):
         reversed_segment = segment.reverse()
 
         return reversed_segment
-
-
-

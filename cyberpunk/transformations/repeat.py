@@ -1,9 +1,8 @@
-
 from pydub import AudioSegment
 from typing import Dict, Any
 
-class Repeat(object):
 
+class Repeat(object):
     def __call__(self, segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
         return self.process(segment, inputs)
 
@@ -19,4 +18,3 @@ class Repeat(object):
         repeated_segment = segment * multiplier
 
         return repeated_segment
-

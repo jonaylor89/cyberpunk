@@ -1,9 +1,8 @@
-
 from pydub import AudioSegment
 from typing import Dict, Any
 
-class Slice(object):
 
+class Slice(object):
     def __call__(self, segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
         return self.process(segment, inputs)
 
@@ -17,7 +16,6 @@ class Slice(object):
             "start": start,
             "end": end,
         }
-
 
     def process(self, segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
         start = inputs["start"]

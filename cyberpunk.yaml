@@ -4,6 +4,13 @@ port: 8000
 # local | s3 | audius
 audio_source: local
 
+local:
+  # local storage dir
+  storage_base_dir: testdata/
+
+  # enable local result storage by specifying directory
+  results_storage_base_dir: processed/
+
 cloud:
   s3:
     # enable S3 loader by specifyign bucket
@@ -23,3 +30,4 @@ cloud:
 
     # optional
     s3_results_storage_base_dir: audio/result
+

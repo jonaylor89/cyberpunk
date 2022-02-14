@@ -17,8 +17,6 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
 
     # Pass Audio Segment through Each Stage
     for (k, v) in args.items():
-        print(f"{k} = {v}")
-
         if k in lookup_table.keys():
             transformation: Transformation = lookup_table[k]
             assert transformation is not None
@@ -46,4 +44,3 @@ def parse_query(filename: str, args: Dict) -> Dict:
             "end": 0,
         },
     }
-
