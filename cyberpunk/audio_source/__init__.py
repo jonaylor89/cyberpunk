@@ -1,10 +1,9 @@
-
 from pydub import AudioSegment
 
 from audio_source.local import LocalStorage
 
-class AudioSource(object):
 
+class AudioSource(object):
     def __init__(self):
         self.source = LocalStorage()
 

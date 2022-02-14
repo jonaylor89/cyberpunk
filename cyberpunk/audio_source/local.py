@@ -1,13 +1,9 @@
-from os import listdir
-from os.path import isfile, join
-
 from pydub import AudioSegment
 
 
 class LocalStorage(object):
     def __init__(self):
         self.base_dir = "testdata/"
-        self.results_dir = "processed/"
 
     def get_segment(self, key: str) -> AudioSegment:
         audio_segment: AudioSegment = AudioSegment.from_file(f"{self.base_dir}{key}")
