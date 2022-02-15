@@ -1,7 +1,7 @@
 from pydub import AudioSegment
 from typing import Dict, Any
 
-from storage import audio_storage
+from cyberpunk.storage import audio_storage
 
 
 class Concat(object):

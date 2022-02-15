@@ -1,6 +1,5 @@
 import yaml
 
-
 class CyberpunkConfig(object):
     def __init__(
         self,

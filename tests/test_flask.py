@@ -2,13 +2,13 @@ import os
 import tempfile
 import pytest
 
-from cyberpunk.main import app
+from cyberpunk.main import create_app
 
 
 @pytest.fixture
 def client():
     # db_fd, db_path = tempfile.mkstemp()
-    # app = create_app({'TESTING': True, 'DATABASE': db_path})
+    app = create_app()
 
     with app.test_client() as client:
         # with app.app_context():

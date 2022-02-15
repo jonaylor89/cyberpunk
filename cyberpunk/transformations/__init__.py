@@ -1,10 +1,10 @@
 from pydub import AudioSegment
 from typing import Protocol, Dict, Any
 
-from transformations.reverse import Reverse
-from transformations.repeat import Repeat
-from transformations.slice import Slice
-from transformations.concat import Concat
+from cyberpunk.transformations.reverse import Reverse
+from cyberpunk.transformations.repeat import Repeat
+from cyberpunk.transformations.slice import Slice
+from cyberpunk.transformations.concat import Concat
 
 
 class Transformation(Protocol):

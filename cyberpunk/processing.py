@@ -1,8 +1,8 @@
 from pydub import AudioSegment
 from typing import Any, Dict, Tuple, Type
 
-from transformations import Transformation, Reverse, Repeat, Slice, Concat
-from storage import audio_storage
+from cyberpunk.transformations import Transformation, Reverse, Repeat, Slice, Concat
+from cyberpunk.storage import audio_storage
 
 
 def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
