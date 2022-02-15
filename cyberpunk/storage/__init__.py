@@ -1,9 +1,27 @@
 from pydub import AudioSegment
-from typing import Protocol
+from typing import Protocol, Dict, Type
 
 from storage.local import LocalStorage
+from storage.s3 import S3Storage
+from storage.audius import AudiusStorage
 
-audio_storage = LocalStorage()
+from config import cyberpunk_config
+
+
+# Audio Storage Singleton
+audio_storage: AudioStorage = configure_storage()
+
+
+def configure_storage() -> AudioStorage:
+
+    storage_table: Dict[str, Type[AudioStorage]] = {
+        "local": LocalStorage,
+        "s3": S3Storage,
+        "audius": AudiusStorage,
+    }
+    store = cyberpunk_config.audio_store
+
+    return storage_table[store]()
 
 
 class AudioStorage(Protocol):

@@ -54,4 +54,5 @@ class S3StorageConfig(object):
         self.s3_storage_base_dir = s3_storage_base_dir
 
 
+# Cyberpunk Config Singleton
 cyberpunk_config = CyberpunkConfig.from_yaml("cyberpunk.yaml")
