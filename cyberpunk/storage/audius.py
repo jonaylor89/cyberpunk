@@ -20,5 +20,5 @@ class AudiusStorage(object):
 
         return AudioSegment.empty()
 
-    def save_segment(self, base_filename: str, segment: AudioSegment):
+    def save_segment(self, base_filename: str, segment: AudioSegment) -> str:
         pass

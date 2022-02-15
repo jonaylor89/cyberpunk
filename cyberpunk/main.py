@@ -10,7 +10,6 @@ from processing import parse_query, process_args
 app = Flask(__name__)
 
 
-@stream_with_context
 def stream_audio_file(filename: str, chunk_size: int = 2048) -> Generator:
     with open(f"testdata/{filename}", "rb") as faudio:
         data = faudio.read(chunk_size)
@@ -34,7 +33,9 @@ def unsafe_processing(filename: str):
     args = request.args
     processed_file, file_type = process_args(filename, args)
 
-    return Response(stream_audio_file(processed_file), mimetype=file_type)
+    return Response(
+        stream_with_context(stream_audio_file(processed_file)), mimetype=file_type
+    )
 
 
 @app.route("/params/<filename>")

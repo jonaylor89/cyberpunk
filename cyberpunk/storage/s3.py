@@ -9,5 +9,5 @@ class S3Storage(object):
     def get_segment(self, key: str) -> AudioSegment:
         pass
 
-    def save_segment(self, base_filename: str, segment: AudioSegment):
+    def save_segment(self, base_filename: str, segment: AudioSegment) -> str:
         pass
