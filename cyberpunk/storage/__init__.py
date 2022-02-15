@@ -7,6 +7,7 @@ from cyberpunk.storage.audius import AudiusStorage
 
 from cyberpunk.config import cyberpunk_config
 
+
 class AudioStorage(Protocol):
     def __init__(self):
         """Declare variables like base dir"""
@@ -16,6 +17,7 @@ class AudioStorage(Protocol):
 
     def save_segment(self, base_filename: str, segment: AudioSegment) -> str:
         """save an audio segment to storage and return the link to it"""
+
 
 def configure_storage() -> AudioStorage:
 
@@ -29,7 +31,5 @@ def configure_storage() -> AudioStorage:
     return storage_table[store]()
 
 
-
 # Audio Storage Singleton
 audio_storage: AudioStorage = configure_storage()
-
