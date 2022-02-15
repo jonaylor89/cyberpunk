@@ -4,6 +4,7 @@ from flask import Flask, Response, stream_with_context, jsonify, request
 ##############################
 
 from processing import parse_query, process_args
+from config import cyberpunk_config
 
 ##############################
 
@@ -44,4 +45,8 @@ def params_route(filename: str):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, load_dotenv=True)
+    app.run(
+        debug=True,
+        load_dotenv=True,
+        port=cyberpunk_config.port,
+    )
