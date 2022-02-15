@@ -2,7 +2,7 @@ import os
 import tempfile
 import pytest
 
-from cyberpunk.main import create_app
+from cyberpunk.server import create_app
 
 
 @pytest.fixture

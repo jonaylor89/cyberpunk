@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from cyberpunk.main import create_app
+from cyberpunk.server import create_app
 from cyberpunk.config import cyberpunk_config
 
 if __name__ == "__main__":
