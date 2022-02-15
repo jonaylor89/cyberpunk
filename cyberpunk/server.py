@@ -10,7 +10,6 @@ from cyberpunk.config import cyberpunk_config
 
 
 def create_app():
-
     app = Flask(__name__)
 
     def stream_audio_file(filename: str, chunk_size: int = 2048) -> Generator:
