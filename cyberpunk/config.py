@@ -1,7 +1,7 @@
 import yaml
 
 
-class CyberpunkConfig(object):
+class CyberpunkConfig:
     def __init__(
         self,
         port: int = 5000,
@@ -20,8 +20,8 @@ class CyberpunkConfig(object):
 
     @classmethod
     def from_yaml(cls, path="cyberpunk.yaml"):
-        with open(path) as f:
-            data = yaml.load(f, Loader=yaml.FullLoader)
+        with open(path) as file:
+            data = yaml.load(file, Loader=yaml.FullLoader)
 
         # TODO: validation lol
         port = data["port"]
@@ -39,12 +39,12 @@ class CyberpunkConfig(object):
         )
 
 
-class LocalStorageConfig(object):
+class LocalStorageConfig:
     def __init__(self, storage_base_dir: str = "testdata/"):
         self.storage_base_dir = storage_base_dir
 
 
-class S3StorageConfig(object):
+class S3StorageConfig:
     def __init__(
         self,
         s3_storage_bucket: str = "mybucket",

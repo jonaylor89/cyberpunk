@@ -11,12 +11,12 @@ class AudiusStorage(object):
         )
 
     def get_segment(self, key: str) -> AudioSegment:
-        r = requests.get(
+        req = requests.get(
             f"{self.host}/v1/tracks/{key}/stream",
             params={"app_name": "cyberpunk"},
         )
 
-        print(r.json())
+        print(req.json())
 
         return AudioSegment.empty()
 

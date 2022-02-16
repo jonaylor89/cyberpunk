@@ -5,7 +5,7 @@ from cyberpunk.server import create_app
 from cyberpunk.config import cyberpunk_config
 
 # TODO: Use `click` cli package to create cyberpunk cli
-# e.g. cyberpunk serve, cyberpunk serve --config=/some/path/config.yaml, 
+# e.g. cyberpunk serve, cyberpunk serve --config=/some/path/config.yaml,
 
 
 app = create_app()

@@ -23,4 +23,4 @@ def test_root(client):
     """Start with an empty route."""
 
     rv = client.get("/")
-    assert b"Hello World" == rv.data
+    assert rv.data == b"Hello World"
