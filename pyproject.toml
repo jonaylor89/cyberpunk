@@ -1,8 +1,12 @@
 [tool.poetry]
 name = "cyberpunk"
-version = "0.1.0"
+version = "0.2.0"
 description = "Audio Processing Server"
 authors = ["Johannes Naylor <jonaylor89@gmail.com>"]
+readme = "README.md"
+homepage = "https://github.com/jonaylor89/cyberpunk"
+repository = "https://github.com/jonaylor89/cyberpunk"
+keywords = ["audio", "server"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
