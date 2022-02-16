@@ -3,7 +3,7 @@
 
 Audio Processing Server
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jonaylor89/cyberpunk/python-package?style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jonaylor89/cyberpunk/Python%20package)
 
 # Features
 
