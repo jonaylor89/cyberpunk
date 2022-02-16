@@ -1,6 +1,4 @@
 
-port: 5000
-
 # local | s3 | audius
 audio_store: local
 

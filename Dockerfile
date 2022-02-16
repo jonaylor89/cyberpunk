@@ -66,5 +66,5 @@ COPY cyberpunk.yaml .
 
 # COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 
-EXPOSE 80
-CMD ["gunicorn", "main:app", "-b", "0.0.0.0:80"]
+EXPOSE $PORT
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app

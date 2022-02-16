@@ -12,6 +12,6 @@ def default_config():
 
 
 def test_defaults(default_config):
-    port = default_config.port
+    audio_store = default_config.audio_store
 
-    assert port == 5000
+    assert audio_store == "local"

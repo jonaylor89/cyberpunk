@@ -4,14 +4,11 @@ import yaml
 class CyberpunkConfig:
     def __init__(
         self,
-        port: int = 5000,
         audio_store: str = "local",
         storage_base_dir: str = "testdata/",
         s3_storage_bucket: str = "mybucket",
         s3_storage_base_dir: str = "audio/",
     ):
-        self.port = port
-
         # local | s3 | audius
         self.audio_store = audio_store
 
@@ -27,14 +24,12 @@ class CyberpunkConfig:
             data = yaml.load(file, Loader=yaml.FullLoader)
 
         # TODO: validation lol
-        port = data["port"]
         audio_source = data["audio_store"]
         storage_base_dir = data["local"]["storage_base_dir"]
         s3_storage_bucket = data["s3"]["s3_storage_bucket"]
         s3_storage_base_dir = data["s3"]["s3_storage_base_dir"]
 
         return cls(
-            port,
             audio_source,
             storage_base_dir,
             s3_storage_bucket,
