@@ -1,5 +1,5 @@
 
-# Cyberpunk 
+# Cyberpunk
 
 Audio Processing Server
 
@@ -24,18 +24,18 @@ docker run -e PORT=8080 jonaylor/cyberpunk
 
 - [x] Audio Streaming
 
-- [ ] Change encodings (e.g. mp3 -> wav) 
-- [x] Audio slicing 
-- [ ] Change Volume 
-- [ ] Concat Audio 
-- [x] Repeat Audio 
-- [x] Reverse Audio 
-- [ ] Crossfade 
-- [ ] Fade in/out   
-- [ ] Audio Quality 
-- [ ] Audio Tagging 
-- [ ] Audio Thumbnails 
-- [ ] Mastering Music 
+- [ ] Change encodings (e.g. mp3 -> wav)
+- [x] Audio slicing
+- [ ] Change Volume
+- [ ] Concat Audio
+- [x] Repeat Audio
+- [x] Reverse Audio
+- [ ] Crossfade
+- [ ] Fade in/out
+- [ ] Audio Quality
+- [ ] Audio Tagging
+- [ ] Audio Thumbnails
+- [ ] Mastering Music
 
 - [ ] Sound/Vocal Isolation
 

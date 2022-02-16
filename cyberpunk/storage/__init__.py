@@ -1,11 +1,11 @@
-from pydub import AudioSegment
-from typing import Protocol, Dict, Type
+from typing import Dict, Protocol, Type
 
-from cyberpunk.storage.local import LocalStorage
-from cyberpunk.storage.s3 import S3Storage
-from cyberpunk.storage.audius import AudiusStorage
+from pydub import AudioSegment
 
 from cyberpunk.config import cyberpunk_config
+from cyberpunk.storage.audius import AudiusStorage
+from cyberpunk.storage.local import LocalStorage
+from cyberpunk.storage.s3 import S3Storage
 
 
 class AudioStorage(Protocol):

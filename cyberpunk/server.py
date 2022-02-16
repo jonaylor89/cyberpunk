@@ -1,9 +1,11 @@
 from typing import Generator
-from flask import Flask, Response, stream_with_context, jsonify, request
+
+from flask import Flask, Response, jsonify, request, stream_with_context
+
+from cyberpunk.processing import parse_query, process_args
 
 ##############################
 
-from cyberpunk.processing import parse_query, process_args
 
 ##############################
 
@@ -32,7 +34,8 @@ def create_app():
         processed_file, file_type = process_args(filename, args)
 
         return Response(
-            stream_with_context(stream_audio_file(processed_file)), mimetype=file_type
+            stream_with_context(stream_audio_file(processed_file)),
+            mimetype=file_type,
         )
 
     @app.route("/params/<filename>")

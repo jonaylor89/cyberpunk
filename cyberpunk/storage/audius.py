@@ -1,13 +1,13 @@
 import random
-import requests
 
+import requests
 from pydub import AudioSegment
 
 
 class AudiusStorage(object):
     def __init__(self):
         self.host = random.choice(
-            (requests.get("https://api.audius.co")).json()["data"]
+            (requests.get("https://api.audius.co")).json()["data"],
         )
 
     def get_segment(self, key: str) -> AudioSegment:

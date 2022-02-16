@@ -1,5 +1,6 @@
+from typing import Any, Dict
+
 from pydub import AudioSegment
-from typing import Dict, Any
 
 from cyberpunk.storage import audio_storage
 

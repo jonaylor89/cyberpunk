@@ -1,14 +1,15 @@
-from pydub import AudioSegment
 from typing import Any, Dict, Tuple
 
-from cyberpunk.transformations import (
-    Transformation,
-    Reverse,
-    Repeat,
-    Slice,
-    Concat,
-)
+from pydub import AudioSegment
+
 from cyberpunk.storage import audio_storage
+from cyberpunk.transformations import (
+    Concat,
+    Repeat,
+    Reverse,
+    Slice,
+    Transformation,
+)
 
 
 def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
@@ -32,7 +33,10 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
             inputs: Dict[str, Any] = transformation.parse_input_from_str(v)
             audio_segment = transformation.process(audio_segment, inputs)
 
-    processed_filename = audio_storage.save_segment(base_filename, audio_segment)
+    processed_filename = audio_storage.save_segment(
+        base_filename,
+        audio_segment,
+    )
 
     # Return Filename and Audio Type
     return processed_filename, "audio/mp3"
