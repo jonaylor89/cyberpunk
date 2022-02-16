@@ -5,7 +5,11 @@ from cyberpunk.storage import audio_storage
 
 
 class Concat(object):
-    def __call__(self, segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
+    def __call__(
+        self,
+        segment: AudioSegment,
+        inputs: Dict[str, Any],
+    ) -> AudioSegment:
         return self.process(segment, inputs)
 
     def parse_input_from_str(self, arg: str) -> Dict:
@@ -16,7 +20,11 @@ class Concat(object):
             "other": other_segment,
         }
 
-    def process(self, segment: AudioSegment, inputs: Dict[str, Any]) -> AudioSegment:
+    def process(
+        self,
+        segment: AudioSegment,
+        inputs: Dict[str, Any],
+    ) -> AudioSegment:
         other = inputs["other"]
         concated_segment = segment + other
 

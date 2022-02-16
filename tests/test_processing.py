@@ -1,6 +1,4 @@
-import pytest
-
-from cyberpunk.processing import process_args, parse_query
+from cyberpunk.processing import process_args
 
 
 def test_process_args():

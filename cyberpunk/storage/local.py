@@ -6,7 +6,9 @@ class LocalStorage(object):
         self.base_dir = "testdata/"
 
     def get_segment(self, key: str) -> AudioSegment:
-        audio_segment: AudioSegment = AudioSegment.from_file(f"{self.base_dir}{key}")
+        audio_segment: AudioSegment = AudioSegment.from_file(
+            f"{self.base_dir}{key}",
+        )
 
         return audio_segment
 

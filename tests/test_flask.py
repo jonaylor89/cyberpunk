@@ -1,5 +1,3 @@
-import os
-import tempfile
 import pytest
 
 from cyberpunk.server import create_app

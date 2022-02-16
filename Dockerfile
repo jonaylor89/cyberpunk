@@ -53,6 +53,10 @@ RUN . /venv/bin/activate && poetry build
 ###############################################
 FROM python-base as production
 
+RUN apt-get update  \
+    && apt-get install --no-install-recommends -y  \
+    ffmpeg 
+
 COPY --from=builder-base /venv /venv
 COPY --from=builder-base /opt/pysetup/dist .
 RUN . /venv/bin/activate && pip install *.whl

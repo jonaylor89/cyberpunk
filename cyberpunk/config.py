@@ -16,7 +16,10 @@ class CyberpunkConfig:
         self.audio_store = audio_store
 
         self.local_storage = LocalStorageConfig(storage_base_dir)
-        self.s3_storage = S3StorageConfig(s3_storage_bucket, s3_storage_base_dir)
+        self.s3_storage = S3StorageConfig(
+            s3_storage_bucket,
+            s3_storage_base_dir,
+        )
 
     @classmethod
     def from_yaml(cls, path="cyberpunk.yaml"):

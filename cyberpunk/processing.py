@@ -1,7 +1,13 @@
 from pydub import AudioSegment
-from typing import Any, Dict, Tuple, Type
+from typing import Any, Dict, Tuple
 
-from cyberpunk.transformations import Transformation, Reverse, Repeat, Slice, Concat
+from cyberpunk.transformations import (
+    Transformation,
+    Reverse,
+    Repeat,
+    Slice,
+    Concat,
+)
 from cyberpunk.storage import audio_storage
 
 

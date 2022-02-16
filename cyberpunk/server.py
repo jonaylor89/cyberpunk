@@ -4,7 +4,6 @@ from flask import Flask, Response, stream_with_context, jsonify, request
 ##############################
 
 from cyberpunk.processing import parse_query, process_args
-from cyberpunk.config import cyberpunk_config
 
 ##############################
 
