@@ -13,7 +13,7 @@ ENV PYTHONUNBUFFERED=1  \
     POETRY_VIRTUALENVS_IN_PROJECT=true  \
     POETRY_NO_INTERACTION=1  \
     PYSETUP_PATH="/opt/pysetup"  \
-    VENV_PATH="/opt/pysetup/.venv"
+    VENV_PATH="/venv"
 
 # prepend poetry and venv to path
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
@@ -36,15 +36,31 @@ WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 
 # install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
-RUN poetry install --no-dev
+RUN python -m venv $VENV_PATH
+
+COPY pyproject.toml poetry.lock ./
+
+RUN . /venv/bin/activate && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-dev --no-root
+
+COPY . .
+
+RUN . /venv/bin/activate && poetry build
 
 ###############################################
 # Production Image
 ###############################################
 FROM python-base as production
 
-COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
-COPY ./cyberpunk /cyberpunk/
+COPY --from=builder-base /venv /venv
+COPY --from=builder-base /opt/pysetup/dist .
+RUN . /venv/bin/activate && pip install *.whl
+
+COPY main.py .
+COPY cyberpunk.yaml .
+
+# COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 
 EXPOSE 80
-CMD ["gunicorn", "cyberpunk.main:app", "-b", "0.0.0.0:80"]
+CMD ["gunicorn", "main:app", "-b", "0.0.0.0:80"]
