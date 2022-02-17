@@ -29,7 +29,7 @@ docker run -e PORT=8080 jonaylor/cyberpunk
 - [ ] Change encodings (e.g. mp3 -> wav)
 - [x] Audio slicing
 - [ ] Change Volume
-- [ ] Concat Audio
+- [x] Concat Audio
 - [x] Repeat Audio
 - [x] Reverse Audio
 - [ ] Crossfade
