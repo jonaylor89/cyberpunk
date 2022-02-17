@@ -4,11 +4,6 @@ from flask import Flask, Response, jsonify, request, stream_with_context
 
 from cyberpunk.processing import parse_query, process_args
 
-##############################
-
-
-##############################
-
 
 def create_app():
     app = Flask(__name__)
