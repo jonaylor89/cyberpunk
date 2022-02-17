@@ -4,12 +4,14 @@ import os
 
 import click
 
+from cyberpunk import __version__
 from cyberpunk.server import create_app
 
 app = create_app()
 
 
 @click.command()
+@click.version_option(__version__)
 @click.option(
     "--config",
     type=click.Path(exists=True),
