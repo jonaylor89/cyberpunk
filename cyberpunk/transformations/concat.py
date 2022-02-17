@@ -5,7 +5,7 @@ from pydub import AudioSegment
 from cyberpunk.storage import get_storage
 
 
-class Concat(object):
+class Concat:
     def __call__(
         self,
         segment: AudioSegment,

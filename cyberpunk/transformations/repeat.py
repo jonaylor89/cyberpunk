@@ -3,7 +3,7 @@ from typing import Any, Dict
 from pydub import AudioSegment
 
 
-class Repeat(object):
+class Repeat:
     def __call__(
         self,
         segment: AudioSegment,

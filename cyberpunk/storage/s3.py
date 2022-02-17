@@ -4,7 +4,7 @@ import boto3
 from pydub import AudioSegment
 
 
-class S3Storage(object):
+class S3Storage:
     def __init__(self):
         self.s3 = boto3.resource("s3")
 

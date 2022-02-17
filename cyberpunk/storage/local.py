@@ -3,7 +3,7 @@ import logging
 from pydub import AudioSegment
 
 
-class LocalStorage(object):
+class LocalStorage:
     def __init__(self):
         self.base_dir = "testdata/"
 
