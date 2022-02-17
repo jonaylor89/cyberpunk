@@ -84,10 +84,11 @@ def configure_config(path: str = "cyberpunk.yaml"):
     )
 
 
-def get_config() -> Optional[CyberpunkConfig]:
+def get_config() -> CyberpunkConfig:
     global _CYBERPUNK_CONFIG
 
     if _CYBERPUNK_CONFIG is None:
         configure_config()
 
+    assert _CYBERPUNK_CONFIG is not None
     return _CYBERPUNK_CONFIG

@@ -23,7 +23,7 @@ class AudioStorage(Protocol):
 
 
 # Audio Storage Singleton
-_audio_storage: Optional[AudioStorage] = None
+_AUDIO_STORAGE: Optional[AudioStorage] = None
 
 
 def configure_storage() -> AudioStorage:
@@ -43,10 +43,11 @@ def configure_storage() -> AudioStorage:
     return storage_table[store]()
 
 
-def get_storage():
-    global _audio_storage
+def get_storage() -> AudioStorage:
+    global _AUDIO_STORAGE
 
-    if _audio_storage is None:
-        _audio_storage = configure_storage()
+    if _AUDIO_STORAGE is None:
+        _AUDIO_STORAGE = configure_storage()
 
-    return _audio_storage
+    assert _AUDIO_STORAGE is not None
+    return _AUDIO_STORAGE
