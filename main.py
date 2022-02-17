@@ -6,10 +6,6 @@ import click
 
 from cyberpunk.server import create_app
 
-# TODO: Use `click` cli package to create cyberpunk cli
-# e.g. cyberpunk serve, cyberpunk serve --config=/some/path/config.yaml,
-
-
 app = create_app()
 
 
@@ -19,13 +15,19 @@ app = create_app()
     default="cyberpunk.yaml",
     help="Cyberpunk config file",
 )
-def main(config):
+@click.option(
+    "--port",
+    type=click.INT,
+    default=lambda: os.environ.get("PORT", 5000),
+    help="Server port number",
+)
+def main(config, port):
     server = create_app()
     print(config)
     server.run(
         debug=True,
         load_dotenv=True,
-        port=int(os.environ.get("PORT", 5000)),
+        port=int(port),
     )
 
 
