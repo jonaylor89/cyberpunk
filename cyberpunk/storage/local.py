@@ -1,3 +1,5 @@
+import logging
+
 from pydub import AudioSegment
 
 
@@ -6,6 +8,7 @@ class LocalStorage(object):
         self.base_dir = "testdata/"
 
     def get_segment(self, key: str) -> AudioSegment:
+        logging.info(f"pulling key from local storage: {key}")
         audio_segment: AudioSegment = AudioSegment.from_file(
             f"{self.base_dir}{key}",
         )

@@ -1,3 +1,5 @@
+import logging
+
 import boto3
 from pydub import AudioSegment
 
@@ -7,7 +9,9 @@ class S3Storage(object):
         self.s3 = boto3.resource("s3")
 
     def get_segment(self, key: str) -> AudioSegment:
-        pass
+        logging.info(f"pulling key from aws s3: {key}")
+
+        return AudioSegment.empty()
 
     def save_segment(
         self,

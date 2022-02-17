@@ -1,3 +1,4 @@
+import logging
 import random
 
 import requests
@@ -11,6 +12,7 @@ class AudiusStorage(object):
         )
 
     def get_segment(self, key: str) -> AudioSegment:
+        logging.info(f"pulling key from audius: {key}")
         req = requests.get(
             f"{self.host}/v1/tracks/{key}/stream",
             params={"app_name": "cyberpunk"},

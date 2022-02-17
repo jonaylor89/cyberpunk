@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict, Tuple
 
 from pydub import AudioSegment
@@ -27,6 +28,9 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
     # Pass Audio Segment through Each Stage
     for (k, v) in args.items():
         if k in lookup_table.keys():
+
+            logging.info(f"running transformation: {k}")
+
             transformation: Transformation = lookup_table[k]
             assert transformation is not None
 
