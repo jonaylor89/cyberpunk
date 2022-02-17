@@ -24,7 +24,7 @@ def create_app(config: str = "cyberpunk.yaml"):
     def hello():
         return "Hello World"
 
-    @app.route("/healthcheck")
+    @app.route("/health")
     def healthcheck():
         return 200
 
@@ -38,7 +38,7 @@ def create_app(config: str = "cyberpunk.yaml"):
             mimetype=file_type,
         )
 
-    @app.route("/params/<filename>")
+    @app.route("/params/<filename>", methods=["GET"])
     def params_route(filename: str):
         return jsonify(parse_query(filename, request.args))
 

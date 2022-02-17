@@ -1,3 +1,5 @@
+"""Module containing various supported audio stores"""
+
 import logging
 from typing import Dict, Optional, Protocol, Type
 
@@ -26,14 +28,17 @@ _audio_storage: Optional[AudioStorage] = None
 
 def configure_storage() -> AudioStorage:
 
-    logging.info(f"configuring audio store: {get_config().audio_store}")
+    config = get_config()
+    assert config is not None
+
+    logging.info(f"configuring audio store: {config.audio_store}")
 
     storage_table: Dict[str, Type[AudioStorage]] = {
         "local": LocalStorage,
         "s3": S3Storage,
         "audius": AudiusStorage,
     }
-    store = get_config().audio_store
+    store = config.audio_store
 
     return storage_table[store]()
 

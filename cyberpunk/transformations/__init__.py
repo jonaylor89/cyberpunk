@@ -1,3 +1,5 @@
+"""module for audio transformations"""
+
 # nopycln: file
 
 from typing import Any, Dict, Protocol
