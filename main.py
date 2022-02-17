@@ -10,9 +10,14 @@ from cyberpunk.server import create_app
 
 app = create_app()
 
-if __name__ == "__main__":
+
+def main():
     app.run(
         debug=True,
         load_dotenv=True,
         port=int(os.environ.get("PORT", 5000)),
     )
+
+
+if __name__ == "__main__":
+    main()

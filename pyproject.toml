@@ -8,6 +8,9 @@ homepage = "https://github.com/jonaylor89/cyberpunk"
 repository = "https://github.com/jonaylor89/cyberpunk"
 keywords = ["audio", "server"]
 
+[tool.poetry.scripts]
+cyberpunk = 'main:main'
+
 [tool.poetry.dependencies]
 python = "^3.9"
 pydub = "^0.25.1"
