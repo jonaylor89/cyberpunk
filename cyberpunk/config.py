@@ -1,3 +1,5 @@
+from typing import Optional
+
 import yaml
 
 
@@ -18,24 +20,6 @@ class CyberpunkConfig:
             s3_storage_base_dir,
         )
 
-    @classmethod
-    def from_yaml(cls, path="cyberpunk.yaml"):
-        with open(path) as file:
-            data = yaml.load(file, Loader=yaml.FullLoader)
-
-        # TODO: validation lol
-        audio_source = data["audio_store"]
-        storage_base_dir = data["local"]["storage_base_dir"]
-        s3_storage_bucket = data["s3"]["s3_storage_bucket"]
-        s3_storage_base_dir = data["s3"]["s3_storage_base_dir"]
-
-        return cls(
-            audio_source,
-            storage_base_dir,
-            s3_storage_bucket,
-            s3_storage_base_dir,
-        )
-
 
 class LocalStorageConfig:
     def __init__(self, storage_base_dir: str = "testdata/"):
@@ -52,5 +36,33 @@ class S3StorageConfig:
         self.s3_storage_base_dir = s3_storage_base_dir
 
 
-# Cyberpunk Config Singleton
-cyberpunk_config = CyberpunkConfig.from_yaml("cyberpunk.yaml")
+_cyberpunk_config: Optional[CyberpunkConfig] = None
+
+
+def configure_config(path: str = "cyberpunk.yaml"):
+    global _cyberpunk_config
+
+    with open(path) as file:
+        data = yaml.load(file, Loader=yaml.FullLoader)
+
+    # TODO: validation lol
+    audio_source = data["audio_store"]
+    storage_base_dir = data["local"]["storage_base_dir"]
+    s3_storage_bucket = data["s3"]["s3_storage_bucket"]
+    s3_storage_base_dir = data["s3"]["s3_storage_base_dir"]
+
+    _cyberpunk_config = CyberpunkConfig(
+        audio_source,
+        storage_base_dir,
+        s3_storage_bucket,
+        s3_storage_base_dir,
+    )
+
+
+def get_config():
+    global _cyberpunk_config
+
+    if _cyberpunk_config is None:
+        _cyberpunk_config = configure_storage()
+
+    return _cyberpunk_config

@@ -23,8 +23,7 @@ app = create_app()
     help="Server port number",
 )
 def main(config, port):
-    server = create_app()
-    print(config)
+    server = create_app(config)
     server.run(
         debug=True,
         load_dotenv=True,

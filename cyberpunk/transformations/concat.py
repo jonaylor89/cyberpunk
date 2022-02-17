@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from pydub import AudioSegment
 
-from cyberpunk.storage import audio_storage
+from cyberpunk.storage import get_storage
 
 
 class Concat(object):
@@ -15,7 +15,7 @@ class Concat(object):
 
     def parse_input_from_str(self, arg: str) -> Dict:
         other_filename = arg
-        other_segment = audio_storage.get_segment(other_filename)
+        other_segment = get_storage().get_segment(other_filename)
 
         return {
             "other": other_segment,

@@ -49,7 +49,7 @@ docker run -e PORT=8080 jonaylor/cyberpunk
 
 - [x] Local
 - [ ] Cloud (e.g. S3)
-- [ ] Blockchain (Audius)
+- [x] Blockchain (Audius)
 
 
 # Environment
