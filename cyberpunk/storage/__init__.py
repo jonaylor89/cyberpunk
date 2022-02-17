@@ -3,7 +3,7 @@ from typing import Dict, Optional, Protocol, Type
 
 from pydub import AudioSegment
 
-from cyberpunk.config import CyberpunkConfig
+from cyberpunk.config import get_config
 from cyberpunk.storage.audius import AudiusStorage
 from cyberpunk.storage.local import LocalStorage
 from cyberpunk.storage.s3 import S3Storage
@@ -26,14 +26,14 @@ _audio_storage: Optional[AudioStorage] = None
 
 def configure_storage() -> AudioStorage:
 
-    logging.info(f"configuring audio store: {CyberpunkConfig().audio_store}")
+    logging.info(f"configuring audio store: {get_config().audio_store}")
 
     storage_table: Dict[str, Type[AudioStorage]] = {
         "local": LocalStorage,
         "s3": S3Storage,
         "audius": AudiusStorage,
     }
-    store = CyberpunkConfig().audio_store
+    store = get_config().audio_store
 
     return storage_table[store]()
 
