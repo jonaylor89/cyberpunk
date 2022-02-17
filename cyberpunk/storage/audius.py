@@ -1,13 +1,13 @@
 import random
-import requests
 
+import requests
 from pydub import AudioSegment
 
 
 class AudiusStorage(object):
     def __init__(self):
         self.host = random.choice(
-            (requests.get("https://api.audius.co")).json()["data"]
+            (requests.get("https://api.audius.co")).json()["data"],
         )
 
     def get_segment(self, key: str) -> AudioSegment:
@@ -16,9 +16,12 @@ class AudiusStorage(object):
             params={"app_name": "cyberpunk"},
         )
 
-        print(req.json())
+        with open(f"testdata/{key}.mp3", "wb") as f:
+            f.write(req.content)
 
-        return AudioSegment.empty()
+        segment = AudioSegment.from_file(f"testdata/{key}.mp3")
+
+        return segment
 
     def save_segment(
         self,
