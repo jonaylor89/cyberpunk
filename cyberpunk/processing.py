@@ -46,14 +46,6 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
     return processed_filename, "audio/mp3"
 
 
-# TODO: This function should return the users input as json
-# It'll help them debug
 def parse_query(filename: str, args: Dict) -> Dict:
-    return {
-        "reverse": False,
-        "repeat": 0,
-        "slice": {
-            "start": 0,
-            "end": 0,
-        },
-    }
+
+    return {"file_key": filename, **args}
