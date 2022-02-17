@@ -12,6 +12,7 @@ app = create_app()
 @click.command()
 @click.option(
     "--config",
+    type=click.Path(exists=True),
     default="cyberpunk.yaml",
     help="Cyberpunk config file",
 )
