@@ -16,9 +16,12 @@ class AudiusStorage(object):
             params={"app_name": "cyberpunk"},
         )
 
-        print(req.json())
+        with open(f"testdata/{key}.mp3", "wb") as f:
+            f.write(req.content)
 
-        return AudioSegment.empty()
+        segment = AudioSegment.from_file(f"testdata/{key}.mp3")
+
+        return segment
 
     def save_segment(
         self,
