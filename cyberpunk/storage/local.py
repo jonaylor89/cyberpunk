@@ -9,7 +9,7 @@ class LocalStorage:
     def __init__(self):
         config = get_config()
 
-        self.base_dir = config.local_storage.base_dir
+        self.base_dir = config.local_storage.storage_base_dir
 
     def get_segment(self, key: str) -> AudioSegment:
         logging.info(f"pulling key from local storage: {key}")
