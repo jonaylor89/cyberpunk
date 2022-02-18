@@ -7,7 +7,13 @@ Audio Processing Server
 
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run?git_repo=https://github.com/jonaylor89/cyberpunk)
 
-# Install
+# Run
+
+With PyPI
+```sh
+pip3 install cyberpunk
+cyberpunk --config path/to/config
+```
 
 With Poetry
 ```sh
