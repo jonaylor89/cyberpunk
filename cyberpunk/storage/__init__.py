@@ -18,7 +18,12 @@ class AudioStorage(Protocol):
     def get_segment(self, key: str) -> AudioSegment:
         """get an audio segment from storage"""
 
-    def save_segment(self, base_filename: str, segment: AudioSegment) -> str:
+    def save_segment(
+        self,
+        base_filename: str,
+        segment: AudioSegment,
+        file_format: str,
+    ) -> str:
         """save an audio segment to storage and return the link to it"""
 
 

@@ -17,10 +17,10 @@ class S3Storage:
         self,
         base_filename: str,
         segment: AudioSegment,
+        file_format: str,
     ) -> str:
         # TODO: export with Filename unique to the stages run (for caching)
-        # TODO: All for exporting different file type (e.g. mp3, wav, etc.)
-        processed_filename = f"processed_{base_filename}"
-        segment.export(f"tmp/{processed_filename}", format="mp3")
+        processed_filename = f"processed_{base_filename}.{file_format}"
+        segment.export(f"tmp/{processed_filename}", format=file_format)
 
         return processed_filename

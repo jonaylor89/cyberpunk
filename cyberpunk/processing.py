@@ -53,6 +53,7 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
     processed_filename = get_storage().save_segment(
         base_filename,
         audio_segment,
+        file_format,
     )
 
     # Return Filename and Audio Type
