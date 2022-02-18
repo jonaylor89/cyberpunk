@@ -9,6 +9,7 @@ from cyberpunk.logger_config import LoggerConfig
 from cyberpunk.processing import parse_query, process_args
 from cyberpunk.storage import configure_storage
 
+
 def create_app(config: str = "cyberpunk.yaml"):
     configure_config(config)
     configure_storage()
@@ -41,8 +42,22 @@ def create_app(config: str = "cyberpunk.yaml"):
     def healthcheck():
         return 200
 
+    @app.route("/params/<filename>", methods=["GET"])
+    def params_route(filename: str):
+        """
+        Route to format URL parameters as
+        json to validate them before sending
+        them to the `unsafe_processing` route
+        """
+        return jsonify(parse_query(filename, request.args))
+
     @app.route("/unsafe/<filename>", methods=["GET"])
     def unsafe_processing(filename: str):
+        """
+        Route to run processing pipeline on an audio file
+
+        It's considered unsafe because there's currently no authentication or validation
+        """
         args = request.args
         processed_file, file_type = process_args(filename, args)
 
@@ -53,6 +68,9 @@ def create_app(config: str = "cyberpunk.yaml"):
 
     @app.route("/tag/<filename>", methods=["GET"])
     def tag_audio_route(filename: str):
+        """
+        Route to get tags from audio files
+        """
         return {
             "file_key": filename,
             "tags": [
@@ -65,8 +83,19 @@ def create_app(config: str = "cyberpunk.yaml"):
             ],
         }
 
-    @app.route("/params/<filename>", methods=["GET"])
-    def params_route(filename: str):
-        return jsonify(parse_query(filename, request.args))
+    @app.route("/stats", methods=["GET"])
+    def storage_stats_route():
+        """
+        Route to get state on the audio store backend
+
+        What's returned will depend on the audio store configured (local, s3, audius)
+        """
+        return {
+            "tracks": 13019,
+            "total time": "4.9 weeks",
+            "total size": "71.1 GB",
+            "artists": 548,
+            "albums": 1094,
+        }
 
     return app
