@@ -7,6 +7,8 @@ from typing import Any, Dict, Protocol
 from pydub import AudioSegment
 
 from cyberpunk.transformations.concat import Concat
+from cyberpunk.transformations.fade_in import FadeIn
+from cyberpunk.transformations.fade_out import FadeOut
 from cyberpunk.transformations.repeat import Repeat
 from cyberpunk.transformations.reverse import Reverse
 from cyberpunk.transformations.slice import Slice

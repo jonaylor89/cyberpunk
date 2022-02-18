@@ -6,6 +6,8 @@ from pydub import AudioSegment
 from cyberpunk.storage import get_storage
 from cyberpunk.transformations import (
     Concat,
+    FadeIn,
+    FadeOut,
     Repeat,
     Reverse,
     Slice,
@@ -20,6 +22,8 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
         "repeat": Repeat(),
         "slice": Slice(),
         "concat": Concat(),
+        "fade_in": FadeIn(),
+        "fade_out": FadeOut(),
     }
 
     supported_formats: List[str] = [
