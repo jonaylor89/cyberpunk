@@ -26,7 +26,7 @@ docker run -e PORT=8080 jonaylor/cyberpunk
 
 - [x] Audio Streaming
 
-- [ ] Change encodings (e.g. mp3 -> wav)
+- [x] Change encodings (e.g. mp3 -> wav)
 - [x] Audio slicing
 - [ ] Change Volume
 - [x] Concat Audio

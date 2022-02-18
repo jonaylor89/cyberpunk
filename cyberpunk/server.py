@@ -38,6 +38,20 @@ def create_app(config: str = "cyberpunk.yaml"):
             mimetype=file_type,
         )
 
+    @app.route("/tag/<filename>", methods=["GET"])
+    def tag_audio_route(filename: str):
+        return {
+            "file_key": filename,
+            "tags": [
+                "cool",
+                "awesome",
+                "country",
+                "hiphop",
+                "fast",
+                "chill",
+            ],
+        }
+
     @app.route("/params/<filename>", methods=["GET"])
     def params_route(filename: str):
         return jsonify(parse_query(filename, request.args))
