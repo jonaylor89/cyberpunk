@@ -11,9 +11,6 @@ keywords = ["audio", "sound", "server"]
 [tool.poetry.scripts]
 cyberpunk = 'main:main'
 
-[tool.poetry.scripts]
-cyberpunk = 'main:main'
-
 [tool.poetry.dependencies]
 python = "^3.9"
 pydub = "^0.25.1"
