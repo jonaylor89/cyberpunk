@@ -3,7 +3,7 @@
 
 Audio Processing Server
 
-![GitHub](https://img.shields.io/github/license/jonaylor89/cyberpunk)
+![GitHub](https://img.shields.io/github/license/jonaylor89/cyberpunk?logo=MIT)
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jonaylor89/cyberpunk/Docker)
 
