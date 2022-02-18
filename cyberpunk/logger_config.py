@@ -11,19 +11,15 @@ class LoggerConfig:
         },
         "handlers": {
             "default": {
-                "level": "DEBUG",
+                "level": "INFO",
                 "formatter": "standard",
-                "class": "logging.handlers.RotatingFileHandler",
-                "filename": "femm-api.log",
-                "maxBytes": 5000000,
-                "backupCount": 10,
+                "class": "logging.StreamHandler",
             },
             "debug": {
                 "level": "DEBUG",
                 "formatter": "standard",
                 "class": "logging.StreamHandler",
             },
-            "console": {"class": "logging.StreamHandler", "level": "DEBUG"},
         },
         "loggers": {
             "cyberpunk": {

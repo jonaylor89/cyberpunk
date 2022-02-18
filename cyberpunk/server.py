@@ -15,13 +15,15 @@ def create_app(config: str = "cyberpunk.yaml"):
     configure_storage()
 
     app = Flask(__name__)
-    app.config[
-        "LOGGER_HANDLER_POLICY"
-    ] = "always"  # 'always' (default), 'never',  'production', 'debug'
-    app.config[
-        "LOGGER_NAME"
-    ] = "cyberpunk"  # define which logger to use for Flask
-    app.logger  #  initialise logger
+
+    # 'always' (default), 'never',  'production', 'debug'
+    app.config["LOGGER_HANDLER_POLICY"] = "always"
+
+    # define which logger to use for Flask
+    app.config["LOGGER_NAME"] = "cyberpunk"
+
+    #  initialise logger
+    app.logger
 
     logging.config.dictConfig(LoggerConfig.dictConfig)
 

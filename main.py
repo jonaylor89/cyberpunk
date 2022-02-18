@@ -12,7 +12,7 @@ app = create_app()
 
 @click.command()
 @click.version_option(__version__)
-@click.option("--debug")
+@click.option("--debug", is_flag=True)
 @click.option(
     "--config",
     type=click.Path(exists=True),
