@@ -2,10 +2,14 @@ import logging
 
 from pydub import AudioSegment
 
+from cyberpunk.config import get_config
+
 
 class LocalStorage:
     def __init__(self):
-        self.base_dir = "testdata/"
+        config = get_config()
+
+        self.base_dir = config.local_storage.base_dir
 
     def get_segment(self, key: str) -> AudioSegment:
         logging.info(f"pulling key from local storage: {key}")
