@@ -35,7 +35,7 @@ docker run -e PORT=8080 jonaylor/cyberpunk
 - [x] Repeat Audio
 - [x] Reverse Audio
 - [ ] Crossfade
-- [ ] Fade in/out
+- [x] Fade in/out
 - [ ] Audio Quality
 - [ ] Audio Tagging
 - [ ] Audio Thumbnails
