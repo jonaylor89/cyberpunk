@@ -12,6 +12,7 @@ app = create_app()
 
 @click.command()
 @click.version_option(__version__)
+@click.option("--debug")
 @click.option(
     "--config",
     type=click.Path(exists=True),
@@ -24,10 +25,10 @@ app = create_app()
     default=lambda: os.environ.get("PORT", 5000),
     help="Server port number",
 )
-def main(config, port):
+def main(debug, config, port):
     server = create_app(config)
     server.run(
-        debug=True,
+        debug=debug,
         load_dotenv=True,
         port=int(port),
     )

@@ -6,7 +6,7 @@ authors = ["Johannes Naylor <jonaylor89@gmail.com>"]
 readme = "README.md"
 homepage = "https://github.com/jonaylor89/cyberpunk"
 repository = "https://github.com/jonaylor89/cyberpunk"
-keywords = ["audio", "server"]
+keywords = ["audio", "sound", "server"]
 
 [tool.poetry.scripts]
 cyberpunk = 'main:main'
