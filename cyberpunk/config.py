@@ -1,7 +1,16 @@
+"""
+Cyberpunk Configuration Module
+
+"""
+
+from typing import Optional
+
 import yaml
 
 
 class CyberpunkConfig:
+    """Global configuration object for Cyberpunk"""
+
     def __init__(
         self,
         audio_store: str = "local",
@@ -18,28 +27,22 @@ class CyberpunkConfig:
             s3_storage_base_dir,
         )
 
-    @classmethod
-    def from_yaml(cls, path="cyberpunk.yaml"):
-        with open(path) as file:
-            data = yaml.load(file, Loader=yaml.FullLoader)
+    def __str__(self):
+        return ""
 
-        # TODO: validation lol
-        audio_source = data["audio_store"]
-        storage_base_dir = data["local"]["storage_base_dir"]
-        s3_storage_bucket = data["s3"]["s3_storage_bucket"]
-        s3_storage_base_dir = data["s3"]["s3_storage_base_dir"]
-
-        return cls(
-            audio_source,
-            storage_base_dir,
-            s3_storage_bucket,
-            s3_storage_base_dir,
-        )
+    def __repr__(self):
+        return ""
 
 
 class LocalStorageConfig:
     def __init__(self, storage_base_dir: str = "testdata/"):
         self.storage_base_dir = storage_base_dir
+
+    def __str__(self):
+        return ""
+
+    def __repr__(self):
+        return ""
 
 
 class S3StorageConfig:
@@ -51,6 +54,41 @@ class S3StorageConfig:
         self.s3_storage_bucket = s3_storage_bucket
         self.s3_storage_base_dir = s3_storage_base_dir
 
+    def __str__(self):
+        return ""
 
-# Cyberpunk Config Singleton
-cyberpunk_config = CyberpunkConfig.from_yaml("cyberpunk.yaml")
+    def __repr__(self):
+        return ""
+
+
+_CYBERPUNK_CONFIG: Optional[CyberpunkConfig] = None
+
+
+def configure_config(path: str = "cyberpunk.yaml"):
+    global _CYBERPUNK_CONFIG
+
+    with open(path) as file:
+        data = yaml.load(file, Loader=yaml.FullLoader)
+
+    # TODO: validation lol
+    audio_source = data["audio_store"]
+    storage_base_dir = data["local"]["storage_base_dir"]
+    s3_storage_bucket = data["s3"]["s3_storage_bucket"]
+    s3_storage_base_dir = data["s3"]["s3_storage_base_dir"]
+
+    _CYBERPUNK_CONFIG = CyberpunkConfig(
+        audio_source,
+        storage_base_dir,
+        s3_storage_bucket,
+        s3_storage_base_dir,
+    )
+
+
+def get_config() -> CyberpunkConfig:
+    global _CYBERPUNK_CONFIG
+
+    if _CYBERPUNK_CONFIG is None:
+        configure_config()
+
+    assert _CYBERPUNK_CONFIG is not None
+    return _CYBERPUNK_CONFIG

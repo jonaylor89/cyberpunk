@@ -3,7 +3,7 @@ from typing import Any, Dict
 from pydub import AudioSegment
 
 
-class Repeat:
+class FadeIn:
     def __call__(
         self,
         segment: AudioSegment,
@@ -11,11 +11,10 @@ class Repeat:
     ) -> AudioSegment:
         return self.process(segment, inputs)
 
-    def parse_input_from_str(self, arg: str) -> Dict[str, Any]:
-        multiplier = int(arg)
-
+    def parse_input_from_str(self, arg: str) -> Dict:
+        duration = int(arg)
         return {
-            "multiplier": multiplier,
+            "duration": duration,
         }
 
     def process(
@@ -23,7 +22,7 @@ class Repeat:
         segment: AudioSegment,
         inputs: Dict[str, Any],
     ) -> AudioSegment:
-        multiplier = inputs["multiplier"]
-        repeated_segment = segment * multiplier
+        duration = inputs["duration"]
+        faded_segment = segment.fade_in(duration)
 
-        return repeated_segment
+        return faded_segment

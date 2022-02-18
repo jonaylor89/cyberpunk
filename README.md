@@ -3,6 +3,8 @@
 
 Audio Processing Server
 
+![GitHub](https://img.shields.io/github/license/jonaylor89/cyberpunk)
+
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jonaylor89/cyberpunk/Docker)
 
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run?git_repo=https://github.com/jonaylor89/cyberpunk)
@@ -26,14 +28,14 @@ docker run -e PORT=8080 jonaylor/cyberpunk
 
 - [x] Audio Streaming
 
-- [ ] Change encodings (e.g. mp3 -> wav)
+- [x] Change encodings (e.g. mp3 -> wav)
 - [x] Audio slicing
 - [ ] Change Volume
-- [ ] Concat Audio
+- [x] Concat Audio
 - [x] Repeat Audio
 - [x] Reverse Audio
 - [ ] Crossfade
-- [ ] Fade in/out
+- [x] Fade in/out
 - [ ] Audio Quality
 - [ ] Audio Tagging
 - [ ] Audio Thumbnails
@@ -49,7 +51,7 @@ docker run -e PORT=8080 jonaylor/cyberpunk
 
 - [x] Local
 - [ ] Cloud (e.g. S3)
-- [ ] Blockchain (Audius)
+- [x] Blockchain (Audius)
 
 
 # Environment

@@ -1,10 +1,13 @@
-from typing import Any, Dict, Tuple
+import logging
+from typing import Any, Dict, List, Tuple
 
 from pydub import AudioSegment
 
-from cyberpunk.storage import audio_storage
+from cyberpunk.storage import get_storage
 from cyberpunk.transformations import (
     Concat,
+    FadeIn,
+    FadeOut,
     Repeat,
     Reverse,
     Slice,
@@ -19,37 +22,48 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
         "repeat": Repeat(),
         "slice": Slice(),
         "concat": Concat(),
+        "fade_in": FadeIn(),
+        "fade_out": FadeOut(),
     }
 
+    supported_formats: List[str] = [
+        "mp3",
+        "wav",
+        "flac",
+    ]
+
     # Create Audio Segment
-    audio_segment: AudioSegment = audio_storage.get_segment(base_filename)
+    audio_segment: AudioSegment = get_storage().get_segment(base_filename)
 
     # Pass Audio Segment through Each Stage
     for (k, v) in args.items():
         if k in lookup_table.keys():
+
+            logging.info(f"running transformation: {k}")
+
             transformation: Transformation = lookup_table[k]
             assert transformation is not None
 
             inputs: Dict[str, Any] = transformation.parse_input_from_str(v)
             audio_segment = transformation.process(audio_segment, inputs)
 
-    processed_filename = audio_storage.save_segment(
+    # TODO this can be significantly better
+    file_format = "mp3"
+    if "format" in args.keys():
+        file_format = (
+            args["format"] if args["format"] in supported_formats else "mp3"
+        )
+
+    processed_filename = get_storage().save_segment(
         base_filename,
         audio_segment,
+        file_format,
     )
 
     # Return Filename and Audio Type
-    return processed_filename, "audio/mp3"
+    return processed_filename, f"audio/{file_format}"
 
 
-# TODO: This function should return the users input as json
-# It'll help them debug
 def parse_query(filename: str, args: Dict) -> Dict:
-    return {
-        "reverse": False,
-        "repeat": 0,
-        "slice": {
-            "start": 0,
-            "end": 0,
-        },
-    }
+
+    return {"file_key": filename, **args}
