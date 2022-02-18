@@ -9,7 +9,6 @@ from cyberpunk.logger_config import LoggerConfig
 from cyberpunk.processing import parse_query, process_args
 from cyberpunk.storage import configure_storage
 
-
 def create_app(config: str = "cyberpunk.yaml"):
     configure_config(config)
     configure_storage()
