@@ -3,6 +3,8 @@
 
 Audio Processing Server
 
+![GitHub](https://img.shields.io/github/license/jonaylor89/cyberpunk)
+
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jonaylor89/cyberpunk/Docker)
 
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run?git_repo=https://github.com/jonaylor89/cyberpunk)
