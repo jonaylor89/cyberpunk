@@ -1,4 +1,5 @@
 import logging
+from typing import Dict
 
 import boto3
 from pydub import AudioSegment
@@ -38,3 +39,6 @@ class S3Storage:
         segment.export(f"tmp/{processed_filename}", format=file_format)
 
         return processed_filename
+
+    def get_stats(self) -> Dict:
+        return {}

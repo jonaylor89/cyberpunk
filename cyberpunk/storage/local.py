@@ -1,4 +1,5 @@
 import logging
+from typing import Dict
 
 from pydub import AudioSegment
 
@@ -33,3 +34,6 @@ class LocalStorage:
         )
 
         return processed_filename
+
+    def get_stats(self) -> Dict:
+        return {}

@@ -1,5 +1,6 @@
 import logging
 import random
+from typing import Dict
 
 import requests
 from pydub import AudioSegment
@@ -37,3 +38,6 @@ class AudiusStorage:
         segment.export(f"tmp/{processed_filename}", format=file_format)
 
         return processed_filename
+
+    def get_stats(self) -> Dict:
+        return {}

@@ -26,6 +26,9 @@ class AudioStorage(Protocol):
     ) -> str:
         """save an audio segment to storage and return the link to it"""
 
+    def get_stats(self) -> Dict:
+        """get the stats for that specific storage backend"""
+
 
 # Audio Storage Singleton
 _AUDIO_STORAGE: Optional[AudioStorage] = None
