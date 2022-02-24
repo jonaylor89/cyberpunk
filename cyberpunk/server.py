@@ -9,6 +9,8 @@ from cyberpunk.logger_config import LoggerConfig
 from cyberpunk.processing import parse_query, process_args
 from cyberpunk.storage import configure_storage
 
+# from musicnn.tagger import top_tags
+
 
 def create_app(config: str = "cyberpunk.yaml"):
     configure_config(config)
@@ -71,16 +73,17 @@ def create_app(config: str = "cyberpunk.yaml"):
         """
         Route to get tags from audio files
         """
+
+        # features = top_tags(f'./testdata/{filename}.mp3', model='MTT_musicnn', topN=10)
+        features = [
+            "hiphop",
+            "drums",
+            "fast",
+        ]
+
         return {
             "file_key": filename,
-            "tags": [
-                "cool",
-                "awesome",
-                "country",
-                "hiphop",
-                "fast",
-                "chill",
-            ],
+            "tags": features,
         }
 
     @app.route("/stats", methods=["GET"])

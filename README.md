@@ -7,26 +7,69 @@ Audio Processing Server
 
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run?git_repo=https://github.com/jonaylor89/cyberpunk)
 
-# Run
 
-With PyPI
+### Quick Start
+
 ```sh
-pip3 install cyberpunk
-cyberpunk --config path/to/config
+docker run -p 8080:8080 -e PORT=8080 jonaylor/cyberpunk
 ```
 
-With Poetry
+Original audio:
 ```sh
-curl -sSL https://install.python-poetry.org | python3 -
-poetry run main.py
+https://raw.githubusercontent.com/jonaylor89/cyberpunk/master/testdata/celtic_pt2.mp3
 ```
 
-With Docker
+![](testdata/celtic_pt2.mp3)
+
+
+Try out the following audio URLs:
 ```
-docker pull ghcr.io/jonaylor89/cyberpunk:sha256-36a2ec3c572d69b41a096cee07f60f2e07d669846ceb0dd8b9f54d741ecc678c.sig
-docker run -e PORT=8080 jonaylor/cyberpunk
+http://localhost:8000/unsafe/celtic_p2.mp3
+http://localhost:8000/unsafe/celtic_p2.mp3?reverse=true
+http://localhost:8000/unsafe/celtic_p2.mp3?slice=0:10000
+http://localhost:8000/unsafe/celtic_p2.mp3?reverse=true&repeat=1&slice=1000:5000
+
 ```
 
+### Cyberpunk Endpoint
+
+Cyberpunk endpoint is a series of URL parts which defines the image operations, followed by the image URI:
+
+```
+/HASH|unsafe/AUDIO?slice&concat&fade_in&fade_out&repeat&reverse&filters=NAME(ARGS)
+```
+
+- `HASH` is the URL Signature hash, or `unsafe` if unsafe mode is used
+- `slice`
+- `concat`
+- `fade_in`
+- `fade_out`
+- `repeat`
+- `reverse`
+- `AUDIO` is the audio URI
+
+
+Cyberpunk provides utilities for previewing and generating Cyberpunk endpoint URI, including the [cyberpunk_path](https://github.com/jonaylor89/cyberpunk/tree/master/cyberpunk/processing.py) function and the `/params` endpoint:
+
+#### `GET /params`
+
+Prepending `/params` to the existing endpoint returns the endpoint attributes in JSON form, useful for preview:
+
+```sh
+curl "http://localhost:8000/unsafe/celtic_p2.mp3?reverse=true&repeat=1&slice=1000:5000"
+
+{
+  "path": "/celtic_p2.mp3?reverse=true&repeat=1&slice=1000:5000"
+  "audio": "celtic_pt2.mp3",
+  "hash": "=",
+  "reverse": true,
+  "repeat": 1,
+  "slice": {
+      "start": 1000,
+      "end": 5000,
+  }
+}
+```
 
 # Features
 
@@ -67,3 +110,53 @@ AWS_ACCESS_KEY_ID: ...
 AWS_SECRET_ACCESS_KEY: ...
 
 AWS_REGION: us-east-1
+
+# Docker Compose Example
+
+Cyberpunk with file system, using mounted volumn:
+
+```yaml
+version: "3"
+services:
+  imagor:
+    image: jonaylor/cyberpunk:latest
+    volumes:
+      - ./:/mnt/data
+    environment:
+      PORT: 8080
+      CYBERPUNK_UNSAFE: 1 # unsafe URL for testing
+
+      FILE_LOADER_BASE_DIR: /mnt/data # enable file loader by specifying base dir
+
+      FILE_STORAGE_BASE_DIR: /mnt/data # enable file storage by specifying base dir
+
+      FILE_RESULT_STORAGE_BASE_DIR: /mnt/data/result # enable file result storage by specifying base dir
+    ports:
+      - "8000:8000"
+```
+
+Cyberpunk with AWS S3:
+
+```yaml
+version: "3"
+services:
+  imagor:
+    image: jonaylor/cyberpunk:latest
+    environment:
+      PORT: 8080
+      IMAGOR_SECRET: mysecret # secret key for URL signature
+      AWS_ACCESS_KEY_ID: ...
+      AWS_SECRET_ACCESS_KEY: ...
+      AWS_REGION: ...
+
+      S3_LOADER_BUCKET: mybucket # enable S3 loader by specifying bucket
+      S3_LOADER_BASE_DIR: images # optional
+
+      S3_STORAGE_BUCKET: mybucket # enable S3 storage by specifying bucket
+      S3_STORAGE_BASE_DIR: images # optional
+
+      S3_RESULT_STORAGE_BUCKET: mybucket # enable S3 result storage by specifying bucket
+      S3_RESULT_STORAGE_BASE_DIR: images/result # optional
+    ports:
+      - "8000:8000"
+```

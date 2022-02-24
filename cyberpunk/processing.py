@@ -65,5 +65,14 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
 
 
 def parse_query(filename: str, args: Dict) -> Dict:
-
+    """
+    Parse and generate a Python object based on a cyberpunk endpoint
+    """
     return {"file_key": filename, **args}
+
+
+def cyberpunk_path():
+    """
+    Parse and generate a cyberpunk endpoint based on a Python object
+    """
+    return
