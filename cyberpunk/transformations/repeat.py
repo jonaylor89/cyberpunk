@@ -29,7 +29,14 @@ class Repeat:
         segment: AudioSegment,
         inputs: Dict[str, Any],
     ) -> AudioSegment:
-        multiplier = inputs["multiplier"]
-        repeated_segment = segment * multiplier
 
-        return repeated_segment
+        try:
+            multiplier = inputs["multiplier"]
+            repeated_segment = segment * multiplier
+        except Exception as e:
+            logging.error(
+                f"failure to process input `{inputs}` for `Repeat` : {e}",
+            )
+            return AudioSegment.empty()
+        else:
+            return repeated_segment

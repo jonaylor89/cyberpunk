@@ -37,8 +37,15 @@ class Slice:
         inputs: Dict[str, Any],
     ) -> AudioSegment:
 
-        start = inputs["start"]
-        end = inputs["end"]
+        try:
+            start = inputs["start"]
+            end = inputs["end"]
 
-        sliced_segment = segment[start:end]
-        return sliced_segment
+            sliced_segment = segment[start:end]
+        except Exception as e:
+            logging.error(
+                f"failure to process input `{inputs}` for `Slice` : {e}",
+            )
+            return AudioSegment.empty()
+        else:
+            return sliced_segment

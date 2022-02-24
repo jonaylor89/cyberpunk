@@ -31,7 +31,13 @@ class FadeOut:
         segment: AudioSegment,
         inputs: Dict[str, Any],
     ) -> AudioSegment:
-        duration = inputs["duration"]
-        faded_segment = segment.fade_out(duration)
-
-        return faded_segment
+        try:
+            duration = inputs["duration"]
+            faded_segment = segment.fade_out(duration)
+        except Exception as e:
+            logging.error(
+                f"failure to process input `{inputs}` for `FadeOut` : {e}",
+            )
+            return AudioSegment.empty()
+        else:
+            return faded_segment

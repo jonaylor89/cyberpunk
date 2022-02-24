@@ -34,7 +34,14 @@ class Concat:
         segment: AudioSegment,
         inputs: Dict[str, Any],
     ) -> AudioSegment:
-        other = inputs["other"]
-        concated_segment = segment + other
+        try:
+            other = inputs["other"]
+            concated_segment = segment + other
+        except Exception as e:
+            logging.error(
+                f"failure to process input `{inputs}` for `Concat` : {e}",
+            )
 
-        return concated_segment
+            return AudioSegment.empty()
+        else:
+            return concated_segment

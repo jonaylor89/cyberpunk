@@ -29,7 +29,15 @@ class FadeIn:
         segment: AudioSegment,
         inputs: Dict[str, Any],
     ) -> AudioSegment:
-        duration = inputs["duration"]
-        faded_segment = segment.fade_in(duration)
+        try:
+            duration = inputs["duration"]
+            faded_segment = segment.fade_in(duration)
 
-        return faded_segment
+        except Exception as e:
+            logging.error(
+                f"failure to process input `{inputs}` for `FadeIn` : {e}",
+            )
+            return AudioSegment.empty()
+
+        else:
+            return faded_segment
