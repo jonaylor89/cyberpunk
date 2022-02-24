@@ -68,7 +68,7 @@ def parse_query(filename: str, args: Dict) -> Dict:
     """
     Parse and generate a Python object based on a cyberpunk endpoint
     """
-    return {"file_key": filename, **args}
+    return {"audio": filename, **args}
 
 
 def cyberpunk_path():
