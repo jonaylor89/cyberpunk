@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict
 
 from pydub import AudioSegment
@@ -12,11 +13,16 @@ class Repeat:
         return self.process(segment, inputs)
 
     def parse_input_from_str(self, arg: str) -> Dict[str, Any]:
-        multiplier = int(arg)
+        try:
+            multiplier = int(arg)
+        except Exception as e:
+            logging.error(f"failure to parse input `{arg}` for `Repeat` : {e}")
 
-        return {
-            "multiplier": multiplier,
-        }
+            return {}
+        else:
+            return {
+                "multiplier": multiplier,
+            }
 
     def process(
         self,

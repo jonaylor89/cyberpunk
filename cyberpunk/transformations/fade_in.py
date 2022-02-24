@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict
 
 from pydub import AudioSegment
@@ -12,10 +13,16 @@ class FadeIn:
         return self.process(segment, inputs)
 
     def parse_input_from_str(self, arg: str) -> Dict:
-        duration = int(arg)
-        return {
-            "duration": duration,
-        }
+        try:
+            duration = int(arg)
+        except Exception as e:
+            logging.error(f"failure to parse input `{arg}` for `FadeIn` : {e}")
+
+            return {}
+        else:
+            return {
+                "duration": duration,
+            }
 
     def process(
         self,

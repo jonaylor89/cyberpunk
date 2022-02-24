@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict
 
 from pydub import AudioSegment
@@ -14,15 +15,21 @@ class Slice:
     def parse_input_from_str(self, arg: str) -> Dict:
         # TODO: Slices can have no start (implied 0) or no end (implied length of segment)
 
-        start_str, end_str = tuple(arg.split(":"))
+        try:
+            start_str, end_str = tuple(arg.split(":"))
 
-        start = int(start_str)
-        end = int(end_str)
+            start = int(start_str)
+            end = int(end_str)
 
-        return {
-            "start": start,
-            "end": end,
-        }
+        except Exception as e:
+            logging.error(f"failure to parse input `{arg}` for `Slice` : {e}")
+
+            return {}
+        else:
+            return {
+                "start": start,
+                "end": end,
+            }
 
     def process(
         self,
