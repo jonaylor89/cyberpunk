@@ -40,6 +40,11 @@ class Slice:
             start = inputs["start"]
             end = inputs["end"]
 
+            if start is None and end is None:
+                raise Exception(
+                    "the start and end of a slice can't both be None",
+                )
+
             if start is None:
                 sliced_segment = segment[:end]
             elif end is None:

@@ -13,7 +13,18 @@ class Reverse:
         return self.process(segment, inputs)
 
     def parse_input_from_str(self, arg: str) -> Dict:
-        return {}
+
+        try:
+            if arg not in ["True", "true", "1", "yes", "Y", "y"]:
+                return {"reverse": False}
+        except Exception as e:
+            logging.error(
+                f"failure to parse input `{arg}` for `Reverse` : {e}",
+            )
+
+            return {}
+        else:
+            return {"reverse": True}
 
     def process(
         self,
@@ -21,7 +32,10 @@ class Reverse:
         inputs: Dict[str, Any],
     ) -> AudioSegment:
         try:
-            reversed_segment = segment.reverse()
+            if inputs["reverse"]:
+                reversed_segment = segment.reverse()
+            else:
+                reversed_segment = segment
         except Exception as e:
             logging.error(
                 f"failure to process input `{inputs}` for `Reverse` : {e}",
