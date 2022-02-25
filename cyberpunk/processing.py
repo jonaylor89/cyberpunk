@@ -44,8 +44,19 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
             transformation: Transformation = lookup_table[k]
             assert transformation is not None
 
-            inputs: Dict[str, Any] = transformation.parse_input_from_str(v)
-            audio_segment = transformation.process(audio_segment, inputs)
+            try:
+                inputs: Dict[str, Any] = transformation.parse_input_from_str(v)
+            except Exception as e:
+                logging.error(f"failure to parse input `{v}` for `{k}` : {e}")
+                continue
+
+            try:
+                audio_segment = transformation.process(audio_segment, inputs)
+            except Exception as e:
+                logging.error(
+                    f"failure to process input `{v}` for `{k}` : {e}",
+                )
+                continue
 
     # TODO this can be significantly better
     file_format = "mp3"

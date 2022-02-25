@@ -1,8 +1,11 @@
-import logging
 from typing import Any, Dict
 
 from pydub import AudioSegment
 
+from cyberpunk.exceptions import (
+    TransformationInputParseException,
+    TransformationProcessException,
+)
 from cyberpunk.storage import get_storage
 
 
@@ -21,9 +24,7 @@ class Concat:
             other_segment = get_storage().get_segment(other_filename)
 
         except Exception as e:
-            logging.error(f"failure to parse input `{arg}` for `Concat` : {e}")
-
-            return {}
+            raise TransformationInputParseException(e)
         else:
             return {
                 "other": other_segment,
@@ -38,10 +39,6 @@ class Concat:
             other = inputs["other"]
             concated_segment = segment + other
         except Exception as e:
-            logging.error(
-                f"failure to process input `{inputs}` for `Concat` : {e}",
-            )
-
-            return AudioSegment.empty()
+            raise TransformationProcessException(e)
         else:
             return concated_segment

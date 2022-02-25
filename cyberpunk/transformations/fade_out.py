@@ -1,7 +1,11 @@
-import logging
 from typing import Any, Dict
 
 from pydub import AudioSegment
+
+from cyberpunk.exceptions import (
+    TransformationInputParseException,
+    TransformationProcessException,
+)
 
 
 class FadeOut:
@@ -16,11 +20,7 @@ class FadeOut:
         try:
             duration = int(arg)
         except Exception as e:
-            logging.error(
-                f"failure to parse input `{arg}` for `FadeOut` : {e}",
-            )
-
-            return {}
+            raise TransformationInputParseException(e)
         else:
             return {
                 "duration": duration,
@@ -35,9 +35,6 @@ class FadeOut:
             duration = inputs["duration"]
             faded_segment = segment.fade_out(duration)
         except Exception as e:
-            logging.error(
-                f"failure to process input `{inputs}` for `FadeOut` : {e}",
-            )
-            return AudioSegment.empty()
+            raise TransformationProcessException(e)
         else:
             return faded_segment

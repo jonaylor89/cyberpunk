@@ -1,7 +1,11 @@
-import logging
 from typing import Any, Dict, Optional
 
 from pydub import AudioSegment
+
+from cyberpunk.exceptions import (
+    TransformationInputParseException,
+    TransformationProcessException,
+)
 
 
 class Slice:
@@ -21,9 +25,8 @@ class Slice:
             end = int(end_str) if end_str != "" else None
 
         except Exception as e:
-            logging.error(f"failure to parse input `{arg}` for `Slice` : {e}")
+            raise TransformationInputParseException()
 
-            return {}
         else:
             return {
                 "start": start,
@@ -41,7 +44,7 @@ class Slice:
             end = inputs["end"]
 
             if start is None and end is None:
-                raise Exception(
+                raise TransformationProcessException(
                     "the start and end of a slice can't both be None",
                 )
 
@@ -52,9 +55,7 @@ class Slice:
             else:
                 sliced_segment = segment[start:end]
         except Exception as e:
-            logging.error(
-                f"failure to process input `{inputs}` for `Slice` : {e}",
-            )
-            return AudioSegment.empty()
+            raise TransformationProcessException(e)
+
         else:
             return sliced_segment

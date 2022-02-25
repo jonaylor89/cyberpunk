@@ -1,7 +1,11 @@
-import logging
 from typing import Any, Dict
 
 from pydub import AudioSegment
+
+from cyberpunk.exceptions import (
+    TransformationInputParseException,
+    TransformationProcessException,
+)
 
 
 class Reverse:
@@ -18,11 +22,7 @@ class Reverse:
             if arg not in ["True", "true", "1", "yes", "Y", "y"]:
                 return {"reverse": False}
         except Exception as e:
-            logging.error(
-                f"failure to parse input `{arg}` for `Reverse` : {e}",
-            )
-
-            return {}
+            raise TransformationInputParseException(e)
         else:
             return {"reverse": True}
 
@@ -37,9 +37,6 @@ class Reverse:
             else:
                 reversed_segment = segment
         except Exception as e:
-            logging.error(
-                f"failure to process input `{inputs}` for `Reverse` : {e}",
-            )
-            return AudioSegment.empty()
+            raise TransformationProcessException(e)
         else:
             return reversed_segment

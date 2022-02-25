@@ -1,7 +1,11 @@
-import logging
 from typing import Any, Dict
 
 from pydub import AudioSegment
+
+from cyberpunk.exceptions import (
+    TransformationInputParseException,
+    TransformationProcessException,
+)
 
 
 class Repeat:
@@ -16,9 +20,7 @@ class Repeat:
         try:
             multiplier = int(arg)
         except Exception as e:
-            logging.error(f"failure to parse input `{arg}` for `Repeat` : {e}")
-
-            return {}
+            raise TransformationInputParseException(e)
         else:
             return {
                 "multiplier": multiplier,
@@ -34,9 +36,6 @@ class Repeat:
             multiplier = inputs["multiplier"]
             repeated_segment = segment * multiplier
         except Exception as e:
-            logging.error(
-                f"failure to process input `{inputs}` for `Repeat` : {e}",
-            )
-            return AudioSegment.empty()
+            raise TransformationProcessException(e)
         else:
             return repeated_segment

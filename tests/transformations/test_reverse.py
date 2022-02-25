@@ -1,7 +1,7 @@
 import pytest
 from pydub import AudioSegment
 
-from cyberpunk.transformations import Reverse
+from cyberpunk.transformations.reverse import Reverse
 
 
 @pytest.mark.parametrize(
