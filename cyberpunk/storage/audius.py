@@ -1,6 +1,6 @@
 import logging
 import random
-from typing import Dict
+from typing import Dict, Tuple
 
 import requests
 from pydub import AudioSegment
@@ -12,7 +12,7 @@ class AudiusStorage:
             (requests.get("https://api.audius.co")).json()["data"],
         )
 
-    def get_segment(self, key: str) -> AudioSegment:
+    def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
         logging.info(f"pulling key from audius: {key}")
         req = requests.get(
             f"{self.host}/v1/tracks/{key}/stream",
@@ -25,7 +25,7 @@ class AudiusStorage:
 
         segment = AudioSegment.from_file(f"testdata/{key}.mp3")
 
-        return segment
+        return segment, f"{key}.mp3"
 
     def save_segment(
         self,

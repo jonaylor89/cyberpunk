@@ -1,5 +1,5 @@
 import logging
-from typing import Dict
+from typing import Dict, Tuple
 
 import boto3
 from pydub import AudioSegment
@@ -15,7 +15,7 @@ class S3Storage:
         self.s3_storage_bucket = config.s3_storage.s3_storage_bucket
         self.s3_storage_base_dir = config.s3_storage.s3_storage_base_dir
 
-    def get_segment(self, key: str) -> AudioSegment:
+    def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
         logging.info(f"pulling key from aws s3: {key}")
 
         self.s3.download_file(
@@ -26,7 +26,7 @@ class S3Storage:
 
         segment = AudioSegment.from_file(f"testdata/{key}")
 
-        return segment
+        return segment, f"testdata/{key}"
 
     def save_segment(
         self,

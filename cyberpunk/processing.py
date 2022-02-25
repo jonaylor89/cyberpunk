@@ -1,8 +1,6 @@
 import logging
 from typing import Any, Dict, List, Tuple
 
-from pydub import AudioSegment
-
 from cyberpunk.storage import get_storage
 from cyberpunk.transformations import (
     Concat,
@@ -33,7 +31,7 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
     ]
 
     # Create Audio Segment
-    audio_segment: AudioSegment = get_storage().get_segment(base_filename)
+    audio_segment, tmp_location = get_storage().get_segment(base_filename)
 
     # Pass Audio Segment through Each Stage
     for (k, v) in args.items():
@@ -66,7 +64,7 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
         )
 
     processed_filename = get_storage().save_segment(
-        base_filename,
+        tmp_location,
         audio_segment,
         file_format,
     )
