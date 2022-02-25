@@ -18,7 +18,6 @@ from cyberpunk.storage import configure_storage
 
 # from musicnn.tagger import top_tags
 
-
 def create_app(config: str = "cyberpunk.yaml"):
     configure_config(config)
     configure_storage()
