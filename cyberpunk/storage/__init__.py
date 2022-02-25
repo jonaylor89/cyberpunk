@@ -34,10 +34,6 @@ class AudioStorage(Protocol):
 _AUDIO_STORAGE: Optional[AudioStorage] = None
 
 
-# Audio Storage Singleton
-_AUDIO_STORAGE: Optional[AudioStorage] = None
-
-
 def configure_storage() -> AudioStorage:
 
     config = get_config()

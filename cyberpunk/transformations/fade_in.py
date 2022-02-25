@@ -39,4 +39,3 @@ class FadeIn:
             raise TransformationProcessException(e)
         else:
             return faded_segment
-

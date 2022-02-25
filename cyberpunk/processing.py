@@ -85,4 +85,3 @@ def cyberpunk_path():
     Parse and generate a cyberpunk endpoint based on a Python object
     """
     return
-
