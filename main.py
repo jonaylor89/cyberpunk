@@ -30,7 +30,7 @@ def main(debug, config, port):
     server.run(
         debug=debug,
         load_dotenv=True,
-        port=int(port),
+        port=port,
     )
 
 
