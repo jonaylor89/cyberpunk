@@ -16,7 +16,7 @@ docker run -p 8080:8080 -e PORT=8080 jonaylor/cyberpunk
 
 Original audio:
 ```sh
-https://raw.githubusercontent.com/jonaylor89/cyberpunk/master/testdata/celtic_pt2.mp3
+https://raw.githubusercontent.com/jonaylor89/cyberpunk/main/testdata/celtic_pt2.mp3
 ```
 
 ![](testdata/celtic_pt2.mp3)
@@ -49,7 +49,7 @@ Cyberpunk endpoint is a series of URL parts which defines the image operations, 
 - `AUDIO` is the audio URI
 
 
-Cyberpunk provides utilities for previewing and generating Cyberpunk endpoint URI, including the [cyberpunk_path](https://github.com/jonaylor89/cyberpunk/tree/master/cyberpunk/processing.py) function and the `/params` endpoint:
+Cyberpunk provides utilities for previewing and generating Cyberpunk endpoint URI, including the [cyberpunk_path](https://github.com/jonaylor89/cyberpunk/tree/main/cyberpunk/processing.py) function and the `/params` endpoint:
 
 #### `GET /params`
 
