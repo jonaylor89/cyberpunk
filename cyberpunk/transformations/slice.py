@@ -1,6 +1,11 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from pydub import AudioSegment
+
+from cyberpunk.exceptions import (
+    TransformationInputParseException,
+    TransformationProcessException,
+)
 
 
 class Slice:
@@ -11,18 +16,22 @@ class Slice:
     ) -> AudioSegment:
         return self.process(segment, inputs)
 
-    def parse_input_from_str(self, arg: str) -> Dict:
-        # TODO: Slices can have no start (implied 0) or no end (implied length of segment)
+    def parse_input_from_str(self, arg: str) -> Dict[str, Optional[int]]:
 
-        start_str, end_str = tuple(arg.split(":"))
+        try:
+            start_str, end_str = tuple(arg.split(":"))
 
-        start = int(start_str)
-        end = int(end_str)
+            start = int(start_str) if start_str != "" else None
+            end = int(end_str) if end_str != "" else None
 
-        return {
-            "start": start,
-            "end": end,
-        }
+        except Exception as e:
+            raise TransformationInputParseException()
+
+        else:
+            return {
+                "start": start,
+                "end": end,
+            }
 
     def process(
         self,
@@ -30,8 +39,23 @@ class Slice:
         inputs: Dict[str, Any],
     ) -> AudioSegment:
 
-        start = inputs["start"]
-        end = inputs["end"]
+        try:
+            start = inputs["start"]
+            end = inputs["end"]
 
-        sliced_segment = segment[start:end]
-        return sliced_segment
+            if start is None and end is None:
+                raise TransformationProcessException(
+                    "the start and end of a slice can't both be None",
+                )
+
+            if start is None:
+                sliced_segment = segment[:end]
+            elif end is None:
+                sliced_segment = segment[start:]
+            else:
+                sliced_segment = segment[start:end]
+        except Exception as e:
+            raise TransformationProcessException(e)
+
+        else:
+            return sliced_segment

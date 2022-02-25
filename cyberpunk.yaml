@@ -10,7 +10,7 @@ local:
   # results_storage_base_dir: processed/
 
 s3:
-  # enable S3 loader by specifyign bucket
+  # enable S3 loader by specifying bucket
   # s3_loader_bucket: mybucket
 
   # optional

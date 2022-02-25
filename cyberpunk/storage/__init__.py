@@ -1,7 +1,7 @@
 """Module containing various supported audio stores"""
 
 import logging
-from typing import Dict, Optional, Protocol, Type
+from typing import Dict, Optional, Protocol, Tuple, Type
 
 from pydub import AudioSegment
 
@@ -15,7 +15,7 @@ class AudioStorage(Protocol):
     def __init__(self):
         """Declare variables like base dir"""
 
-    def get_segment(self, key: str) -> AudioSegment:
+    def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
         """get an audio segment from storage"""
 
     def save_segment(
@@ -25,6 +25,13 @@ class AudioStorage(Protocol):
         file_format: str,
     ) -> str:
         """save an audio segment to storage and return the link to it"""
+
+    def get_stats(self) -> Dict:
+        """get the stats for that specific storage backend"""
+
+
+# Audio Storage Singleton
+_AUDIO_STORAGE: Optional[AudioStorage] = None
 
 
 # Audio Storage Singleton

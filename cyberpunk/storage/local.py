@@ -1,4 +1,7 @@
 import logging
+from typing import Dict, Tuple
+
+import requests
 
 from pydub import AudioSegment
 
@@ -8,16 +11,37 @@ from cyberpunk.config import get_config
 class LocalStorage:
     def __init__(self):
         config = get_config()
-
+        
         self.base_dir = config.local_storage.storage_base_dir
 
-    def get_segment(self, key: str) -> AudioSegment:
-        logging.info(f"pulling key from local storage: {key}")
-        audio_segment: AudioSegment = AudioSegment.from_file(
-            f"{self.base_dir}{key}",
-        )
+    def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
 
-        return audio_segment
+        print(key)
+        audio_segment: AudioSegment = AudioSegment.empty()
+
+        if key.startswith("https://"):
+            logging.info(f"downloading audio file: {key}")
+            req = requests.get(key)
+
+            ext = key.split(".")[-1]
+
+            # TODO: there must be a more robust way of saving temperary files like this
+            location: str = f"remote-audio.{ext}"
+            with open(f"{self.base_dir}{location}", "wb") as tmp_file:
+                tmp_file.write(req.content)
+
+            audio_segment = AudioSegment.from_file(
+                f"{self.base_dir}{location}",
+            )
+        else:
+            logging.info(f"pulling key from local storage: {key}")
+
+            location = f"{key}"
+            audio_segment = AudioSegment.from_file(
+                f"{self.base_dir}{location}",
+            )
+
+        return audio_segment, location
 
     def save_segment(
         self,
@@ -33,3 +57,6 @@ class LocalStorage:
         )
 
         return processed_filename
+
+    def get_stats(self) -> Dict:
+        return {}

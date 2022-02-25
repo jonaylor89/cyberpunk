@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cyberpunk"
-version = "0.2.1"
+version = "0.2.2"
 description = "Audio Processing Server"
 authors = ["Johannes Naylor <jonaylor89@gmail.com>"]
 readme = "README.md"
@@ -21,6 +21,7 @@ gunicorn = "^20.1.0"
 requests = "^2.27.1"
 PyYAML = "^6.0"
 click = "^8.0.3"
+# musicnn = { git = "https://github.com/jordipons/musicnn.git", branch = "master" }
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
