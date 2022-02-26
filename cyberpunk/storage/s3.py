@@ -15,6 +15,12 @@ class S3Storage:
         self.s3_storage_bucket = config.s3_storage.s3_storage_bucket
         self.s3_storage_base_dir = config.s3_storage.s3_storage_base_dir
 
+    def __contains__(self, element):
+        return contains(element)
+
+    def contains(self, key: str) -> bool:
+        return False
+
     def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
         logging.info(f"pulling key from aws s3: {key}")
 
@@ -27,18 +33,6 @@ class S3Storage:
         segment = AudioSegment.from_file(f"testdata/{key}")
 
         return segment, f"testdata/{key}"
-
-    def save_segment(
-        self,
-        base_filename: str,
-        segment: AudioSegment,
-        file_format: str,
-    ) -> str:
-        # TODO: export with Filename unique to the stages run (for caching)
-        processed_filename = f"processed_{base_filename}.{file_format}"
-        segment.export(f"tmp/{processed_filename}", format=file_format)
-
-        return processed_filename
 
     def get_stats(self) -> Dict:
         return {}

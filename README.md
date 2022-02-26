@@ -111,6 +111,25 @@ AWS_SECRET_ACCESS_KEY: ...
 
 AWS_REGION: us-east-1
 
+AUDIO_PATH=local:s3:audius:http
+
+STORAGE_BASE_DIR=testdata/
+
+RESULTS_STORAGE_BASE_DIR=processed/
+
+S3_LOADER_BUCKET=mybucket
+
+S3_LOADER_BASE_DIR=audio/
+
+S3_STORAGE_BUCKET=mybucket
+
+S3_STORAGE_BASE_DIR=audio/
+
+S3_RESULTS_STORAGE_BUCKET=mybucket
+
+S3_RESULTS_STORAGE_BASE_DIR=audio/results
+
+
 # Docker Compose Example
 
 Cyberpunk with file system, using mounted volumn:
