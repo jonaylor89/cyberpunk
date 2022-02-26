@@ -18,7 +18,7 @@ class LocalStorage:
         print(key)
         audio_segment: AudioSegment = AudioSegment.empty()
 
-        if key.startswith("https://"):
+        if key.startswith("https://") or key.startswith("http://"):
             logging.info(f"downloading audio file: {key}")
             req = requests.get(key)
 

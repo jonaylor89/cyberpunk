@@ -77,7 +77,7 @@ def create_app(config: str = "cyberpunk.yaml"):
         )
 
     @app.route("/unsafe/https://<path:url>", methods=["GET"])
-    def unsafe_http_processing(url: str):
+    def unsafe_https_processing(url: str):
         """
         Route to run processing pipeline on an audio file
 
@@ -86,6 +86,22 @@ def create_app(config: str = "cyberpunk.yaml"):
         args = request.args
         logging.critical(f"file path: {url}, args: {args}")
         processed_file, file_type = process_args(f"https://{url}", args)
+
+        return Response(
+            stream_with_context(stream_audio_file(processed_file)),
+            mimetype=file_type,
+        )
+
+    @app.route("/unsafe/http://<path:url>", methods=["GET"])
+    def unsafe_http_processing(url: str):
+        """
+        Route to run processing pipeline on an audio file
+
+        It's considered unsafe because there's currently no authentication or validation
+        """
+        args = request.args
+        logging.critical(f"file path: {url}, args: {args}")
+        processed_file, file_type = process_args(f"http://{url}", args)
 
         return Response(
             stream_with_context(stream_audio_file(processed_file)),
