@@ -36,7 +36,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
     logging.config.dictConfig(LoggerConfig.dictConfig)
 
-    def stream_audio_file(filename: str, chunk_size: int = 2048) -> Generator:
+    def stream_audio_file(filename: str, chunk_size: int = 4096) -> Generator:
         with open(f"/tmp/{filename}", "rb") as faudio:
             data = faudio.read(chunk_size)
             while data:
