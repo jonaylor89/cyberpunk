@@ -11,7 +11,7 @@ Audio Processing Server
 ### Quick Start
 
 ```sh
-docker run -p 8080:8080 -e PORT=8080 jonaylor/cyberpunk
+docker run -p 8080:8080 -e PORT=8080 ghcr.io/jonaylor89/cyberpunk:main
 ```
 
 Original audio:
@@ -103,6 +103,8 @@ curl "http://localhost:8000/unsafe/celtic_p2.mp3?reverse=true&repeat=1&slice=100
 
 # Environment
 
+PORT: 8080 # server port number
+
 CYBERPUNK_SECRET: mysecret # secret key for URL signature
 
 AWS_ACCESS_KEY_ID: ...
@@ -110,6 +112,25 @@ AWS_ACCESS_KEY_ID: ...
 AWS_SECRET_ACCESS_KEY: ...
 
 AWS_REGION: us-east-1
+
+AUDIO_PATH=local:s3:audius:http
+
+STORAGE_BASE_DIR=testdata/
+
+RESULTS_STORAGE_BASE_DIR=processed/
+
+S3_LOADER_BUCKET=mybucket
+
+S3_LOADER_BASE_DIR=audio/
+
+S3_STORAGE_BUCKET=mybucket
+
+S3_STORAGE_BASE_DIR=audio/
+
+S3_RESULTS_STORAGE_BUCKET=mybucket
+
+S3_RESULTS_STORAGE_BASE_DIR=audio/results
+
 
 # Docker Compose Example
 
@@ -119,20 +140,15 @@ Cyberpunk with file system, using mounted volumn:
 version: "3"
 services:
   imagor:
-    image: jonaylor/cyberpunk:latest
+    image: jonaylor/cyberpunk:main
     volumes:
       - ./:/mnt/data
     environment:
       PORT: 8080
-      CYBERPUNK_UNSAFE: 1 # unsafe URL for testing
-
-      FILE_LOADER_BASE_DIR: /mnt/data # enable file loader by specifying base dir
-
-      FILE_STORAGE_BASE_DIR: /mnt/data # enable file storage by specifying base dir
-
-      FILE_RESULT_STORAGE_BASE_DIR: /mnt/data/result # enable file result storage by specifying base dir
+      AUDIO_PATH: "local"
+      FILE_STORAGE_BASE_DIR: /mnt/data/testdata/ # enable file storage by specifying base dir
     ports:
-      - "8000:8000"
+      - "8080:8080"
 ```
 
 Cyberpunk with AWS S3:
@@ -141,22 +157,24 @@ Cyberpunk with AWS S3:
 version: "3"
 services:
   imagor:
-    image: jonaylor/cyberpunk:latest
+    image: jonaylor/cyberpunk:main
     environment:
       PORT: 8080
-      IMAGOR_SECRET: mysecret # secret key for URL signature
+      CYBERPUNK_SECRET: mysecret # secret key for URL signature
       AWS_ACCESS_KEY_ID: ...
       AWS_SECRET_ACCESS_KEY: ...
       AWS_REGION: ...
 
+      AUDIO_PATH: "s3"
+
       S3_LOADER_BUCKET: mybucket # enable S3 loader by specifying bucket
-      S3_LOADER_BASE_DIR: images # optional
+      S3_LOADER_BASE_DIR: audio # optional
 
       S3_STORAGE_BUCKET: mybucket # enable S3 storage by specifying bucket
-      S3_STORAGE_BASE_DIR: images # optional
+      S3_STORAGE_BASE_DIR: audio # optional
 
       S3_RESULT_STORAGE_BUCKET: mybucket # enable S3 result storage by specifying bucket
-      S3_RESULT_STORAGE_BASE_DIR: images/result # optional
+      S3_RESULT_STORAGE_BASE_DIR: audio/result # optional
     ports:
-      - "8000:8000"
+      - "8080:8080"
 ```

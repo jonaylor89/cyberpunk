@@ -2,10 +2,12 @@
 Cyberpunk Configuration Module
 
 """
-
+import os
 from typing import Optional
 
-import yaml
+
+class CyberpunkConfigException(Exception):
+    pass
 
 
 class CyberpunkConfig:
@@ -13,75 +15,83 @@ class CyberpunkConfig:
 
     def __init__(
         self,
-        audio_store: str = "local",
-        storage_base_dir: str = "testdata/",
-        s3_storage_bucket: str = "mybucket",
-        s3_storage_base_dir: str = "audio/",
+        audio_path: str = "local",
+        local_storage_base_dir: Optional[str] = "testdata/",
+        local_results_base_dir: Optional[str] = None,
+        s3_loader_bucket: Optional[str] = None,
+        s3_loader_base_dir: Optional[str] = None,
+        s3_storage_bucket: Optional[str] = None,
+        s3_storage_base_dir: Optional[str] = None,
+        s3_results_bucket: Optional[str] = None,
+        s3_results_base_dir: Optional[str] = None,
     ):
+
+        # TODO: validation lol
+
         # local | s3 | audius
-        self.audio_store = audio_store
+        self.audio_path = audio_path
 
-        self.local_storage = LocalStorageConfig(storage_base_dir)
-        self.s3_storage = S3StorageConfig(
-            s3_storage_bucket,
-            s3_storage_base_dir,
-        )
+        if (
+            "local" in self.audio_path.split(":")
+            and local_storage_base_dir is None
+        ):
+            raise CyberpunkConfigException(
+                "local_storage_base_dir must be configured if `local` in audio_path",
+            )
 
-    def __str__(self):
-        return ""
+        self.local_storage_base_dir = local_storage_base_dir
+        self.local_results_base_dir = local_results_base_dir
 
-    def __repr__(self):
-        return ""
+        if "s3" in self.audio_path.split(":") and s3_storage_bucket is None:
+            raise CyberpunkConfigException(
+                "s3_storage_bucket must be configured if `s3` in audio_path",
+            )
 
+        self.s3_loader_bucket = s3_loader_bucket
+        self.s3_loader_base_dir = s3_loader_base_dir
 
-class LocalStorageConfig:
-    def __init__(self, storage_base_dir: str = "testdata/"):
-        self.storage_base_dir = storage_base_dir
-
-    def __str__(self):
-        return ""
-
-    def __repr__(self):
-        return ""
-
-
-class S3StorageConfig:
-    def __init__(
-        self,
-        s3_storage_bucket: str = "mybucket",
-        s3_storage_base_dir: str = "audio/",
-    ):
         self.s3_storage_bucket = s3_storage_bucket
         self.s3_storage_base_dir = s3_storage_base_dir
 
-    def __str__(self):
-        return ""
+        self.s3_results_bucket = s3_results_bucket
+        self.s3_results_base_dir = s3_results_base_dir
 
     def __repr__(self):
-        return ""
+        return (
+            f"CyberpunkConfig ( "
+            f"audio_path: {self.audio_path}, "
+            f"local_storage_base_dir: {self.local_storage_base_dir}, "
+            f"local_results_base_dir: {self.local_results_base_dir} "
+            f")"
+        )
 
 
 _CYBERPUNK_CONFIG: Optional[CyberpunkConfig] = None
 
 
-def configure_config(path: str = "cyberpunk.yaml"):
+def configure_config(provided_config: Optional[CyberpunkConfig] = None):
     global _CYBERPUNK_CONFIG
 
-    with open(path) as file:
-        data = yaml.load(file, Loader=yaml.FullLoader)
-
-    # TODO: validation lol
-    audio_source = data["audio_store"]
-    storage_base_dir = data["local"]["storage_base_dir"]
-    s3_storage_bucket = data["s3"]["s3_storage_bucket"]
-    s3_storage_base_dir = data["s3"]["s3_storage_base_dir"]
-
-    _CYBERPUNK_CONFIG = CyberpunkConfig(
-        audio_source,
-        storage_base_dir,
-        s3_storage_bucket,
-        s3_storage_base_dir,
-    )
+    if provided_config is not None:
+        _CYBERPUNK_CONFIG = provided_config
+    else:
+        _CYBERPUNK_CONFIG = CyberpunkConfig(
+            audio_path=os.environ.get("AUDIO_PATH", "local"),
+            local_storage_base_dir=os.environ.get(
+                "LOCAL_STORAGE_BASE_DIR",
+                "testdata/",
+            ),
+            local_results_base_dir=os.environ.get(
+                "LOCAL_RESULTS_BASE_DIR",
+                None,
+            ),
+            s3_loader_bucket=os.environ.get("S3_LOADER_BUCKET", None),
+            s3_loader_base_dir=os.environ.get("S3_LOADER_BASE_DIR", None),
+            s3_storage_bucket=os.environ.get("S3_STORAGE_BUCKET", None),
+            s3_storage_base_dir=os.environ.get("S3_STORAGE_BASE_DIR", None),
+            s3_results_bucket=os.environ.get("S3_RESULTS_BUCKET", None),
+            s3_results_base_dir=os.environ.get("S3_RESULTS_BASE_DIR", None),
+        )
 
 
 def get_config() -> CyberpunkConfig:

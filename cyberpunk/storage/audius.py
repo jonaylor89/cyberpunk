@@ -1,6 +1,6 @@
 import logging
 import random
-from typing import Dict, Tuple
+from typing import Tuple
 
 import requests
 from pydub import AudioSegment
@@ -11,6 +11,12 @@ class AudiusStorage:
         self.host = random.choice(
             (requests.get("https://api.audius.co")).json()["data"],
         )
+
+    def __contains__(self, element):
+        return self.contains(element)
+
+    def contains(self, key: str) -> bool:
+        return False
 
     def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
         logging.info(f"pulling key from audius: {key}")
@@ -26,18 +32,3 @@ class AudiusStorage:
         segment = AudioSegment.from_file(f"testdata/{key}.mp3")
 
         return segment, f"{key}.mp3"
-
-    def save_segment(
-        self,
-        base_filename: str,
-        segment: AudioSegment,
-        file_format: str,
-    ) -> str:
-        # TODO: export with Filename unique to the stages run (for caching)
-        processed_filename = f"processed_{base_filename}.{file_format}"
-        segment.export(f"tmp/{processed_filename}", format=file_format)
-
-        return processed_filename
-
-    def get_stats(self) -> Dict:
-        return {}

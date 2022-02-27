@@ -1,6 +1,6 @@
 import logging
 import logging.config
-from typing import Generator
+from typing import Generator, Optional
 
 from flask import (
     Flask,
@@ -11,7 +11,7 @@ from flask import (
     stream_with_context,
 )
 
-from cyberpunk.config import configure_config
+from cyberpunk.config import CyberpunkConfig, configure_config
 from cyberpunk.logger_config import LoggerConfig
 from cyberpunk.processing import parse_query, process_args
 from cyberpunk.storage import configure_storage
@@ -19,8 +19,8 @@ from cyberpunk.storage import configure_storage
 # from musicnn.tagger import top_tags
 
 
-def create_app(config: str = "cyberpunk.yaml"):
-    configure_config(config)
+def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
+    configure_config(provided_config=cyberpunk_config)
     configure_storage()
 
     app = Flask(__name__)
@@ -37,7 +37,7 @@ def create_app(config: str = "cyberpunk.yaml"):
     logging.config.dictConfig(LoggerConfig.dictConfig)
 
     def stream_audio_file(filename: str, chunk_size: int = 2048) -> Generator:
-        with open(f"testdata/{filename}", "rb") as faudio:
+        with open(f"/tmp/{filename}", "rb") as faudio:
             data = faudio.read(chunk_size)
             while data:
                 yield data
@@ -77,7 +77,7 @@ def create_app(config: str = "cyberpunk.yaml"):
         )
 
     @app.route("/unsafe/https://<path:url>", methods=["GET"])
-    def unsafe_http_processing(url: str):
+    def unsafe_https_processing(url: str):
         """
         Route to run processing pipeline on an audio file
 
@@ -86,6 +86,22 @@ def create_app(config: str = "cyberpunk.yaml"):
         args = request.args
         logging.critical(f"file path: {url}, args: {args}")
         processed_file, file_type = process_args(f"https://{url}", args)
+
+        return Response(
+            stream_with_context(stream_audio_file(processed_file)),
+            mimetype=file_type,
+        )
+
+    @app.route("/unsafe/http://<path:url>", methods=["GET"])
+    def unsafe_http_processing(url: str):
+        """
+        Route to run processing pipeline on an audio file
+
+        It's considered unsafe because there's currently no authentication or validation
+        """
+        args = request.args
+        logging.critical(f"file path: {url}, args: {args}")
+        processed_file, file_type = process_args(f"http://{url}", args)
 
         return Response(
             stream_with_context(stream_audio_file(processed_file)),
