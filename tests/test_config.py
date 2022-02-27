@@ -12,6 +12,6 @@ def default_config():
 
 
 def test_defaults(default_config):
-    audio_store = default_config.audio_store
+    audio_path = default_config.audio_path
 
-    assert audio_store == "local"
+    assert audio_path == "local"

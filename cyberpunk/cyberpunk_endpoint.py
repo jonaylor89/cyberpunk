@@ -77,8 +77,6 @@ class CyberpunkEndpoint:
                 # i.e. setattr(endpoint, param_to_attr[k], inputs)
                 setattr(endpoint, k, inputs)
 
-        # TODO this can be significantly better
-
         # default formatting is mp3
         file_format = (
             args["format"]
