@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
 import os
 
 import click
@@ -13,7 +14,12 @@ app = create_app()
 
 @click.command()
 @click.version_option(__version__)
-@click.option("--debug", is_flag=True)
+@click.option(
+    "-D",
+    "--debug",
+    is_flag=True,
+    help="enables debug mode",
+)
 @click.option(
     "--port",
     type=click.INT,
@@ -86,6 +92,20 @@ def main(
 ):
 
     print(cyberpunk_secret)
+    logging.critical(
+        debug,
+        port,
+        cyberpunk_secret,
+        audio_path,
+        local_storage_base_dir,
+        local_results_base_dir,
+        s3_loader_bucket,
+        s3_loader_base_dir,
+        s3_storage_bucket,
+        s3_storage_base_dir,
+        s3_results_bucket,
+        s3_results_base_dir,
+    )
 
     config = CyberpunkConfig(
         audio_path=audio_path,
@@ -98,6 +118,8 @@ def main(
         s3_results_bucket=s3_results_bucket,
         s3_results_base_dir=s3_results_base_dir,
     )
+
+    logging.critical(f"running server with config: {config}")
 
     server = create_app(config)
     server.run(

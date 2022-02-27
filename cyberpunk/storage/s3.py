@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Tuple
+from typing import Tuple
 
 import boto3
 from pydub import AudioSegment
@@ -23,7 +23,7 @@ class S3Storage:
         self.s3_results_base_dir = config.s3_results_base_dir
 
     def __contains__(self, element):
-        return contains(element)
+        return self.contains(element)
 
     def contains(self, key: str) -> bool:
         return False
@@ -40,6 +40,3 @@ class S3Storage:
         segment = AudioSegment.from_file(f"testdata/{key}")
 
         return segment, f"testdata/{key}"
-
-    def get_stats(self) -> Dict:
-        return {}

@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Tuple
+from typing import Tuple
 
 from pydub import AudioSegment
 
@@ -13,7 +13,7 @@ class LocalStorage:
         self.base_dir = config.local_storage_base_dir
 
     def __contains__(self, element):
-        return contains(element)
+        return self.contains(element)
 
     def contains(self, key: str) -> bool:
         return True
@@ -27,6 +27,3 @@ class LocalStorage:
         )
 
         return audio_segment, location
-
-    def get_stats(self) -> Dict:
-        return {}

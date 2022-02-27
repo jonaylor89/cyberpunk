@@ -11,7 +11,7 @@ Audio Processing Server
 ### Quick Start
 
 ```sh
-docker run -p 8080:8080 -e PORT=8080 jonaylor/cyberpunk
+docker run -p 8080:8080 -e PORT=8080 ghcr.io/jonaylor89/cyberpunk:main
 ```
 
 Original audio:
@@ -140,7 +140,7 @@ Cyberpunk with file system, using mounted volumn:
 version: "3"
 services:
   imagor:
-    image: jonaylor/cyberpunk:latest
+    image: jonaylor/cyberpunk:main
     volumes:
       - ./:/mnt/data
     environment:
@@ -162,7 +162,7 @@ Cyberpunk with AWS S3:
 version: "3"
 services:
   imagor:
-    image: jonaylor/cyberpunk:latest
+    image: jonaylor/cyberpunk:main
     environment:
       PORT: 8080
       IMAGOR_SECRET: mysecret # secret key for URL signature

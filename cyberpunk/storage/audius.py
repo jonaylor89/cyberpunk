@@ -1,6 +1,6 @@
 import logging
 import random
-from typing import Dict, Tuple
+from typing import Tuple
 
 import requests
 from pydub import AudioSegment
@@ -13,7 +13,7 @@ class AudiusStorage:
         )
 
     def __contains__(self, element):
-        return contains(element)
+        return self.contains(element)
 
     def contains(self, key: str) -> bool:
         return False
@@ -32,6 +32,3 @@ class AudiusStorage:
         segment = AudioSegment.from_file(f"testdata/{key}.mp3")
 
         return segment, f"{key}.mp3"
-
-    def get_stats(self) -> Dict:
-        return {}

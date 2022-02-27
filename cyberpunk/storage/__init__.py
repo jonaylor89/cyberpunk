@@ -63,7 +63,7 @@ class AudioStorage:
         return ""
 
     def __contains__(self, element):
-        return contains(element)
+        return self.contains(element)
 
     def contains(self, key: str) -> bool:
         """checks if a given key is in the audio store"""
@@ -99,7 +99,7 @@ class AudioStorage:
         # TODO: export with Filename unique to the stages run (for caching)
         processed_filename = f"processed_{base_filename}.{file_format}"
         segment.export(
-            f"testdata/{processed_filename}",
+            f"/tmp/{processed_filename}",
             format=file_format,
         )
 
