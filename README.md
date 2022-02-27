@@ -145,15 +145,10 @@ services:
       - ./:/mnt/data
     environment:
       PORT: 8080
-      CYBERPUNK_UNSAFE: 1 # unsafe URL for testing
-
-      FILE_LOADER_BASE_DIR: /mnt/data # enable file loader by specifying base dir
-
-      FILE_STORAGE_BASE_DIR: /mnt/data # enable file storage by specifying base dir
-
-      FILE_RESULT_STORAGE_BASE_DIR: /mnt/data/result # enable file result storage by specifying base dir
+      AUDIO_PATH: "local"
+      FILE_STORAGE_BASE_DIR: /mnt/data/testdata/ # enable file storage by specifying base dir
     ports:
-      - "8000:8000"
+      - "8080:8080"
 ```
 
 Cyberpunk with AWS S3:
@@ -165,19 +160,21 @@ services:
     image: jonaylor/cyberpunk:main
     environment:
       PORT: 8080
-      IMAGOR_SECRET: mysecret # secret key for URL signature
+      CYBERPUNK_SECRET: mysecret # secret key for URL signature
       AWS_ACCESS_KEY_ID: ...
       AWS_SECRET_ACCESS_KEY: ...
       AWS_REGION: ...
 
+      AUDIO_PATH: "s3"
+
       S3_LOADER_BUCKET: mybucket # enable S3 loader by specifying bucket
-      S3_LOADER_BASE_DIR: images # optional
+      S3_LOADER_BASE_DIR: audio # optional
 
       S3_STORAGE_BUCKET: mybucket # enable S3 storage by specifying bucket
-      S3_STORAGE_BASE_DIR: images # optional
+      S3_STORAGE_BASE_DIR: audio # optional
 
       S3_RESULT_STORAGE_BUCKET: mybucket # enable S3 result storage by specifying bucket
-      S3_RESULT_STORAGE_BASE_DIR: images/result # optional
+      S3_RESULT_STORAGE_BASE_DIR: audio/result # optional
     ports:
-      - "8000:8000"
+      - "8080:8080"
 ```
