@@ -49,7 +49,14 @@ class S3Storage:
         return self.contains(element)
 
     def contains(self, key: str) -> bool:
-        return True
+        response = self.s3.list_objects_v2(
+            Bucket=self.s3_storage_bucket,
+            Prefix=f"{self.s3_storage_base_dir}{key}",
+        )
+        for obj in response.get("Contents", []):
+            if obj["Key"] == key:
+                return True
+        return False
 
     def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
         logging.info(f"pulling key from aws s3: {key}")
