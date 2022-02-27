@@ -25,7 +25,7 @@ class AudiusStorage:
             params={"app_name": "cyberpunk"},
         )
 
-        # TODO: there must be a more robust way of saving temperary files like this
+        # TODO: there must be a more robust way of saving temporary files like this
         with open(f"testdata/{key}.mp3", "wb") as tmp_file:
             tmp_file.write(req.content)
 

@@ -134,7 +134,7 @@ S3_RESULTS_STORAGE_BASE_DIR=audio/results
 
 # Docker Compose Example
 
-Cyberpunk with file system, using mounted volumn:
+Cyberpunk with file system, using mounted volume:
 
 ```yaml
 version: "3"
