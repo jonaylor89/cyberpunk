@@ -5,24 +5,25 @@ Cyberpunk Configuration Module
 
 from typing import Optional
 
-import yaml
-
 
 class CyberpunkConfig:
     """Global configuration object for Cyberpunk"""
 
     def __init__(
         self,
-        audio_path: str = "local:http",
-        local_storage_base_dir: str = "testdata/",
-        local_results_base_dir: str = "testdata/",
-        s3_loader_bucket: str = "mybucket",
-        s3_loader_base_dir: str = "audio/",
-        s3_storage_bucket: str = "mybucket",
-        s3_storage_base_dir: str = "audio/",
-        s3_results_bucket: str = "mybucket",
-        s3_results_base_dir: str = "audio/results/",
+        audio_path: str = "local",
+        local_storage_base_dir: Optional[str] = "testdata/",
+        local_results_base_dir: Optional[str] = "testdata/",
+        s3_loader_bucket: Optional[str] = None,
+        s3_loader_base_dir: Optional[str] = None,
+        s3_storage_bucket: Optional[str] = None,
+        s3_storage_base_dir: Optional[str] = None,
+        s3_results_bucket: Optional[str] = None,
+        s3_results_base_dir: Optional[str] = None,
     ):
+
+        # TODO: validation lol
+
         # local | s3 | audius
         self.audio_path = audio_path
 
@@ -48,24 +49,13 @@ class CyberpunkConfig:
 _CYBERPUNK_CONFIG: Optional[CyberpunkConfig] = None
 
 
-def configure_config(path: str = "cyberpunk.yaml"):
+def configure_config(provided_config: Optional[CyberpunkConfig] = None):
     global _CYBERPUNK_CONFIG
 
-    with open(path) as file:
-        data = yaml.load(file, Loader=yaml.FullLoader)
-
-    # TODO: validation lol
-    audio_source = data["audio_path"]
-    storage_base_dir = data["local_storage_base_dir"]
-    s3_storage_bucket = data["s3_storage_bucket"]
-    s3_storage_base_dir = data["s3_storage_base_dir"]
-
-    _CYBERPUNK_CONFIG = CyberpunkConfig(
-        audio_source,
-        storage_base_dir,
-        s3_storage_bucket,
-        s3_storage_base_dir,
-    )
+    if provided_config is not None:
+        _CYBERPUNK_CONFIG = provided_config
+    else:
+        _CYBERPUNK_CONFIG = CyberpunkConfig()
 
 
 def get_config() -> CyberpunkConfig:

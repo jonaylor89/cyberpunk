@@ -49,10 +49,18 @@ class AudioStorage:
         }
 
         # local:s3:audius => [LocalStorage(), S3Storage(), AudiusStorage()]
-        self.audio_path = map(
-            lambda x: self.storage_table[x](),
-            audio_path.split(":"),
+        self.audio_path = list(
+            map(
+                lambda x: self.storage_table[x](),
+                audio_path.split(":"),
+            ),
         )
+
+    def __str__(self):
+        return ""
+
+    def __repr__(self):
+        return ""
 
     def __contains__(self, element):
         return contains(element)
@@ -76,7 +84,9 @@ class AudioStorage:
             if storage.contains(key):
                 return storage.get_segment(key)
 
-        raise KeyError(f"key `{key}` not found in any configured audio store")
+        raise KeyError(
+            f"key `{key}` not found in any configured audio store ({self.audio_path})",
+        )
 
     def save_segment(
         self,
@@ -101,6 +111,7 @@ _AUDIO_STORAGE: Optional[AudioStorage] = None
 
 
 def configure_storage():
+    global _AUDIO_STORAGE
 
     config = get_config()
     assert config is not None

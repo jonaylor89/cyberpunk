@@ -1,6 +1,6 @@
 import logging
 import logging.config
-from typing import Generator
+from typing import Generator, Optional
 
 from flask import (
     Flask,
@@ -11,7 +11,7 @@ from flask import (
     stream_with_context,
 )
 
-from cyberpunk.config import configure_config
+from cyberpunk.config import CyberpunkConfig, configure_config
 from cyberpunk.logger_config import LoggerConfig
 from cyberpunk.processing import parse_query, process_args
 from cyberpunk.storage import configure_storage
@@ -19,8 +19,8 @@ from cyberpunk.storage import configure_storage
 # from musicnn.tagger import top_tags
 
 
-def create_app(config: str = "cyberpunk.yaml"):
-    configure_config(config)
+def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
+    configure_config(provided_config=cyberpunk_config)
     configure_storage()
 
     app = Flask(__name__)

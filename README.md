@@ -103,6 +103,8 @@ curl "http://localhost:8000/unsafe/celtic_p2.mp3?reverse=true&repeat=1&slice=100
 
 # Environment
 
+PORT: 8080 # server port number
+
 CYBERPUNK_SECRET: mysecret # secret key for URL signature
 
 AWS_ACCESS_KEY_ID: ...

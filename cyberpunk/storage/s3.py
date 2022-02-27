@@ -12,8 +12,15 @@ class S3Storage:
         config = get_config()
 
         self.s3 = boto3.client("s3")
-        self.s3_storage_bucket = config.s3_storage.s3_storage_bucket
-        self.s3_storage_base_dir = config.s3_storage.s3_storage_base_dir
+
+        self.s3_loader_bucket = config.s3_loader_bucket
+        self.s3_loader_base_dir = config.s3_loader_base_dir
+
+        self.s3_storage_bucket = config.s3_storage_bucket
+        self.s3_storage_base_dir = config.s3_storage_base_dir
+
+        self.s3_results_bucket = config.s3_results_bucket
+        self.s3_results_base_dir = config.s3_results_base_dir
 
     def __contains__(self, element):
         return contains(element)
