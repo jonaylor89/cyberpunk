@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from dataclasses import dataclass
 
 from pydub import AudioSegment
 
@@ -6,33 +6,47 @@ from cyberpunk.exceptions import (
     TransformationInputParseException,
     TransformationProcessException,
 )
+from cyberpunk.transformations import TransformationInput
+
+
+@dataclass
+class ReverseInput:
+
+    reverse: bool
+
+    @classmethod
+    def from_str(cls, arg: str):
+        try:
+            if arg not in ["True", "true", "1", "yes", "Y", "y"]:
+                return cls(reverse=False)
+        except Exception as e:
+            raise TransformationInputParseException(e)
+        else:
+            return cls(reverse=True)
+
+    def __iter__(self):
+        return "reverse", self.reverse
+
+    def __str__(self) -> str:
+        return f"{self.reverse}"
 
 
 class Reverse:
     def __call__(
         self,
         segment: AudioSegment,
-        inputs: Dict[str, Any],
+        inputs: TransformationInput,
     ) -> AudioSegment:
-        return self.process(segment, inputs)
+        return self.run(segment, inputs)
 
-    def parse_input_from_str(self, arg: str) -> Dict:
-
-        try:
-            if arg not in ["True", "true", "1", "yes", "Y", "y"]:
-                return {"reverse": False}
-        except Exception as e:
-            raise TransformationInputParseException(e)
-        else:
-            return {"reverse": True}
-
-    def process(
+    def run(
         self,
         segment: AudioSegment,
-        inputs: Dict[str, Any],
+        inputs: TransformationInput,
     ) -> AudioSegment:
         try:
-            if inputs["reverse"]:
+            assert isinstance(inputs, ReverseInput)
+            if inputs.reverse:
                 reversed_segment = segment.reverse()
             else:
                 reversed_segment = segment

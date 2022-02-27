@@ -56,6 +56,7 @@ class S3Storage:
         for obj in response.get("Contents", []):
             if obj["Key"] == key:
                 return True
+
         return False
 
     def get_segment(self, key: str) -> Tuple[AudioSegment, str]:

@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from dataclasses import dataclass
 
 from pydub import AudioSegment
 
@@ -7,37 +7,50 @@ from cyberpunk.exceptions import (
     TransformationProcessException,
 )
 from cyberpunk.storage import get_storage
+from cyberpunk.transformations import TransformationInput
+
+
+@dataclass
+class ConcatInput:
+
+    other: AudioSegment
+    other_key: str
+
+    @classmethod
+    def from_str(cls, arg: str):
+        other_filename = arg
+        try:
+            other_segment, other_key = get_storage().get_segment(
+                other_filename,
+            )
+        except Exception as e:
+            raise TransformationInputParseException(e)
+        else:
+            return cls(other=other_segment, other_key=other_key)
+
+    def __iter__(self):
+        return "other", self.other_key
+
+    def __str__(self):
+        return f"{self.other_key}"
 
 
 class Concat:
     def __call__(
         self,
         segment: AudioSegment,
-        inputs: Dict[str, Any],
+        inputs: TransformationInput,
     ) -> AudioSegment:
-        return self.process(segment, inputs)
+        return self.run(segment, inputs)
 
-    def parse_input_from_str(self, arg: str) -> Dict:
-        other_filename = arg
-
-        try:
-            other_segment = get_storage().get_segment(other_filename)
-
-        except Exception as e:
-            raise TransformationInputParseException(e)
-        else:
-            return {
-                "other": other_segment,
-            }
-
-    def process(
+    def run(
         self,
         segment: AudioSegment,
-        inputs: Dict[str, Any],
+        inputs: TransformationInput,
     ) -> AudioSegment:
         try:
-            other = inputs["other"]
-            concated_segment = segment + other
+            assert isinstance(inputs, ConcatInput)
+            concated_segment = segment + inputs.other
         except Exception as e:
             raise TransformationProcessException(e)
         else:
