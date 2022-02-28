@@ -88,6 +88,24 @@ class CyberpunkEndpoint:
 
         return endpoint
 
+    def __repr__(self) -> str:
+        params = []
+
+        if self.reverse is not None:
+            params.append(f"reverse={self.reverse}")
+        if self.repeat is not None:
+            params.append(f"repeat={self.repeat}")
+        if self.slice is not None:
+            params.append(f"slice={self.slice}")
+        if self.concat is not None:
+            params.append(f"concat={self.concat}")
+        if self.fade_in is not None:
+            params.append(f"fade_in={self.fade_in}")
+        if self.fade_out is not None:
+            params.append(f"fade_out={self.fade_out}")
+
+        return f"/{self.audio}{('?' + '&'.join(params)) if len(params) > 0 else ''}"
+
     def __str__(self) -> str:
         params = []
 

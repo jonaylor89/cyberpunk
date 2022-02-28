@@ -92,20 +92,6 @@ def main(
 ):
 
     print(cyberpunk_secret)
-    logging.critical(
-        debug,
-        port,
-        cyberpunk_secret,
-        audio_path,
-        local_storage_base_dir,
-        local_results_base_dir,
-        s3_loader_bucket,
-        s3_loader_base_dir,
-        s3_storage_bucket,
-        s3_storage_base_dir,
-        s3_results_bucket,
-        s3_results_base_dir,
-    )
 
     config = CyberpunkConfig(
         audio_path=audio_path,

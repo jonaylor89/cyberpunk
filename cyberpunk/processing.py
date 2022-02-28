@@ -1,4 +1,5 @@
 import logging
+from dataclasses import asdict
 from typing import Dict, Tuple
 
 from cyberpunk.cyberpunk_endpoint import CyberpunkEndpoint
@@ -12,9 +13,9 @@ from cyberpunk.transformations.reverse import Reverse
 from cyberpunk.transformations.slice import Slice
 
 
-def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
+def process_args(key: str, args: Dict) -> Tuple[str, str]:
 
-    endpoint = CyberpunkEndpoint.from_request(base_filename, args)
+    endpoint = CyberpunkEndpoint.from_request(key, args)
 
     lookup_table: Dict[str, Transformation] = {
         "reverse": Reverse(),
@@ -26,7 +27,7 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
     }
 
     # Create Audio Segment
-    audio_segment, tmp_location = get_storage().get_segment(base_filename)
+    audio_segment, tmp_location = get_storage().get_segment(key)
 
     # Pass Audio Segment through Each Stage
     for (k, v) in args.items():
@@ -62,15 +63,18 @@ def process_args(base_filename: str, args: Dict) -> Tuple[str, str]:
     return processed_filename, f"audio/{endpoint.format}"
 
 
-def parse_query(filename: str, args: Dict) -> Dict:
+def parse_query(key: str, args: Dict) -> Dict:
     """
     Parse and generate a Python object based on a cyberpunk endpoint
     """
-    return {"audio": filename, **args}
+
+    endpoint = CyberpunkEndpoint.from_request(key, args)
+    return asdict(endpoint)
 
 
-def cyberpunk_path():
+def cyberpunk_path(endpoint: CyberpunkEndpoint):
     """
     Parse and generate a cyberpunk endpoint based on a Python object
     """
-    return
+
+    return str(endpoint)

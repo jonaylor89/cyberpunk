@@ -51,25 +51,24 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
     def healthcheck():
         return 200
 
-    @app.route("/params/<path:filename>", methods=["GET"])
-    def params_route(filename: str):
+    @app.route("/params/<path:key>", methods=["GET"])
+    def params_route(key: str):
         """
         Route to format URL parameters as
         json to validate them before sending
         them to the `unsafe_processing` route
         """
-        return jsonify(parse_query(filename, request.args))
+        return jsonify(parse_query(key, request.args))
 
-    @app.route("/unsafe/<filename>", methods=["GET"])
-    def unsafe_processing(filename: str):
+    @app.route("/unsafe/<key>", methods=["GET"])
+    def unsafe_processing(key: str):
         """
         Route to run processing pipeline on an audio file
 
         It's considered unsafe because there's currently no authentication or validation
         """
         args = request.args
-        logging.critical(f"file path: {filename}, args: {args}")
-        processed_file, file_type = process_args(filename, args)
+        processed_file, file_type = process_args(key, args)
 
         return Response(
             stream_with_context(stream_audio_file(processed_file)),
@@ -113,7 +112,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         """
         Route to get tags from audio files
         """
-
+        # TODO: add tagging
         # features = top_tags(f'./testdata/{filename}.mp3', model='MTT_musicnn', topN=10)
         features = [
             "hiphop",
@@ -133,6 +132,8 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
         What's returned will depend on the audio store configured (local, s3, audius)
         """
+
+        # TODO : implement stats route
         return {
             "tracks": 13019,
             "total time": "4.9 weeks",
@@ -144,9 +145,6 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
     @app.errorhandler(404)
     def not_found(error):
         """Page not found."""
-        print(error)
-        print(request.url)
-        print(request.args)
         return make_response("Route not found", 404)
 
     return app
