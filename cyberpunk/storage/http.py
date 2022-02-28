@@ -16,7 +16,7 @@ class HttpLoader:
 
         ext = key.split(".")[-1]
 
-        # TODO: there must be a more robust way of saving temperary files like this
+        # TODO: there must be a more robust way of saving temporary files like this
         location: str = f"remote-audio.{ext}"
         with open(f"testdata/{location}", "wb") as tmp_file:
             tmp_file.write(req.content)

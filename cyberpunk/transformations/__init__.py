@@ -1,33 +1,34 @@
 """module for audio transformations"""
 
 # nopycln: file
-
-from typing import Any, Dict, Protocol
+from typing import Protocol
 
 from pydub import AudioSegment
 
-from cyberpunk.transformations.concat import Concat
-from cyberpunk.transformations.fade_in import FadeIn
-from cyberpunk.transformations.fade_out import FadeOut
-from cyberpunk.transformations.repeat import Repeat
-from cyberpunk.transformations.reverse import Reverse
-from cyberpunk.transformations.slice import Slice
+
+class TransformationInput(Protocol):
+    @classmethod
+    def from_str(cls, arg: str):
+        """serialize input from string"""
+
+    def __iter__(self):
+        """convert to iterable"""
+
+    def __str__(self) -> str:
+        """deserialize input to string"""
 
 
 class Transformation(Protocol):
     def __call__(
         self,
         segment: AudioSegment,
-        inputs: Dict[str, Any],
+        inputs: TransformationInput,
     ) -> AudioSegment:
-        """runs the tranformation on the given AudioSegment and returns the output"""
+        """runs the transformation on the given AudioSegment and returns the output"""
 
-    def parse_input_from_str(self, arg: str) -> Dict[str, Any]:
-        """parses a string input proper inputs for that transformation"""
-
-    def process(
+    def run(
         self,
         segment: AudioSegment,
-        inputs: Dict[str, Any],
+        inputs: TransformationInput,
     ) -> AudioSegment:
         """runs the transformation on the given AudioSegment and returns the output"""

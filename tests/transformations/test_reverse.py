@@ -1,32 +1,36 @@
 import pytest
 from pydub import AudioSegment
 
-from cyberpunk.transformations.reverse import Reverse
+from cyberpunk.transformations.reverse import Reverse, ReverseInput
 
 
 @pytest.mark.parametrize(
     "arg,expected",
     [
-        ("True", {"reverse": True}),
-        ("true", {"reverse": True}),
-        ("Y", {"reverse": True}),
-        ("y", {"reverse": True}),
-        ("yes", {"reverse": True}),
-        ("1", {"reverse": True}),
-        ("0", {"reverse": False}),
-        ("blah", {"reverse": False}),
-        ("no", {"reverse": False}),
-        ("false", {"reverse": False}),
-        ("False", {"reverse": False}),
+        ("True", ReverseInput(reverse=True)),
+        ("true", ReverseInput(reverse=True)),
+        ("Y", ReverseInput(reverse=True)),
+        ("y", ReverseInput(reverse=True)),
+        ("yes", ReverseInput(reverse=True)),
+        ("1", ReverseInput(reverse=True)),
+        ("0", ReverseInput(reverse=False)),
+        ("blah", ReverseInput(reverse=False)),
+        ("no", ReverseInput(reverse=False)),
+        ("no", ReverseInput(reverse=False)),
+        ("false", ReverseInput(reverse=False)),
+        ("False", ReverseInput(reverse=False)),
     ],
 )
 def test_reverse_parsing(arg, expected):
-    output = Reverse().parse_input_from_str(arg)
+    output = ReverseInput.from_str(arg)
     assert output == expected
 
 
-@pytest.mark.parametrize("arg", [{"reverse": True}, {"reverse": False}])
+@pytest.mark.parametrize(
+    "arg",
+    [ReverseInput(reverse=True), ReverseInput(reverse=False)],
+)
 def test_reverse_processing(arg):
     segment = AudioSegment.from_file("testdata/celtic_pt2.mp3")
-    output = Reverse().process(segment, arg)
+    output = Reverse().run(segment, arg)
     assert output != AudioSegment.empty()

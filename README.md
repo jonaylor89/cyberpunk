@@ -71,7 +71,7 @@ curl "http://localhost:8000/unsafe/celtic_p2.mp3?reverse=true&repeat=1&slice=100
 }
 ```
 
-# Features
+### Features
 
 - [x] Audio Streaming
 
@@ -94,14 +94,14 @@ curl "http://localhost:8000/unsafe/celtic_p2.mp3?reverse=true&repeat=1&slice=100
 
 - [ ] [File Caching](https://gist.github.com/ruanbekker/75d98a0d5cab5d6a562c70b4be5ba86d)
 
-# Storage Options
+### Storage Options
 
 - [x] Local
 - [ ] Cloud (e.g. S3)
 - [x] Blockchain (Audius)
 
 
-# Environment
+### Environment
 
 PORT: 8080 # server port number
 
@@ -134,7 +134,7 @@ S3_RESULTS_STORAGE_BASE_DIR=audio/results
 
 # Docker Compose Example
 
-Cyberpunk with file system, using mounted volumn:
+Cyberpunk with file system, using mounted volume:
 
 ```yaml
 version: "3"

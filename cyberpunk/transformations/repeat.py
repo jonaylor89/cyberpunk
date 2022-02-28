@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from dataclasses import dataclass
 
 from pydub import AudioSegment
 
@@ -6,35 +6,47 @@ from cyberpunk.exceptions import (
     TransformationInputParseException,
     TransformationProcessException,
 )
+from cyberpunk.transformations import TransformationInput
+
+
+@dataclass
+class RepeatInput:
+
+    multiplier: int
+
+    @classmethod
+    def from_str(cls, arg: str):
+        try:
+            multiplier = int(arg)
+        except Exception as e:
+            raise TransformationInputParseException(e)
+        else:
+            return cls(multiplier=multiplier)
+
+    def __iter__(self):
+        return "multiplier", self.multiplier
+
+    def __str__(self):
+        return f"{self.multiplier}"
 
 
 class Repeat:
     def __call__(
         self,
         segment: AudioSegment,
-        inputs: Dict[str, Any],
+        inputs: TransformationInput,
     ) -> AudioSegment:
-        return self.process(segment, inputs)
+        return self.run(segment, inputs)
 
-    def parse_input_from_str(self, arg: str) -> Dict[str, Any]:
-        try:
-            multiplier = int(arg)
-        except Exception as e:
-            raise TransformationInputParseException(e)
-        else:
-            return {
-                "multiplier": multiplier,
-            }
-
-    def process(
+    def run(
         self,
         segment: AudioSegment,
-        inputs: Dict[str, Any],
+        inputs: TransformationInput,
     ) -> AudioSegment:
 
         try:
-            multiplier = inputs["multiplier"]
-            repeated_segment = segment * multiplier
+            assert isinstance(inputs, RepeatInput)
+            repeated_segment = segment * inputs.multiplier
         except Exception as e:
             raise TransformationProcessException(e)
         else:

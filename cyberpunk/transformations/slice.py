@@ -1,4 +1,5 @@
-from typing import Any, Dict, Optional
+from dataclasses import dataclass
+from typing import Optional
 
 from pydub import AudioSegment
 
@@ -6,17 +7,17 @@ from cyberpunk.exceptions import (
     TransformationInputParseException,
     TransformationProcessException,
 )
+from cyberpunk.transformations import TransformationInput
 
 
-class Slice:
-    def __call__(
-        self,
-        segment: AudioSegment,
-        inputs: Dict[str, Any],
-    ) -> AudioSegment:
-        return self.process(segment, inputs)
+@dataclass
+class SliceInput:
 
-    def parse_input_from_str(self, arg: str) -> Dict[str, Optional[int]]:
+    start: Optional[int]
+    end: Optional[int]
+
+    @classmethod
+    def from_str(cls, arg: str):
 
         try:
             start_str, end_str = tuple(arg.split(":"))
@@ -25,23 +26,39 @@ class Slice:
             end = int(end_str) if end_str != "" else None
 
         except Exception as e:
-            raise TransformationInputParseException()
-
+            raise TransformationInputParseException(e)
         else:
-            return {
-                "start": start,
-                "end": end,
-            }
+            return SliceInput(
+                start=start,
+                end=end,
+            )
 
-    def process(
+    def __iter__(self):
+        yield "start", self.start
+        yield "end", self.end
+
+    def __str__(self):
+        return f"{self.start if self.start is not None else ''}:{self.end if self.end is not None else ''}"
+
+
+class Slice:
+    def __call__(
         self,
         segment: AudioSegment,
-        inputs: Dict[str, Any],
+        inputs: TransformationInput,
+    ) -> AudioSegment:
+        return self.run(segment, inputs)
+
+    def run(
+        self,
+        segment: AudioSegment,
+        inputs: TransformationInput,
     ) -> AudioSegment:
 
         try:
-            start = inputs["start"]
-            end = inputs["end"]
+            assert isinstance(inputs, SliceInput)
+            start = inputs.start
+            end = inputs.end
 
             if start is None and end is None:
                 raise TransformationProcessException(
