@@ -94,7 +94,12 @@ class AudioStorage:
         segment: AudioSegment,
         file_format: str,
     ) -> str:
-        """save an audio segment to storage and return the link to it"""
+        """save an audio segment to storage and return the link to it
+        @param base_filename: original key for the audio
+        @param segment: the audio data to be saved
+        @param file_format: the audio format to encode the segment
+        @return: the tmp location where the processed audio is located
+        """
 
         # TODO: export with Filename unique to the stages run (for caching)
         processed_filename = f"processed_{base_filename}.{file_format}"
