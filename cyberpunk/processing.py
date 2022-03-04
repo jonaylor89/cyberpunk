@@ -71,9 +71,9 @@ def process_args(key: str, args: Dict) -> Tuple[str, str]:
 def parse_query(key: str, args: Dict) -> Dict:
     """
     Parse and generate a Python object based on a cyberpunk endpoint
-    @param key:
-    @param args:
-    @return:
+    @param key: key to the audiofile (i.e. filename/id)
+    @param args: the transformations and manipulations to be done on `key`
+    @return: the serialized cyberpunk endpoint object
     """
 
     endpoint = CyberpunkEndpoint.from_req(key, args)
@@ -83,8 +83,8 @@ def parse_query(key: str, args: Dict) -> Dict:
 def cyberpunk_path(endpoint: CyberpunkEndpoint) -> str:
     """
     Parse and generate a cyberpunk endpoint based on a Python object
-    @param endpoint:
-    @return:
+    @param endpoint: a cyberpunk endpoint object
+    @return: the endpiont deserialized as a string
     """
 
     return str(endpoint)
