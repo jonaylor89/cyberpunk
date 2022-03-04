@@ -14,8 +14,13 @@ from cyberpunk.transformations.slice import Slice
 
 
 def process_args(key: str, args: Dict) -> Tuple[str, str]:
+    """
+    @param key: key to the audiofile (i.e. filename/id)
+    @param args: the transformations and manipulations to be done on `key`
+    @return a tuple contains the new processed audio key and the content type
+    """
 
-    endpoint = CyberpunkEndpoint.from_request(key, args)
+    endpoint = CyberpunkEndpoint.from_req(key, args)
 
     lookup_table: Dict[str, Transformation] = {
         "reverse": Reverse(),
@@ -66,15 +71,20 @@ def process_args(key: str, args: Dict) -> Tuple[str, str]:
 def parse_query(key: str, args: Dict) -> Dict:
     """
     Parse and generate a Python object based on a cyberpunk endpoint
+    @param key:
+    @param args:
+    @return:
     """
 
-    endpoint = CyberpunkEndpoint.from_request(key, args)
+    endpoint = CyberpunkEndpoint.from_req(key, args)
     return asdict(endpoint)
 
 
-def cyberpunk_path(endpoint: CyberpunkEndpoint):
+def cyberpunk_path(endpoint: CyberpunkEndpoint) -> str:
     """
     Parse and generate a cyberpunk endpoint based on a Python object
+    @param endpoint:
+    @return:
     """
 
     return str(endpoint)

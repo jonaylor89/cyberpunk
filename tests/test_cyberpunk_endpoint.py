@@ -44,7 +44,7 @@ from cyberpunk.transformations.slice import SliceInput
     ],
 )
 def test_request_parsing(key, args, expected):
-    endpoint = CyberpunkEndpoint.from_request(key, args)
+    endpoint = CyberpunkEndpoint.from_req(key, args)
     assert endpoint == expected
 
 

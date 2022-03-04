@@ -59,9 +59,8 @@ Prepending `/params` to the existing endpoint returns the endpoint attributes in
 curl "http://localhost:8000/unsafe/celtic_p2.mp3?reverse=true&repeat=1&slice=1000:5000"
 
 {
-  "path": "/celtic_p2.mp3?reverse=true&repeat=1&slice=1000:5000"
   "audio": "celtic_pt2.mp3",
-  "hash": "=",
+  "hash": "unsafe",
   "reverse": true,
   "repeat": 1,
   "slice": {

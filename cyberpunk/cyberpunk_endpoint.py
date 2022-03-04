@@ -38,7 +38,7 @@ class CyberpunkEndpoint:
     concat: Optional[ConcatInput] = None
 
     @classmethod
-    def from_request(cls, key: str, args: Dict):
+    def from_req(cls, key: str, args: Dict):
         endpoint = cls(audio=key, hash="unsafe")
 
         lookup_table: Dict[str, Type[TransformationInput]] = {
