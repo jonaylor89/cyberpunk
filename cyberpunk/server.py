@@ -1,10 +1,12 @@
 import logging
 import logging.config
+import uuid
 from typing import Generator, Optional
 
 from flask import (
     Flask,
     Response,
+    after_this_request,
     jsonify,
     make_response,
     request,
@@ -67,8 +69,13 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
         It's considered unsafe because there's currently no authentication or validation
         """
+        request_id = uuid.uuid4()
         args = request.args
-        processed_file, file_type = process_args(key, args)
+        processed_file, file_type = process_args(request_id, key, args)
+
+        @after_this_request
+        def delete_tmp_file(response):
+            return response
 
         return Response(
             stream_with_context(stream_audio_file(processed_file)),
@@ -82,9 +89,15 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
         It's considered unsafe because there's currently no authentication or validation
         """
+
+        request_id = uuid.uuid4()
         args = request.args
         logging.critical(f"file path: {url}, args: {args}")
-        processed_file, file_type = process_args(f"https://{url}", args)
+        processed_file, file_type = process_args(
+            request_id,
+            f"https://{url}",
+            args,
+        )
 
         return Response(
             stream_with_context(stream_audio_file(processed_file)),
@@ -98,9 +111,15 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
         It's considered unsafe because there's currently no authentication or validation
         """
+
+        request_id = uuid.uuid4()
         args = request.args
         logging.critical(f"file path: {url}, args: {args}")
-        processed_file, file_type = process_args(f"http://{url}", args)
+        processed_file, file_type = process_args(
+            request_id,
+            "http://{url}",
+            args,
+        )
 
         return Response(
             stream_with_context(stream_audio_file(processed_file)),
