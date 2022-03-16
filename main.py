@@ -105,7 +105,7 @@ def main(
         s3_results_base_dir=s3_results_base_dir,
     )
 
-    logging.critical(f"running server with config: {config}")
+    logging.debug(f"running server with config: {config}")
 
     server = create_app(config)
     server.run(

@@ -10,3 +10,8 @@ services:
       LOCAL_STORAGE_BASE_DIR: /mnt/data/testdata/
     ports:
       - "8080:8080"
+  jaegar:
+    image: jaegartracing:all-in-one
+    ports:
+      - "16686:16686"
+      - "6831:6831/udp"

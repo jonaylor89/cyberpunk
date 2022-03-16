@@ -12,6 +12,15 @@ from flask import (
     request,
     stream_with_context,
 )
+from opentelemetry import trace
+from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+)
 
 from cyberpunk.config import CyberpunkConfig, configure_config
 from cyberpunk.logger_config import LoggerConfig
@@ -25,7 +34,22 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
     configure_config(provided_config=cyberpunk_config)
     configure_storage()
 
+    trace.set_tracer_provider(TracerProvider())
+    trace.get_tracer_provider().add_span_processor(
+        BatchSpanProcessor(ConsoleSpanExporter()),
+    )
+
     app = Flask(__name__)
+    FlaskInstrumentor().instrument_app(app)
+    RequestsInstrumentor().instrument()
+
+    tracer = trace.get_tracer(__name__)
+
+    # TODO : make agent_host_name & agent_port configurable
+    jaeger_exporter = JaegerExporter(
+        agent_host_name="localhost",
+        agent_port=6831,
+    )
 
     # 'always' (default), 'never',  'production', 'debug'
     app.config["LOGGER_HANDLER_POLICY"] = "always"
@@ -60,6 +84,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         json to validate them before sending
         them to the `unsafe_processing` route
         """
+        # TODO : Add tracer
         return jsonify(parse_query(key, request.args))
 
     @app.route("/unsafe/<key>", methods=["GET"])
@@ -69,6 +94,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
         It's considered unsafe because there's currently no authentication or validation
         """
+        # TODO : Add tracer
         request_id = uuid.uuid4()
         args = request.args
         processed_file, file_type = process_args(request_id, key, args)
@@ -90,6 +116,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         It's considered unsafe because there's currently no authentication or validation
         """
 
+        # TODO : Add tracer
         request_id = uuid.uuid4()
         args = request.args
         logging.critical(f"file path: {url}, args: {args}")
@@ -112,6 +139,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         It's considered unsafe because there's currently no authentication or validation
         """
 
+        # TODO : Add tracer
         request_id = uuid.uuid4()
         args = request.args
         logging.critical(f"file path: {url}, args: {args}")
@@ -132,6 +160,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         Route to get tags from audio files
         """
         # TODO: add tagging
+        # TODO : Add tracer
         # features = top_tags(f'./testdata/{filename}.mp3', model='MTT_musicnn', topN=10)
         features = [
             "hiphop",
@@ -153,6 +182,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         """
 
         # TODO : implement stats route
+        # TODO : Add tracer
         return {
             "tracks": 13019,
             "total time": "4.9 weeks",
@@ -164,6 +194,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
     @app.errorhandler(404)
     def not_found(error):
         """Page not found."""
+        # TODO : Add tracer
         return make_response("Route not found", 404)
 
     return app
