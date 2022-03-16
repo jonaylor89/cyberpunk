@@ -33,7 +33,7 @@ http://localhost:8000/unsafe/https://raw.githubusercontent.com/jonaylor89/cyberp
 
 ### Cyberpunk Endpoint
 
-Cyberpunk endpoint is a series of URL parts which defines the image operations, followed by the image URI:
+Cyberpunk endpoint is a series of URL parts which defines the audio operations, followed by the audio URI:
 
 ```
 /HASH|unsafe/AUDIO?slice&concat&fade_in&fade_out&repeat&reverse&filters=NAME(ARGS)
@@ -138,7 +138,7 @@ Cyberpunk with file system, using mounted volume:
 ```yaml
 version: "3"
 services:
-  imagor:
+  cyberpunk:
     image: jonaylor/cyberpunk:main
     volumes:
       - ./:/mnt/data
@@ -155,7 +155,7 @@ Cyberpunk with AWS S3:
 ```yaml
 version: "3"
 services:
-  imagor:
+  cyberpunk:
     image: jonaylor/cyberpunk:main
     environment:
       PORT: 8080
