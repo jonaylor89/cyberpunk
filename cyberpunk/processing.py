@@ -1,6 +1,7 @@
 import logging
 from dataclasses import asdict
 from typing import Dict, Tuple
+from uuid import UUID
 
 from cyberpunk.cyberpunk_endpoint import CyberpunkEndpoint
 from cyberpunk.storage import get_storage
@@ -13,7 +14,7 @@ from cyberpunk.transformations.reverse import Reverse
 from cyberpunk.transformations.slice import Slice
 
 
-def process_args(key: str, args: Dict) -> Tuple[str, str]:
+def process_args(request_id: UUID, key: str, args: Dict) -> Tuple[str, str]:
     """
     @param key: key to the audiofile (i.e. filename/id)
     @param args: the transformations and manipulations to be done on `key`
@@ -31,6 +32,7 @@ def process_args(key: str, args: Dict) -> Tuple[str, str]:
         "fade_out": FadeOut(),
     }
 
+    # TODO: check if the processed segment is in the cache
     # Create Audio Segment
     audio_segment, tmp_location = get_storage().get_segment(key)
 
@@ -59,7 +61,7 @@ def process_args(key: str, args: Dict) -> Tuple[str, str]:
                 continue
 
     processed_filename = get_storage().save_segment(
-        tmp_location,
+        request_id,
         audio_segment,
         endpoint.format,
     )

@@ -2,6 +2,7 @@
 
 import logging
 from typing import Dict, Optional, Protocol, Tuple, Type
+from uuid import UUID
 
 from pydub import AudioSegment
 
@@ -90,22 +91,21 @@ class AudioStorage:
 
     def save_segment(
         self,
-        base_filename: str,
+        request_id: UUID,
         segment: AudioSegment,
-        file_format: str,
+        file_type: str,
     ) -> str:
         """save an audio segment to storage and return the link to it
-        @param base_filename: original key for the audio
+        @param request_id: the id for the request and the tmp filename
         @param segment: the audio data to be saved
-        @param file_format: the audio format to encode the segment
+        @param file_type: the audio type to encode the segment
         @return: the tmp location where the processed audio is located
         """
 
-        # TODO: export with Filename unique to the stages run (for caching)
-        processed_filename = f"processed_{base_filename}.{file_format}"
+        processed_filename = f"{request_id}.{file_type}"
         segment.export(
             f"/tmp/{processed_filename}",
-            format=file_format,
+            format=file_type,
         )
 
         return processed_filename
