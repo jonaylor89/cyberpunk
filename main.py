@@ -77,6 +77,36 @@ app = create_app()
     help="Prefix in results s3 bucket where the audio files should be stored",
 )
 @click.option(
+    "--gcs-loader-bucket",
+    default=lambda: os.environ.get("GCS_LOADER_BUCKET", None),
+    help="GCS bucket containing audio needing to be pre-loaded",
+)
+@click.option(
+    "--gcs-loader-base-dir",
+    default=lambda: os.environ.get("GCS_LOADER_BASE_DIR", None),
+    help="Prefix in loader gcs bucket where the audio files are located",
+)
+@click.option(
+    "--gcs-storage-bucket",
+    default=lambda: os.environ.get("GCS_STORAGE_BUCKET", None),
+    help="GCS bucket containing the audio files to be processed",
+)
+@click.option(
+    "--gcs-storage-base-dir",
+    default=lambda: os.environ.get("GCS_STORAGE_BASE_DIR", None),
+    help="Prefix in storage gcs bucket where the audio files are located",
+)
+@click.option(
+    "--gcs-results-bucket",
+    default=lambda: os.environ.get("GCS_RESULTS_BUCKET", None),
+    help="GCS bucket where the processed audio is stored",
+)
+@click.option(
+    "--gcs-results-base-dir",
+    default=lambda: os.environ.get("GCS_RESULTS_BASE_DIR", None),
+    help="Prefix in results GCS bucket where the audio files should be stored",
+)
+@click.option(
     "--jaeger-tracing",
     is_flag=True,
     default=lambda: os.environ.get("JAEGER_TRACING_ENABLED", "0").lower()
@@ -114,6 +144,12 @@ def main(
     s3_storage_base_dir,
     s3_results_bucket,
     s3_results_base_dir,
+    gcs_loader_bucket,
+    gcs_loader_base_dir,
+    gcs_storage_bucket,
+    gcs_storage_base_dir,
+    gcs_results_bucket,
+    gcs_results_base_dir,
     jaeger_tracing,
     jaeger_agent_hostname,
     jaeger_agent_port,
@@ -132,6 +168,12 @@ def main(
         s3_storage_base_dir=s3_storage_base_dir,
         s3_results_bucket=s3_results_bucket,
         s3_results_base_dir=s3_results_base_dir,
+        gcs_loader_bucket=gcs_loader_bucket,
+        gcs_loader_base_dir=gcs_loader_base_dir,
+        gcs_storage_bucket=gcs_storage_bucket,
+        gcs_storage_base_dir=gcs_storage_base_dir,
+        gcs_results_bucket=gcs_results_bucket,
+        gcs_results_base_dir=gcs_results_base_dir,
         jaeger_tracing=jaeger_tracing,
         jaeger_agent_hostname=jaeger_agent_hostname,
         jaeger_agent_port=jaeger_agent_port,
