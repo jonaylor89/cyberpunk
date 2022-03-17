@@ -1,5 +1,12 @@
 version: "3"
 services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "6831:6831/udp"
+    networks:
+      - telemetry
   cyberpunk:
     image: cyberpunk:latest
     volumes:
@@ -10,8 +17,12 @@ services:
       LOCAL_STORAGE_BASE_DIR: /mnt/data/testdata/
     ports:
       - "8080:8080"
-  jaegar:
-    image: jaegertracing/all-in-one:1.32
-    ports:
-      - "16686:16686"
-      - "6831:6831/udp"
+    networks:
+      - telemetry
+    depends_on:
+      - jaeger
+
+
+
+networks:
+  telemetry:

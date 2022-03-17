@@ -44,7 +44,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
     # TODO : make agent_host_name & agent_port configurable
     jaeger_exporter = JaegerExporter(
-        agent_host_name="127.0.0.1",
+        agent_host_name="jaeger",
         agent_port=6831,
     )
 
@@ -57,6 +57,11 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
     RequestsInstrumentor().instrument()
 
     tracer = trace.get_tracer(__name__)
+
+    with tracer.start_as_current_span("foo"):
+        with tracer.start_as_current_span("bar"):
+            with tracer.start_as_current_span("baz"):
+                print("Hello world from OpenTelemetry Python!")
 
     # 'always' (default), 'never',  'production', 'debug'
     app.config["LOGGER_HANDLER_POLICY"] = "always"
