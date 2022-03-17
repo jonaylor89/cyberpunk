@@ -27,6 +27,7 @@ opentelemetry-instrumentation-requests = "^0.29b0"
 opentelemetry-api = "^1.10.0"
 opentelemetry-sdk = "^1.10.0"
 opentelemetry-exporter-jaeger = "^1.10.0"
+opentelemetry-exporter-gcp-trace = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

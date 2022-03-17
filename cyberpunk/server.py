@@ -13,6 +13,7 @@ from flask import (
     stream_with_context,
 )
 from opentelemetry import trace
+from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
@@ -23,7 +24,7 @@ from opentelemetry.sdk.trace.export import (
     ConsoleSpanExporter,
 )
 
-from cyberpunk.config import CyberpunkConfig, configure_config
+from cyberpunk.config import CyberpunkConfig, configure_config, get_config
 from cyberpunk.logger_config import LoggerConfig
 from cyberpunk.processing import parse_query, process_args
 from cyberpunk.storage import configure_storage
@@ -43,25 +44,29 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
     )
 
     # TODO : make agent_host_name & agent_port configurable
-    jaeger_exporter = JaegerExporter(
-        agent_host_name="jaeger",
-        agent_port=6831,
-    )
+    if get_config().jaeger_tracing == True:
+        jaeger_exporter = JaegerExporter(
+            agent_host_name=get_config().jaeger_agent_hostname,
+            agent_port=get_config().jaeger_agent_port,
+        )
 
-    trace.get_tracer_provider().add_span_processor(
-        BatchSpanProcessor(jaeger_exporter),
-    )
+        trace.get_tracer_provider().add_span_processor(
+            BatchSpanProcessor(jaeger_exporter),
+        )
+
+    if get_config().gcp_tracing == True:
+        trace.add_span_processor(
+            # BatchSpanProcessor buffers spans and sends them in batches in a
+            # background thread. The default parameters are sensible, but can be
+            # tweaked to optimize your performance
+            BatchSpanProcessor(CloudTraceSpanExporter()),
+        )
 
     app = Flask(__name__)
     FlaskInstrumentor().instrument_app(app)
     RequestsInstrumentor().instrument()
 
     tracer = trace.get_tracer(__name__)
-
-    with tracer.start_as_current_span("foo"):
-        with tracer.start_as_current_span("bar"):
-            with tracer.start_as_current_span("baz"):
-                print("Hello world from OpenTelemetry Python!")
 
     # 'always' (default), 'never',  'production', 'debug'
     app.config["LOGGER_HANDLER_POLICY"] = "always"

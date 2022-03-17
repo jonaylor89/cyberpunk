@@ -15,14 +15,15 @@ services:
       PORT: 8080
       AUDIO_PATH: "local"
       LOCAL_STORAGE_BASE_DIR: /mnt/data/testdata/
+      JAEGER_TRACING_ENABLED: 1
+      JAEGER_AGENT_HOSTNAME: "jaeger"
+      JAEGER_AGENT_PORT: 6831
     ports:
       - "8080:8080"
     networks:
       - telemetry
     depends_on:
       - jaeger
-
-
 
 networks:
   telemetry:

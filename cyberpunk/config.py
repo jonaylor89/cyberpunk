@@ -24,6 +24,10 @@ class CyberpunkConfig:
         s3_storage_base_dir: Optional[str] = None,
         s3_results_bucket: Optional[str] = None,
         s3_results_base_dir: Optional[str] = None,
+        jaeger_tracing: Optional[bool] = False,
+        jaeger_agent_hostname: Optional[str] = "jaeger",
+        jaeger_agent_port: Optional[int] = 6831,
+        gcp_tracing: Optional[bool] = False,
     ):
 
         # TODO: validation lol
@@ -55,6 +59,12 @@ class CyberpunkConfig:
 
         self.s3_results_bucket = s3_results_bucket
         self.s3_results_base_dir = s3_results_base_dir
+
+        self.jaeger_tracing = jaeger_tracing
+        self.jaeger_agent_hostname = jaeger_agent_hostname
+        self.jaeger_agent_port = jaeger_agent_port
+
+        self.gcp_tracing = gcp_tracing
 
     def __repr__(self):
         return (
@@ -91,6 +101,18 @@ def configure_config(provided_config: Optional[CyberpunkConfig] = None):
             s3_storage_base_dir=os.environ.get("S3_STORAGE_BASE_DIR", None),
             s3_results_bucket=os.environ.get("S3_RESULTS_BUCKET", None),
             s3_results_base_dir=os.environ.get("S3_RESULTS_BASE_DIR", None),
+            jaeger_tracing=os.environ.get(
+                "JAEGER_TRACING_ENABLED",
+                "0",
+            ).lower()
+            in ("true", "1", "t"),
+            jaeger_agent_hostname=os.environ.get(
+                "JAEGER_AGENT_HOSTNAME",
+                "jaeger",
+            ),
+            jaeger_agent_port=int(os.environ.get("JAEGER_AGENT_PORT", "6831")),
+            gcp_tracing=os.environ.get("GCP_TRACING_ENABLED", "0").lower()
+            in ("true", "1", "t"),
         )
 
 

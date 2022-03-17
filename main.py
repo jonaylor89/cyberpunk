@@ -76,6 +76,29 @@ app = create_app()
     default=lambda: os.environ.get("S3_RESULTS_BASE_DIR", None),
     help="Prefix in results s3 bucket where the audio files should be stored",
 )
+@click.option(
+    "--jaeger-tracing",
+    is_flag=True,
+    default=lambda: os.environ.get("JAEGER_TRACING_ENABLED", False),
+    help="Export traces to Jaeger",
+)
+@click.option(
+    "--jaeger-agent-hostname",
+    default=lambda: os.environ.get("JAEGER_AGENT_HOSTNAME", "jaeger"),
+    help="Hostname for Jaeger service",
+)
+@click.option(
+    "--jaeger-agent-port",
+    type=click.INT,
+    default=lambda: os.environ.get("JAEGER_AGENT_PORT", 6831),
+    help="Port for Jaeger service",
+)
+@click.option(
+    "--gcp-tracing",
+    is_flag=True,
+    default=lambda: os.environ.get("GCP_TRACING_ENABLED", False),
+    help="Export traces to Google Cloud Platform",
+)
 def main(
     debug,
     port,
@@ -89,6 +112,10 @@ def main(
     s3_storage_base_dir,
     s3_results_bucket,
     s3_results_base_dir,
+    jaeger_tracing,
+    jaeger_agent_hostname,
+    jaeger_agent_port,
+    gcp_tracing,
 ):
 
     print(cyberpunk_secret)
@@ -103,6 +130,10 @@ def main(
         s3_storage_base_dir=s3_storage_base_dir,
         s3_results_bucket=s3_results_bucket,
         s3_results_base_dir=s3_results_base_dir,
+        jaeger_tracing=jaeger_tracing,
+        jaeger_agent_hostname=jaeger_agent_hostname,
+        jaeger_agent_port=jaeger_agent_port,
+        gcp_tracing=gcp_tracing,
     )
 
     logging.debug(f"running server with config: {config}")
