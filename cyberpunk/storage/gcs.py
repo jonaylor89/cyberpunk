@@ -40,12 +40,15 @@ class GCSStorage:
         return self.contains(element)
 
     def contains(self, key: str) -> bool:
-        response = self.gcs.list_objects_v2(
-            Bucket=self.gcs_storage_bucket,
-            Prefix=f"{self.gcs_storage_base_dir}{key}",
+        bucket = self.gcs.get_bucket(self.gcs_storage_bucket)
+        blobs = list(
+            self.gcs.list_blobs(
+                bucket,
+                prefix=f"{self.gcs_storage_base_dir}",
+            ),
         )
-        for obj in response.get("Contents", []):
-            if obj["Key"] == key:
+        for blob in blobs:
+            if blob == key:
                 return True
 
         return False
@@ -53,11 +56,13 @@ class GCSStorage:
     def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
         logging.info(f"pulling key from gcs: {key}")
 
-        self.gcs.download_file(
-            self.gcs_storage_bucket,
-            f"{self.gcs_storage_base_dir}{key}",
-            f"/tmp/{key}",
-        )
+        bucket = self.gcs.get_bucket(self.gcs_storage_bucket)
+        blob = storage.Blob(f"{self.gcs_storage_base_dir}{key}", bucket)
+        with open("f/tmp/{key}") as tmp:
+            self.gcs.download_blob_to_file(
+                blob,
+                tmp,
+            )
 
         segment = AudioSegment.from_file(f"/tmp/{key}")
 
