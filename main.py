@@ -79,7 +79,8 @@ app = create_app()
 @click.option(
     "--jaeger-tracing",
     is_flag=True,
-    default=lambda: os.environ.get("JAEGER_TRACING_ENABLED", False),
+    default=lambda: os.environ.get("JAEGER_TRACING_ENABLED", "0").lower()
+    in ("true", "t", "1"),
     help="Export traces to Jaeger",
 )
 @click.option(
@@ -96,7 +97,8 @@ app = create_app()
 @click.option(
     "--gcp-tracing",
     is_flag=True,
-    default=lambda: os.environ.get("GCP_TRACING_ENABLED", False),
+    default=lambda: os.environ.get("GCP_TRACING_ENABLED", "0").lower()
+    in ("true", "t", "0"),
     help="Export traces to Google Cloud Platform",
 )
 def main(
