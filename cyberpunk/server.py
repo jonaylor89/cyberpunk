@@ -16,6 +16,7 @@ from opentelemetry import trace
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
@@ -34,9 +35,21 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
     configure_config(provided_config=cyberpunk_config)
     configure_storage()
 
-    trace.set_tracer_provider(TracerProvider())
+    trace.set_tracer_provider(
+        TracerProvider(resource=Resource.create({SERVICE_NAME: "cyberpunk"})),
+    )
     trace.get_tracer_provider().add_span_processor(
         BatchSpanProcessor(ConsoleSpanExporter()),
+    )
+
+    # TODO : make agent_host_name & agent_port configurable
+    jaeger_exporter = JaegerExporter(
+        agent_host_name="127.0.0.1",
+        agent_port=6831,
+    )
+
+    trace.get_tracer_provider().add_span_processor(
+        BatchSpanProcessor(jaeger_exporter),
     )
 
     app = Flask(__name__)
@@ -44,12 +57,6 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
     RequestsInstrumentor().instrument()
 
     tracer = trace.get_tracer(__name__)
-
-    # TODO : make agent_host_name & agent_port configurable
-    jaeger_exporter = JaegerExporter(
-        agent_host_name="localhost",
-        agent_port=6831,
-    )
 
     # 'always' (default), 'never',  'production', 'debug'
     app.config["LOGGER_HANDLER_POLICY"] = "always"
