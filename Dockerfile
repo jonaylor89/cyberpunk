@@ -65,5 +65,7 @@ COPY main.py .
 
 # COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 
+# service port
 EXPOSE $PORT
+
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app

@@ -102,6 +102,7 @@ curl "http://localhost:8000/unsafe/celtic_p2.mp3?reverse=true&repeat=1&slice=100
 
 ### Environment
 
+```
 PORT: 8080 # server port number
 
 CYBERPUNK_SECRET: mysecret # secret key for URL signature
@@ -130,6 +131,14 @@ S3_RESULTS_STORAGE_BUCKET=mybucket
 
 S3_RESULTS_STORAGE_BASE_DIR=audio/results
 
+JAEGER_TRACING_ENABLED=0
+
+JAEGER_AGENT_HOSTNAME="jaeger"
+
+JAEGER_AGENT_PORT=6831
+
+GCP_TRACING_ENABLED=0
+```
 
 # Docker Compose Example
 
