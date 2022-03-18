@@ -91,6 +91,31 @@ resource "google_cloud_run_service_iam_member" "run_all_users" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# RESULTS BUCKET TO STORE MEDIA FILES
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "google_storage_bucket" "results_bucket" {
+  name          = "cyberpunk_results_bucket"
+  location      = "US"
+  force_destroy = true
+
+  cors {
+    origin          = ["*"]
+    method          = ["GET", "HEAD", "PUT", "POST", "DELETE"]
+    response_header = ["*"]
+    max_age_seconds = 3600
+  }
+}
+
+resource "google_storage_bucket_access_control" "public_rule" {
+  bucket = "cyberpunk_results_bucket"
+  role   = "READER"
+  entity = "allUsers"
+
+  depends_on = [google_storage_bucket.results_bucket]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # PREPARE LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 
