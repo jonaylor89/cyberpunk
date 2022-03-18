@@ -3,6 +3,7 @@ from dataclasses import asdict
 from typing import Dict, Tuple
 from uuid import UUID
 
+from cyberpunk.cache import cached_result
 from cyberpunk.cyberpunk_endpoint import CyberpunkEndpoint
 from cyberpunk.storage import get_storage
 from cyberpunk.transformations import Transformation
@@ -14,8 +15,10 @@ from cyberpunk.transformations.reverse import Reverse
 from cyberpunk.transformations.slice import Slice
 
 
+@cached_result
 def process_args(request_id: UUID, key: str, args: Dict) -> Tuple[str, str]:
     """
+    @param request_id: the id for the http request performing the process
     @param key: key to the audiofile (i.e. filename/id)
     @param args: the transformations and manipulations to be done on `key`
     @return a tuple contains the new processed audio key and the content type

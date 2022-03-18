@@ -50,7 +50,7 @@ def configure_tracer():
         )
 
     if get_config().gcp_tracing:
-        trace.add_span_processor(
+        trace.get_tracer_provider().add_span_processor(
             # BatchSpanProcessor buffers spans and sends them in batches in a
             # background thread. The default parameters are sensible, but can be
             # tweaked to optimize your performance
