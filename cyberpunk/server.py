@@ -1,16 +1,9 @@
 import logging
 import logging.config
 import uuid
-from typing import Generator, Optional
+from typing import Optional
 
-from flask import (
-    Flask,
-    Response,
-    jsonify,
-    make_response,
-    request,
-    stream_with_context,
-)
+from flask import Flask, jsonify, make_response, request
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
@@ -26,6 +19,7 @@ from opentelemetry.sdk.trace.export import (
 from cyberpunk.config import CyberpunkConfig, configure_config, get_config
 from cyberpunk.logger_config import LoggerConfig
 from cyberpunk.processing import parse_query, process_args
+from cyberpunk.response import build_response
 from cyberpunk.storage import configure_storage
 
 # from musicnn.tagger import top_tags
@@ -83,13 +77,6 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
     logging.config.dictConfig(LoggerConfig.dictConfig)
 
-    def stream_audio_file(filename: str, chunk_size: int = 4096) -> Generator:
-        with open(f"/tmp/{filename}", "rb") as faudio:
-            data = faudio.read(chunk_size)
-            while data:
-                yield data
-                data = faudio.read(chunk_size)
-
     @app.route("/")
     def hello():
         return "Hello World"
@@ -126,10 +113,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         # def delete_tmp_file(response):
         #     return response
 
-        return Response(
-            stream_with_context(stream_audio_file(processed_file)),
-            mimetype=file_type,
-        )
+        return build_response(processed_file, file_type)
 
     @app.route("/unsafe/https://<path:url>", methods=["GET"])
     def unsafe_https_processing(url: str):
@@ -149,10 +133,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
                 args,
             )
 
-        return Response(
-            stream_with_context(stream_audio_file(processed_file)),
-            mimetype=file_type,
-        )
+        return build_response(processed_file, file_type)
 
     @app.route("/unsafe/http://<path:url>", methods=["GET"])
     def unsafe_http_processing(url: str):
@@ -172,10 +153,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
                 args,
             )
 
-        return Response(
-            stream_with_context(stream_audio_file(processed_file)),
-            mimetype=file_type,
-        )
+        return build_response(processed_file, file_type)
 
     @app.route("/tag/<filename>", methods=["GET"])
     def tag_audio_route(filename: str):
