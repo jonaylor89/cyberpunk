@@ -26,9 +26,9 @@ class AudiusStorage:
         )
 
         # TODO: there must be a more robust way of saving temporary files like this
-        with open(f"testdata/{key}.mp3", "wb") as tmp_file:
+        with open(f"/tmp/{key}.mp3", "wb") as tmp_file:
             tmp_file.write(req.content)
 
-        segment = AudioSegment.from_file(f"testdata/{key}.mp3")
+        segment = AudioSegment.from_file(f"/tmp/{key}.mp3")
 
         return segment, f"{key}.mp3"
