@@ -64,6 +64,11 @@ resource "google_cloud_run_service" "run_service" {
           name  = "GCP_TRACING"
           value = "1"
         }
+
+        env {
+          name  = "AUDIO_PATH"
+          value = "audius"
+        }
       }
     }
   }
