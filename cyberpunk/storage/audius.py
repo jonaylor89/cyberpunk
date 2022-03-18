@@ -16,6 +16,7 @@ class AudiusStorage:
         return self.contains(element)
 
     def contains(self, key: str) -> bool:
+        print(self.host)
         return True
 
     def get_segment(self, key: str) -> Tuple[AudioSegment, str]:

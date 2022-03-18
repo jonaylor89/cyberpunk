@@ -13,7 +13,7 @@ services:
       - ./:/mnt/data
     environment:
       PORT: 8080
-      AUDIO_PATH: "local"
+      AUDIO_PATH: "local:audius"
       LOCAL_STORAGE_BASE_DIR: /mnt/data/testdata/
       JAEGER_TRACING_ENABLED: 1
       JAEGER_AGENT_HOSTNAME: "jaeger"

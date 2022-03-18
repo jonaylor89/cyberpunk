@@ -79,7 +79,7 @@ resource "google_cloud_run_service" "run_service" {
   }
 
   # Waits for the Cloud Run API to be enabled
-  depends_on = [google_project_service.run_api]
+  depends_on = [google_project_service.run_api, google_storage_bucket.results_bucket]
 }
 
 # Allow unauthenticated users to invoke the service
