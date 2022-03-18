@@ -44,7 +44,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
     )
 
     # TODO : make agent_host_name & agent_port configurable
-    if get_config().jaeger_tracing == True:
+    if get_config().jaeger_tracing:
         jaeger_exporter = JaegerExporter(
             agent_host_name=get_config().jaeger_agent_hostname,
             agent_port=get_config().jaeger_agent_port,
@@ -54,7 +54,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
             BatchSpanProcessor(jaeger_exporter),
         )
 
-    if get_config().gcp_tracing == True:
+    if get_config().gcp_tracing:
         trace.add_span_processor(
             # BatchSpanProcessor buffers spans and sends them in batches in a
             # background thread. The default parameters are sensible, but can be
@@ -92,7 +92,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
     @app.route("/health")
     def healthcheck():
-        return 200
+        return "service is live"
 
     @app.route("/params/<path:key>", methods=["GET"])
     def params_route(key: str):

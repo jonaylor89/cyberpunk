@@ -45,7 +45,6 @@ resource "google_project_service" "run_api" {
   disable_on_destroy = true
 }
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # EXPOSE THE SERVICE PUBLICLY
 # We give all users the ability to invoke the service.
