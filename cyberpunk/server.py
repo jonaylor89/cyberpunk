@@ -31,10 +31,7 @@ from cyberpunk.storage import configure_storage
 # from musicnn.tagger import top_tags
 
 
-def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
-    configure_config(provided_config=cyberpunk_config)
-    configure_storage()
-
+def configure_tracer():
     trace.set_tracer_provider(
         TracerProvider(resource=Resource.create({SERVICE_NAME: "cyberpunk"})),
     )
@@ -42,7 +39,6 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         BatchSpanProcessor(ConsoleSpanExporter()),
     )
 
-    # TODO : make agent_host_name & agent_port configurable
     if get_config().jaeger_tracing:
         jaeger_exporter = JaegerExporter(
             agent_host_name=get_config().jaeger_agent_hostname,
@@ -61,11 +57,20 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
             BatchSpanProcessor(CloudTraceSpanExporter()),
         )
 
+    RequestsInstrumentor().instrument()
+    tracer = trace.get_tracer(__name__)
+
+    return tracer
+
+
+def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
+    configure_config(provided_config=cyberpunk_config)
+    configure_storage()
+
     app = Flask(__name__)
     FlaskInstrumentor().instrument_app(app)
-    RequestsInstrumentor().instrument()
 
-    tracer = trace.get_tracer(__name__)
+    tracer = configure_tracer()
 
     # 'always' (default), 'never',  'production', 'debug'
     app.config["LOGGER_HANDLER_POLICY"] = "always"
