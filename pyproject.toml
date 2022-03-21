@@ -29,6 +29,7 @@ opentelemetry-sdk = "^1.10.0"
 opentelemetry-exporter-jaeger = "^1.10.0"
 opentelemetry-exporter-gcp-trace = "^1.1.0"
 google-cloud-storage = "^2.2.1"
+google-auth = "^2.6.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

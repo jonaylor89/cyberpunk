@@ -26,7 +26,7 @@ def process_args(request_id: UUID, key: str, args: Dict) -> Tuple[str, str]:
 
     endpoint = CyberpunkEndpoint.from_req(key, args)
 
-    lookup_table: Dict[str, Transformation] = {
+    instruction_lookup: Dict[str, Transformation] = {
         "reverse": Reverse(),
         "repeat": Repeat(),
         "slice": Slice(),
@@ -35,17 +35,16 @@ def process_args(request_id: UUID, key: str, args: Dict) -> Tuple[str, str]:
         "fade_out": FadeOut(),
     }
 
-    # TODO: check if the processed segment is in the cache
     # Create Audio Segment
     audio_segment, tmp_location = get_storage().get_segment(key)
 
     # Pass Audio Segment through Each Stage
     for (k, v) in args.items():
-        if k in lookup_table.keys():
+        if k in instruction_lookup.keys():
 
             logging.info(f"running transformation: {k}")
 
-            transformation: Transformation = lookup_table[k]
+            transformation: Transformation = instruction_lookup[k]
             assert transformation is not None
 
             try:
@@ -53,7 +52,7 @@ def process_args(request_id: UUID, key: str, args: Dict) -> Tuple[str, str]:
                 # This only works because attributes are the same name
                 # as the query parameters. If that stops being the case,
                 # another map/lookup-table will need to be used
-                # i.e. getattr(endpoint, param_to_attr[k])
+                # i.e. getattr(endpoint, param_to_instruction[k])
                 inputs = getattr(endpoint, k)
 
                 audio_segment = transformation.run(audio_segment, inputs)
@@ -89,7 +88,7 @@ def cyberpunk_path(endpoint: CyberpunkEndpoint) -> str:
     """
     Parse and generate a cyberpunk endpoint based on a Python object
     @param endpoint: a cyberpunk endpoint object
-    @return: the endpiont deserialized as a string
+    @return: the endpoint deserialized as a string
     """
 
     return str(endpoint)
