@@ -12,8 +12,13 @@ from cyberpunk.server import create_app
 app = create_app()
 
 
-@click.command()
+@click.group()
 @click.version_option(__version__)
+def cli():
+    return
+
+
+@cli.command()
 @click.option(
     "-D",
     "--debug",
@@ -131,7 +136,7 @@ app = create_app()
     in ("true", "t", "0"),
     help="Export traces to Google Cloud Platform",
 )
-def main(
+def serve(
     debug,
     port,
     cyberpunk_secret,
@@ -191,4 +196,4 @@ def main(
 
 
 if __name__ == "__main__":
-    main()
+    cli()
