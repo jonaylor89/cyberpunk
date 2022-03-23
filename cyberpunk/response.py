@@ -3,9 +3,11 @@ import collections
 import datetime
 import hashlib
 import logging
-from typing import Generator
+from typing import Any, Dict, Generator, Iterable, Tuple
 from urllib.parse import quote
 
+import boto3
+from botocore.exceptions import ClientError
 from flask import Response, redirect, stream_with_context
 from google.oauth2 import service_account
 
@@ -27,13 +29,40 @@ def build_local_stream(processed_file, file_type):
     )
 
 
-def build_presigned_s3_url():
-    return "https://example.com"
+def build_presigned_s3_url(key: str):
+    """Generate a presigned URL to share an S3 object
+
+    @param key: key to the audio file
+    @return: Presigned URL as string. If error, returns None.
+    """
+
+    config = get_config()
+
+    bucket_name = config.s3_storage_bucket
+    object_name = f"{config.s3_storage_base_dir}{key}"
+    expiration = 3600
+
+    # Generate a presigned URL for the S3 object
+    s3_client = boto3.client("s3")
+    try:
+        response = s3_client.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": bucket_name, "Key": object_name},
+            ExpiresIn=expiration,
+        )
+    except ClientError as e:
+        logging.error(e)
+        return None
+
+    # The response contains the presigned URL
+    return response
 
 
-def build_presigned_gcs_url():
-    bucket_name = ""
-    object_name = ""
+def build_presigned_gcs_url(key: str):
+    config = get_config()
+
+    bucket_name = config.gcs_storage_bucket
+    object_name = f"{config.gcs_storage_base_dir}{key}"
     expiration = 3600
     service_account_file = ""
 
@@ -48,26 +77,25 @@ def build_presigned_gcs_url():
         service_account_file,
     )
     client_email = google_credentials.service_account_email
-    credential_scope = "{}/auto/storage/goog4_request".format(datestamp)
+    credential_scope = f"{datestamp}/auto/storage/goog4_request"
     credential = "{}/{}".format(client_email, credential_scope)
 
-    host = "{}.storage.googleapis.com".format(bucket_name)
+    host = f"{bucket_name}.storage.googleapis.com"
     headers = {"host": host}
 
     canonical_headers = ""
-    ordered_headers = collections.OrderedDict(sorted(headers.items()))
-    for k, v in ordered_headers.items():
+    for k, v in headers.items():
         lower_k = str(k).lower()
         strip_v = str(v).lower()
         canonical_headers += "{}:{}\n".format(lower_k, strip_v)
 
     signed_headers = ""
-    for k, _ in ordered_headers.items():
+    for k, _ in headers.items():
         lower_k = str(k).lower()
         signed_headers += "{};".format(lower_k)
     signed_headers = signed_headers[:-1]  # remove trailing ';'
 
-    query_parameters = {
+    query_parameters: Dict = {
         "X-Goog-Algorithm": "GOOG4-RSA-SHA256",
         "X-Goog-Credential": credential,
         "X-Goog-Date": request_timestamp,
@@ -76,8 +104,11 @@ def build_presigned_gcs_url():
     }
 
     canonical_query_string = ""
-    ordered_query_parameters = collections.OrderedDict(
-        sorted(query_parameters.items()),
+    items: Iterable[Tuple[Any, Any]] = list(query_parameters.items())
+    ordered_query_parameters: collections.OrderedDict = (
+        collections.OrderedDict(
+            sorted(items),
+        )
     )
     for k, v in ordered_query_parameters.items():
         encoded_k = quote(str(k), safe="")
