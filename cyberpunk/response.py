@@ -161,10 +161,10 @@ def build_response(processed_file, file_type):
     if config.gcs_results_bucket is None and config.s3_storage_bucket is None:
         return build_local_stream(processed_file, file_type)
     elif config.gcs_results_bucket is not None:
-        url = build_presigned_gcs_url()
+        url = build_presigned_gcs_url(processed_file)
         return redirect(url, 301)
     elif config.s3_storage_bucket is not None:
-        url = build_presigned_s3_url()
+        url = build_presigned_s3_url(processed_file)
         return redirect(url, 301)
     else:
         logging.error("que?")
