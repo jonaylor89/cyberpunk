@@ -9,6 +9,9 @@ services:
       - telemetry
   cyberpunk:
     image: cyberpunk:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     volumes:
       - ./:/mnt/data
     environment:
