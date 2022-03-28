@@ -13,12 +13,13 @@ services:
       - ./:/mnt/data
     environment:
       PORT: 8080
-      AUDIO_PATH: "local:audius"
+      AUDIO_PATH: "audius"
       LOCAL_STORAGE_BASE_DIR: /mnt/data/testdata/
       JAEGER_TRACING_ENABLED: 1
       JAEGER_AGENT_HOSTNAME: "jaeger"
       JAEGER_AGENT_PORT: 6831
       GCS_RESULTS_BUCKET: "cyberpunk_results_bucket"
+      GOOGLE_APPLICATION_CREDENTIALS: "/cyberpunk-svc-acc.json"
     ports:
       - "8080:8080"
     networks:

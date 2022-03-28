@@ -48,7 +48,7 @@ def cli():
 )
 @click.option(
     "--local-results-base-dir",
-    default=lambda: os.environ.get("LOCAL_RESULTS_BASE_DIR", None),
+    default=lambda: os.environ.get("LOCAL_RESULTS_BASE_DIR", "testdata/"),
     help="Local directory where processed audio files will be stored",
 )
 @click.option(
@@ -58,7 +58,7 @@ def cli():
 )
 @click.option(
     "--s3-loader-base-dir",
-    default=lambda: os.environ.get("S3_LOADER_BASE_DIR", None),
+    default=lambda: os.environ.get("S3_LOADER_BASE_DIR", ""),
     help="Prefix in loader s3 bucket where the audio files are located",
 )
 @click.option(
@@ -68,7 +68,7 @@ def cli():
 )
 @click.option(
     "--s3-storage-base-dir",
-    default=lambda: os.environ.get("S3_STORAGE_BASE_DIR", None),
+    default=lambda: os.environ.get("S3_STORAGE_BASE_DIR", ""),
     help="Prefix in storage s3 bucket where the audio files are located",
 )
 @click.option(
@@ -78,8 +78,13 @@ def cli():
 )
 @click.option(
     "--s3-results-base-dir",
-    default=lambda: os.environ.get("S3_RESULTS_BASE_DIR", None),
+    default=lambda: os.environ.get("S3_RESULTS_BASE_DIR", ""),
     help="Prefix in results s3 bucket where the audio files should be stored",
+)
+@click.option(
+    "--google_application_credentials",
+    default=lambda: os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", None),
+    help="Google Cloud service account credentials path",
 )
 @click.option(
     "--gcs-loader-bucket",
@@ -88,7 +93,7 @@ def cli():
 )
 @click.option(
     "--gcs-loader-base-dir",
-    default=lambda: os.environ.get("GCS_LOADER_BASE_DIR", None),
+    default=lambda: os.environ.get("GCS_LOADER_BASE_DIR", ""),
     help="Prefix in loader gcs bucket where the audio files are located",
 )
 @click.option(
@@ -98,7 +103,7 @@ def cli():
 )
 @click.option(
     "--gcs-storage-base-dir",
-    default=lambda: os.environ.get("GCS_STORAGE_BASE_DIR", None),
+    default=lambda: os.environ.get("GCS_STORAGE_BASE_DIR", ""),
     help="Prefix in storage gcs bucket where the audio files are located",
 )
 @click.option(
@@ -108,7 +113,7 @@ def cli():
 )
 @click.option(
     "--gcs-results-base-dir",
-    default=lambda: os.environ.get("GCS_RESULTS_BASE_DIR", None),
+    default=lambda: os.environ.get("GCS_RESULTS_BASE_DIR", ""),
     help="Prefix in results GCS bucket where the audio files should be stored",
 )
 @click.option(
@@ -149,6 +154,7 @@ def serve(
     s3_storage_base_dir,
     s3_results_bucket,
     s3_results_base_dir,
+    google_application_credentials,
     gcs_loader_bucket,
     gcs_loader_base_dir,
     gcs_storage_bucket,
@@ -173,6 +179,7 @@ def serve(
         s3_storage_base_dir=s3_storage_base_dir,
         s3_results_bucket=s3_results_bucket,
         s3_results_base_dir=s3_results_base_dir,
+        google_application_credentials=google_application_credentials,
         gcs_loader_bucket=gcs_loader_bucket,
         gcs_loader_base_dir=gcs_loader_base_dir,
         gcs_storage_bucket=gcs_storage_bucket,

@@ -25,7 +25,9 @@ class GCSStorage:
                 "to use gcs as an audio store, the google application credential's path must be provided ",
             )
 
-        self.gcs = storage.Client()
+        self.gcs = storage.Client.from_service_account_json(
+            self.google_application_credentials,
+        )
 
         self.gcs_loader_bucket = config.gcs_loader_bucket
         self.gcs_loader_base_dir = config.gcs_loader_base_dir

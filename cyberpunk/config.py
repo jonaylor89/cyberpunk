@@ -24,6 +24,7 @@ class CyberpunkConfig:
         s3_storage_base_dir: Optional[str] = None,
         s3_results_bucket: Optional[str] = None,
         s3_results_base_dir: Optional[str] = None,
+        google_application_credentials: Optional[str] = None,
         gcs_loader_bucket: Optional[str] = None,
         gcs_loader_base_dir: Optional[str] = None,
         gcs_storage_bucket: Optional[str] = None,
@@ -71,6 +72,15 @@ class CyberpunkConfig:
                 "gcs_storage_bucket must be configured if `gcs` in audio_path",
             )
 
+        if (
+            "gcs" in self.audio_path.split(":")
+            and google_application_credentials is None
+        ):
+            raise CyberpunkConfigException(
+                "google_application_credentials must be configured if `gcs` in audio_path",
+            )
+
+        self.google_application_credentials = google_application_credentials
         self.gcs_loader_bucket = gcs_loader_bucket
         self.gcs_loader_base_dir = gcs_loader_base_dir
         self.gcs_storage_bucket = gcs_storage_bucket
@@ -119,6 +129,10 @@ def configure_config(provided_config: Optional[CyberpunkConfig] = None):
             s3_storage_base_dir=os.environ.get("S3_STORAGE_BASE_DIR", None),
             s3_results_bucket=os.environ.get("S3_RESULTS_BUCKET", None),
             s3_results_base_dir=os.environ.get("S3_RESULTS_BASE_DIR", None),
+            google_application_credentials=os.environ.get(
+                "GOOGLE_APPLICATION_CREDENTIALS",
+                None,
+            ),
             gcs_loader_bucket=os.environ.get("GCS_LOADER_BUCKET", None),
             gcs_loader_base_dir=os.environ.get("GCS_LOADER_BASE_DIR", None),
             gcs_storage_bucket=os.environ.get("GCS_STORAGE_BUCKET", None),

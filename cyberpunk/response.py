@@ -61,10 +61,19 @@ def build_presigned_s3_url(key: str):
 def build_presigned_gcs_url(key: str):
     config = get_config()
 
-    bucket_name = config.gcs_storage_bucket
-    object_name = f"{config.gcs_storage_base_dir}{key}"
+    assert (
+        config.gcs_results_bucket is not None
+        or config.gcs_storage_bucket is not None
+    )
+
+    bucket_name = (
+        config.gcs_results_bucket
+        if config.gcs_results_bucket is not None
+        else config.gcs_storage_bucket
+    )
+    object_name = f"{config.gcs_results_base_dir if config.gcs_results_base_dir is not None else ''}{key}"
     expiration = 3600
-    service_account_file = ""
+    service_account_file = config.google_application_credentials
 
     escaped_object_name = quote(object_name, safe=b"/~")
     canonical_uri = "/{}".format(escaped_object_name)
@@ -151,6 +160,11 @@ def build_presigned_gcs_url(key: str):
         canonical_uri,
         canonical_query_string,
         signature,
+    )
+
+    logging.critical(
+        f"generated gcs signed url scheme_host '{scheme_and_host}', canonical_uri '{canonical_uri}', canonical_query_string '{canonical_query_string}', "
+        f"signature '{signature}'",
     )
 
     return signed_url
