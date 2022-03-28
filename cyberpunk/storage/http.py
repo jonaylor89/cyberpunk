@@ -18,11 +18,11 @@ class HttpLoader:
 
         # TODO: there must be a more robust way of saving temporary files like this
         location: str = f"remote-audio.{ext}"
-        with open(f"testdata/{location}", "wb") as tmp_file:
+        with open(f"/tmp/{location}", "wb") as tmp_file:
             tmp_file.write(req.content)
 
         audio_segment = AudioSegment.from_file(
-            f"testdata/{location}",
+            f"/tmp/{location}",
         )
 
         return audio_segment, location
