@@ -14,6 +14,33 @@ provider "google" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# RESULTS BUCKET TO STORE MEDIA FILES
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "google_storage_bucket" "results_bucket" {
+  name          = "cyberpunk_results_bucket"
+  location      = "US"
+  force_destroy = true
+
+  cors {
+    origin          = ["*"]
+    method          = ["GET", "HEAD", "PUT", "POST", "DELETE"]
+    response_header = ["*"]
+    max_age_seconds = 3600
+  }
+}
+
+
+
+resource "google_storage_bucket_access_control" "public_rule" {
+  bucket = "cyberpunk_results_bucket"
+  role   = "READER"
+  entity = "allUsers"
+
+  depends_on = [google_storage_bucket.results_bucket]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # CREATE A CLOUD BUILD TRIGGER
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -45,10 +72,24 @@ resource "google_project_service" "run_api" {
   disable_on_destroy = true
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# EXPOSE THE SERVICE PUBLICLY
-# We give all users the ability to invoke the service.
-# ---------------------------------------------------------------------------------------------------------------------
+# Allow access to the results bucket
+resource "google_service_account" "svc_acc" {
+  account_id   = "cyberpunk-svc-acc"
+  display_name = "Cyberpunk Service Account"
+}
+
+resource "google_project_iam_binding" "svc_acc" {
+  project = var.project
+  role    = "roles/storage.admin"
+  members = [
+    "serviceAccount:${google_service_account.svc_acc.email}"
+  ]
+  condition {
+    expression = "resource.type == \"storage.googleapis.com/Bucket\" && resource.name == \"${google_storage_bucket.results_bucket.name}\""
+    title      = "limit_to_result_bucket"
+    description = "Limit Access to the Results Bucket"
+  }
+}
 
 # Create the Cloud Run service
 resource "google_cloud_run_service" "run_service" {
@@ -57,6 +98,7 @@ resource "google_cloud_run_service" "run_service" {
 
   template {
     spec {
+      service_account_name = google_service_account.svc_acc.email
       containers {
         image = local.image_name
 
@@ -79,8 +121,13 @@ resource "google_cloud_run_service" "run_service" {
   }
 
   # Waits for the Cloud Run API to be enabled
-  depends_on = [google_project_service.run_api, google_storage_bucket.results_bucket]
+  depends_on = [google_project_service.run_api, google_storage_bucket.results_bucket, google_service_account.svc_acc]
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# EXPOSE THE SERVICE PUBLICLY
+# We give all users the ability to invoke the service.
+# ---------------------------------------------------------------------------------------------------------------------
 
 # Allow unauthenticated users to invoke the service
 resource "google_cloud_run_service_iam_member" "run_all_users" {
@@ -88,31 +135,6 @@ resource "google_cloud_run_service_iam_member" "run_all_users" {
   location = google_cloud_run_service.run_service.location
   role     = "roles/run.invoker"
   member   = "allUsers"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# RESULTS BUCKET TO STORE MEDIA FILES
-# ---------------------------------------------------------------------------------------------------------------------
-
-resource "google_storage_bucket" "results_bucket" {
-  name          = "cyberpunk_results_bucket"
-  location      = "US"
-  force_destroy = true
-
-  cors {
-    origin          = ["*"]
-    method          = ["GET", "HEAD", "PUT", "POST", "DELETE"]
-    response_header = ["*"]
-    max_age_seconds = 3600
-  }
-}
-
-resource "google_storage_bucket_access_control" "public_rule" {
-  bucket = "cyberpunk_results_bucket"
-  role   = "READER"
-  entity = "allUsers"
-
-  depends_on = [google_storage_bucket.results_bucket]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

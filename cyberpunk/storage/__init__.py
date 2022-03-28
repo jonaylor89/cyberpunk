@@ -8,6 +8,7 @@ from pydub import AudioSegment
 
 from cyberpunk.config import get_config
 from cyberpunk.storage.audius import AudiusStorage
+from cyberpunk.storage.gcs import GCSStorage
 from cyberpunk.storage.http import HttpLoader
 from cyberpunk.storage.local import LocalStorage
 from cyberpunk.storage.s3 import S3Storage
@@ -46,6 +47,7 @@ class AudioStorage:
         self.storage_table: Dict[str, Type[AudioStorageProtocol]] = {
             "local": LocalStorage,
             "s3": S3Storage,
+            "gcs": GCSStorage,
             "audius": AudiusStorage,
         }
 
@@ -101,6 +103,22 @@ class AudioStorage:
         @param file_type: the audio type to encode the segment
         @return: the tmp location where the processed audio is located
         """
+
+        config = get_config()
+        if (
+            config.gcs_results_bucket is None
+            and config.s3_storage_bucket is None
+        ):
+            # TODO : save locally
+            pass
+        elif config.gcs_results_bucket is not None:
+            # TODO : save on gcs
+            pass
+        elif config.s3_storage_bucket is not None:
+            # TODO :  save on s3
+            pass
+        else:
+            logging.error("que?")
 
         processed_filename = f"{request_id}.{file_type}"
         segment.export(
