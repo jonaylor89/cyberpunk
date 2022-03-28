@@ -105,26 +105,19 @@ class AudioStorage:
         """
 
         config = get_config()
+        processed_filename = f"{request_id}.{file_type}"
+
         if (
             config.gcs_results_bucket is None
             and config.s3_storage_bucket is None
         ):
-            # TODO : save locally
-            pass
+            LocalStorage().save_segment(segment, processed_filename, file_type)
         elif config.gcs_results_bucket is not None:
-            # TODO : save on gcs
-            pass
-        elif config.s3_storage_bucket is not None:
-            # TODO :  save on s3
-            pass
+            GCSStorage().save_segment(segment, processed_filename, file_type)
+        elif config.s3_results_bucket is not None:
+            S3Storage().save_segment(segment, processed_filename, file_type)
         else:
             logging.error("que?")
-
-        processed_filename = f"{request_id}.{file_type}"
-        segment.export(
-            f"/tmp/{processed_filename}",
-            format=file_type,
-        )
 
         return processed_filename
 

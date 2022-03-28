@@ -69,3 +69,22 @@ class GCSStorage:
         segment = AudioSegment.from_file(f"/tmp/{key}")
 
         return segment, f"/tmp/{key}"
+
+    def save_segment(self, segment: AudioSegment, key: str, file_type: str):
+        logging.debug(f"exporting segment {key} to tmp dir")
+        segment.export(
+            f"/tmp/{key}",
+            format=file_type,
+        )
+
+        bucket_name = (
+            self.gcs_results_bucket
+            if self.gcs_results_bucket is not None
+            else self.gcs_storage_bucket
+        )
+        bucket = self.gcs.get_bucket(bucket_name)
+        blob = bucket.blob(key)
+        logging.info(
+            f"uploaded {key} to results bucket {self.gcs_results_bucket}",
+        )
+        blob.upload_from_file(f"tmp/{key}", file_type=file_type)

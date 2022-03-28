@@ -71,3 +71,9 @@ class S3Storage:
         segment = AudioSegment.from_file(f"/tmp/{key}")
 
         return segment, f"/tmp/{key}"
+
+    def save_segment(self, segment: AudioSegment, key: str, file_type: str):
+        segment.export(
+            f"/tmp/{key}",
+            format=file_type,
+        )

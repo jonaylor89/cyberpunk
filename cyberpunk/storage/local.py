@@ -27,3 +27,10 @@ class LocalStorage:
         )
 
         return audio_segment, location
+
+    def save_segment(self, segment: AudioSegment, key: str, file_type: str):
+        logging.debug(f"exporting segment {key} to tmp dir")
+        segment.export(
+            f"/tmp/{key}",
+            format=file_type,
+        )
