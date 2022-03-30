@@ -3,6 +3,7 @@ import os
 from typing import Tuple
 
 import boto3
+from botocore.exceptions import ClientError
 from pydub import AudioSegment
 
 from cyberpunk.config import get_config
@@ -73,7 +74,23 @@ class S3Storage:
         return segment, f"/tmp/{key}"
 
     def save_segment(self, segment: AudioSegment, key: str, file_type: str):
+        """
+        Upload a file to an S3 bucket
+        """
         segment.export(
             f"/tmp/{key}",
             format=file_type,
         )
+
+        object_name = f"{self.s3_results_base_dir if self.s3_results_base_dir is not None else self.s3_storage_base_dir}{key}"
+
+        # Upload the file
+        bucket = (
+            self.s3_results_bucket
+            if self.s3_results_bucket is not None
+            else self.s3_storage_bucket
+        )
+        try:
+            response = self.s3.upload_file(f"/tmp/{key}", bucket, key)
+        except ClientError as e:
+            logging.error(e)
