@@ -1,9 +1,12 @@
 import logging
+from functools import lru_cache
 from typing import Tuple
 
 from pydub import AudioSegment
 
 from cyberpunk.config import get_config
+
+AUDIO_CACHE_SIZE = 50
 
 
 class LocalStorage:
@@ -18,6 +21,7 @@ class LocalStorage:
     def contains(self, key: str) -> bool:
         return True
 
+    @lru_cache(AUDIO_CACHE_SIZE)
     def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
         logging.info(f"pulling key from local storage: {key}")
 

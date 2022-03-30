@@ -1,9 +1,12 @@
 import logging
 import random
+from functools import lru_cache
 from typing import Tuple
 
 import requests
 from pydub import AudioSegment
+
+MAX_CACHE_SIZE = 50
 
 
 class AudiusStorage:
@@ -19,6 +22,7 @@ class AudiusStorage:
         print(self.host, key)
         return True
 
+    @lru_cache(MAX_CACHE_SIZE)
     def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
         logging.info(f"pulling key from audius: {key}")
         req = requests.get(
