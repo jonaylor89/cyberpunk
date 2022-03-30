@@ -6,6 +6,12 @@ _processed_audio_cache: Dict[Tuple, Tuple] = {}
 
 
 def cached_result(func):
+    """
+    cache the result but ignoring the `request_id` param
+    @param func: the function to cache the results of
+    @return: the wrapper function
+    """
+
     @wraps(func)
     def wrapper(request_id: UUID, key: str, args: Dict):
         if (key, args) in _processed_audio_cache.keys():
