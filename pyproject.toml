@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cyberpunk"
-version = "0.2.6"
+version = "0.2.7"
 description = "Audio Processing Server"
 authors = ["Johannes Naylor <jonaylor89@gmail.com>"]
 readme = "README.md"
@@ -28,6 +28,8 @@ opentelemetry-api = "^1.10.0"
 opentelemetry-sdk = "^1.10.0"
 opentelemetry-exporter-jaeger = "^1.10.0"
 opentelemetry-exporter-gcp-trace = "^1.1.0"
+google-cloud-storage = "^2.2.1"
+google-auth = "^2.6.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

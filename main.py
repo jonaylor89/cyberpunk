@@ -12,8 +12,13 @@ from cyberpunk.server import create_app
 app = create_app()
 
 
-@click.command()
+@click.group()
 @click.version_option(__version__)
+def cli():
+    return
+
+
+@cli.command()
 @click.option(
     "-D",
     "--debug",
@@ -43,7 +48,7 @@ app = create_app()
 )
 @click.option(
     "--local-results-base-dir",
-    default=lambda: os.environ.get("LOCAL_RESULTS_BASE_DIR", None),
+    default=lambda: os.environ.get("LOCAL_RESULTS_BASE_DIR", "testdata/"),
     help="Local directory where processed audio files will be stored",
 )
 @click.option(
@@ -53,7 +58,7 @@ app = create_app()
 )
 @click.option(
     "--s3-loader-base-dir",
-    default=lambda: os.environ.get("S3_LOADER_BASE_DIR", None),
+    default=lambda: os.environ.get("S3_LOADER_BASE_DIR", ""),
     help="Prefix in loader s3 bucket where the audio files are located",
 )
 @click.option(
@@ -63,7 +68,7 @@ app = create_app()
 )
 @click.option(
     "--s3-storage-base-dir",
-    default=lambda: os.environ.get("S3_STORAGE_BASE_DIR", None),
+    default=lambda: os.environ.get("S3_STORAGE_BASE_DIR", ""),
     help="Prefix in storage s3 bucket where the audio files are located",
 )
 @click.option(
@@ -73,8 +78,43 @@ app = create_app()
 )
 @click.option(
     "--s3-results-base-dir",
-    default=lambda: os.environ.get("S3_RESULTS_BASE_DIR", None),
+    default=lambda: os.environ.get("S3_RESULTS_BASE_DIR", ""),
     help="Prefix in results s3 bucket where the audio files should be stored",
+)
+@click.option(
+    "--google_application_credentials",
+    default=lambda: os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", None),
+    help="Google Cloud service account credentials path",
+)
+@click.option(
+    "--gcs-loader-bucket",
+    default=lambda: os.environ.get("GCS_LOADER_BUCKET", None),
+    help="GCS bucket containing audio needing to be pre-loaded",
+)
+@click.option(
+    "--gcs-loader-base-dir",
+    default=lambda: os.environ.get("GCS_LOADER_BASE_DIR", ""),
+    help="Prefix in loader gcs bucket where the audio files are located",
+)
+@click.option(
+    "--gcs-storage-bucket",
+    default=lambda: os.environ.get("GCS_STORAGE_BUCKET", None),
+    help="GCS bucket containing the audio files to be processed",
+)
+@click.option(
+    "--gcs-storage-base-dir",
+    default=lambda: os.environ.get("GCS_STORAGE_BASE_DIR", ""),
+    help="Prefix in storage gcs bucket where the audio files are located",
+)
+@click.option(
+    "--gcs-results-bucket",
+    default=lambda: os.environ.get("GCS_RESULTS_BUCKET", None),
+    help="GCS bucket where the processed audio is stored",
+)
+@click.option(
+    "--gcs-results-base-dir",
+    default=lambda: os.environ.get("GCS_RESULTS_BASE_DIR", ""),
+    help="Prefix in results GCS bucket where the audio files should be stored",
 )
 @click.option(
     "--jaeger-tracing",
@@ -101,7 +141,7 @@ app = create_app()
     in ("true", "t", "0"),
     help="Export traces to Google Cloud Platform",
 )
-def main(
+def serve(
     debug,
     port,
     cyberpunk_secret,
@@ -114,6 +154,13 @@ def main(
     s3_storage_base_dir,
     s3_results_bucket,
     s3_results_base_dir,
+    google_application_credentials,
+    gcs_loader_bucket,
+    gcs_loader_base_dir,
+    gcs_storage_bucket,
+    gcs_storage_base_dir,
+    gcs_results_bucket,
+    gcs_results_base_dir,
     jaeger_tracing,
     jaeger_agent_hostname,
     jaeger_agent_port,
@@ -132,6 +179,13 @@ def main(
         s3_storage_base_dir=s3_storage_base_dir,
         s3_results_bucket=s3_results_bucket,
         s3_results_base_dir=s3_results_base_dir,
+        google_application_credentials=google_application_credentials,
+        gcs_loader_bucket=gcs_loader_bucket,
+        gcs_loader_base_dir=gcs_loader_base_dir,
+        gcs_storage_bucket=gcs_storage_bucket,
+        gcs_storage_base_dir=gcs_storage_base_dir,
+        gcs_results_bucket=gcs_results_bucket,
+        gcs_results_base_dir=gcs_results_base_dir,
         jaeger_tracing=jaeger_tracing,
         jaeger_agent_hostname=jaeger_agent_hostname,
         jaeger_agent_port=jaeger_agent_port,
@@ -149,4 +203,4 @@ def main(
 
 
 if __name__ == "__main__":
-    main()
+    cli()

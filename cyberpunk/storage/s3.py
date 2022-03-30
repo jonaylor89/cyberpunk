@@ -1,11 +1,15 @@
 import logging
 import os
+from functools import lru_cache
 from typing import Tuple
 
 import boto3
+from botocore.exceptions import ClientError
 from pydub import AudioSegment
 
 from cyberpunk.config import get_config
+
+MAX_CACHE_SIZE = 50
 
 
 class S3StorageException(Exception):
@@ -59,6 +63,7 @@ class S3Storage:
 
         return False
 
+    @lru_cache(MAX_CACHE_SIZE)
     def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
         logging.info(f"pulling key from aws s3: {key}")
 
@@ -71,3 +76,25 @@ class S3Storage:
         segment = AudioSegment.from_file(f"/tmp/{key}")
 
         return segment, f"/tmp/{key}"
+
+    def save_segment(self, segment: AudioSegment, key: str, file_type: str):
+        """
+        Upload a file to an S3 bucket
+        """
+        segment.export(
+            f"/tmp/{key}",
+            format=file_type,
+        )
+
+        object_name = f"{self.s3_results_base_dir if self.s3_results_base_dir is not None else self.s3_storage_base_dir}{key}"
+
+        # Upload the file
+        bucket = (
+            self.s3_results_bucket
+            if self.s3_results_bucket is not None
+            else self.s3_storage_bucket
+        )
+        try:
+            response = self.s3.upload_file(f"/tmp/{key}", bucket, key)
+        except ClientError as e:
+            logging.error(e)

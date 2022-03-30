@@ -1,17 +1,9 @@
 import logging
 import logging.config
 import uuid
-from typing import Generator, Optional
+from typing import Optional
 
-from flask import (
-    Flask,
-    Response,
-    after_this_request,
-    jsonify,
-    make_response,
-    request,
-    stream_with_context,
-)
+from flask import Flask, jsonify, make_response, request
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
@@ -27,15 +19,13 @@ from opentelemetry.sdk.trace.export import (
 from cyberpunk.config import CyberpunkConfig, configure_config, get_config
 from cyberpunk.logger_config import LoggerConfig
 from cyberpunk.processing import parse_query, process_args
+from cyberpunk.response import build_response
 from cyberpunk.storage import configure_storage
 
 # from musicnn.tagger import top_tags
 
 
-def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
-    configure_config(provided_config=cyberpunk_config)
-    configure_storage()
-
+def configure_tracer():
     trace.set_tracer_provider(
         TracerProvider(resource=Resource.create({SERVICE_NAME: "cyberpunk"})),
     )
@@ -43,8 +33,7 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         BatchSpanProcessor(ConsoleSpanExporter()),
     )
 
-    # TODO : make agent_host_name & agent_port configurable
-    if get_config().jaeger_tracing == True:
+    if get_config().jaeger_tracing:
         jaeger_exporter = JaegerExporter(
             agent_host_name=get_config().jaeger_agent_hostname,
             agent_port=get_config().jaeger_agent_port,
@@ -54,19 +43,28 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
             BatchSpanProcessor(jaeger_exporter),
         )
 
-    if get_config().gcp_tracing == True:
-        trace.add_span_processor(
+    if get_config().gcp_tracing:
+        trace.get_tracer_provider().add_span_processor(
             # BatchSpanProcessor buffers spans and sends them in batches in a
             # background thread. The default parameters are sensible, but can be
             # tweaked to optimize your performance
             BatchSpanProcessor(CloudTraceSpanExporter()),
         )
 
+    RequestsInstrumentor().instrument()
+    tracer = trace.get_tracer(__name__)
+
+    return tracer
+
+
+def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
+    configure_config(provided_config=cyberpunk_config)
+    configure_storage()
+
     app = Flask(__name__)
     FlaskInstrumentor().instrument_app(app)
-    RequestsInstrumentor().instrument()
 
-    tracer = trace.get_tracer(__name__)
+    tracer = configure_tracer()
 
     # 'always' (default), 'never',  'production', 'debug'
     app.config["LOGGER_HANDLER_POLICY"] = "always"
@@ -79,20 +77,13 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
     logging.config.dictConfig(LoggerConfig.dictConfig)
 
-    def stream_audio_file(filename: str, chunk_size: int = 4096) -> Generator:
-        with open(f"/tmp/{filename}", "rb") as faudio:
-            data = faudio.read(chunk_size)
-            while data:
-                yield data
-                data = faudio.read(chunk_size)
-
     @app.route("/")
     def hello():
         return "Hello World"
 
     @app.route("/health")
     def healthcheck():
-        return 200
+        return "service is live"
 
     @app.route("/params/<path:key>", methods=["GET"])
     def params_route(key: str):
@@ -101,8 +92,10 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         json to validate them before sending
         them to the `unsafe_processing` route
         """
-        # TODO : Add tracer
-        return jsonify(parse_query(key, request.args))
+        with tracer.start_as_current_span(name="parse_params"):
+            result = jsonify(parse_query(key, request.args))
+
+        return result
 
     @app.route("/unsafe/<key>", methods=["GET"])
     def unsafe_processing(key: str):
@@ -111,19 +104,16 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
 
         It's considered unsafe because there's currently no authentication or validation
         """
-        # TODO : Add tracer
-        request_id = uuid.uuid4()
-        args = request.args
-        processed_file, file_type = process_args(request_id, key, args)
+        with tracer.start_as_current_span(name="unsafe"):
+            request_id = uuid.uuid4()
+            args = request.args
+            processed_file, file_type = process_args(request_id, key, args)
 
-        @after_this_request
-        def delete_tmp_file(response):
-            return response
+        # @after_this_request
+        # def delete_tmp_file(response):
+        #     return response
 
-        return Response(
-            stream_with_context(stream_audio_file(processed_file)),
-            mimetype=file_type,
-        )
+        return build_response(processed_file, file_type)
 
     @app.route("/unsafe/https://<path:url>", methods=["GET"])
     def unsafe_https_processing(url: str):
@@ -133,20 +123,17 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         It's considered unsafe because there's currently no authentication or validation
         """
 
-        # TODO : Add tracer
-        request_id = uuid.uuid4()
-        args = request.args
-        logging.critical(f"file path: {url}, args: {args}")
-        processed_file, file_type = process_args(
-            request_id,
-            f"https://{url}",
-            args,
-        )
+        with tracer.start_as_current_span(name="unsafe_https"):
+            request_id = uuid.uuid4()
+            args = request.args
+            logging.critical(f"file path: {url}, args: {args}")
+            processed_file, file_type = process_args(
+                request_id,
+                f"https://{url}",
+                args,
+            )
 
-        return Response(
-            stream_with_context(stream_audio_file(processed_file)),
-            mimetype=file_type,
-        )
+        return build_response(processed_file, file_type)
 
     @app.route("/unsafe/http://<path:url>", methods=["GET"])
     def unsafe_http_processing(url: str):
@@ -156,20 +143,17 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         It's considered unsafe because there's currently no authentication or validation
         """
 
-        # TODO : Add tracer
-        request_id = uuid.uuid4()
-        args = request.args
-        logging.critical(f"file path: {url}, args: {args}")
-        processed_file, file_type = process_args(
-            request_id,
-            "http://{url}",
-            args,
-        )
+        with tracer.start_as_current_span(name="unsafe_http"):
+            request_id = uuid.uuid4()
+            args = request.args
+            logging.critical(f"file path: {url}, args: {args}")
+            processed_file, file_type = process_args(
+                request_id,
+                "http://{url}",
+                args,
+            )
 
-        return Response(
-            stream_with_context(stream_audio_file(processed_file)),
-            mimetype=file_type,
-        )
+        return build_response(processed_file, file_type)
 
     @app.route("/tag/<filename>", methods=["GET"])
     def tag_audio_route(filename: str):
@@ -177,13 +161,14 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         Route to get tags from audio files
         """
         # TODO: add tagging
-        # TODO : Add tracer
         # features = top_tags(f'./testdata/{filename}.mp3', model='MTT_musicnn', topN=10)
-        features = [
-            "hiphop",
-            "drums",
-            "fast",
-        ]
+
+        with tracer.start_as_current_span(name="tag_audio"):
+            features = [
+                "hiphop",
+                "drums",
+                "fast",
+            ]
 
         return {
             "file_key": filename,
@@ -199,7 +184,9 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
         """
 
         # TODO : implement stats route
-        # TODO : Add tracer
+        with tracer.start_as_current_span(name="collect_storage_stats"):
+            print("unimplemented")
+
         return {
             "tracks": 13019,
             "total time": "4.9 weeks",
@@ -211,7 +198,9 @@ def create_app(cyberpunk_config: Optional[CyberpunkConfig] = None):
     @app.errorhandler(404)
     def not_found(error):
         """Page not found."""
-        # TODO : Add tracer
+        with tracer.start_as_current_span(name="404"):
+            logging.info(f"404 {error}")
+
         return make_response("Route not found", 404)
 
     return app
