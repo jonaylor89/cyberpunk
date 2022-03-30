@@ -62,7 +62,6 @@ COPY --from=builder-base /opt/pysetup/dist .
 RUN . /venv/bin/activate && pip install *.whl
 
 COPY main.py .
-COPY cyberpunk-svc-acc.json /
 
 # COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 

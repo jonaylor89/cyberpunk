@@ -91,4 +91,7 @@ class GCSStorage:
         logging.info(
             f"uploaded {key} to results bucket {self.gcs_results_bucket}",
         )
-        blob.upload_from_file(f"tmp/{key}", file_type=file_type)
+        blob.upload_from_filename(
+            f"tmp/{key}",
+            content_type=f"audio/{file_type}",
+        )

@@ -78,17 +78,21 @@ resource "google_service_account" "svc_acc" {
   display_name = "Cyberpunk Service Account"
 }
 
-resource "google_project_iam_binding" "svc_acc" {
+resource "google_project_iam_binding" "svc_acc_admin_binding" {
   project = var.project
   role    = "roles/storage.admin"
   members = [
     "serviceAccount:${google_service_account.svc_acc.email}"
   ]
-  condition {
-    expression = "resource.type == \"storage.googleapis.com/Bucket\" && resource.name == \"${google_storage_bucket.results_bucket.name}\""
-    title      = "limit_to_result_bucket"
-    description = "Limit Access to the Results Bucket"
-  }
+}
+
+
+resource "google_project_iam_binding" "svc_acc_objects_admin_binding" {
+  project = var.project
+  role    = "roles/storage.objectAdmin"
+  members = [
+    "serviceAccount:${google_service_account.svc_acc.email}"
+  ]
 }
 
 # Create the Cloud Run service
