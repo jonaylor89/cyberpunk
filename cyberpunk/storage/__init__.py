@@ -1,17 +1,17 @@
 """Module containing various supported audio stores"""
 
 import logging
-from typing import Dict, Optional, Protocol, Tuple, Type
+from typing import Dict, Optional, Protocol, Tuple
 from uuid import UUID
 
 from pydub import AudioSegment
 
 from cyberpunk.config import get_config
-from cyberpunk.storage.audius import AudiusStorage
-from cyberpunk.storage.gcs import GCSStorage
-from cyberpunk.storage.http import HttpLoader
-from cyberpunk.storage.local import LocalStorage
-from cyberpunk.storage.s3 import S3Storage
+from cyberpunk.storage.audius import get_audius_storage
+from cyberpunk.storage.gcs import get_gcs_storage
+from cyberpunk.storage.http import get_http_loader
+from cyberpunk.storage.local import get_local_storage
+from cyberpunk.storage.s3 import get_s3_storage
 
 
 class AudioStorageProtocol(Protocol):
@@ -43,18 +43,18 @@ class AudioStorage:
     ):
         """Declare variables like base dir"""
 
-        self.http_loader: HttpLoader = HttpLoader()
-        self.storage_table: Dict[str, Type[AudioStorageProtocol]] = {
-            "local": LocalStorage,
-            "s3": S3Storage,
-            "gcs": GCSStorage,
-            "audius": AudiusStorage,
+        self.http_loader = get_http_loader()
+        self.storage_table: Dict[str, AudioStorageProtocol] = {
+            "local": get_local_storage(),
+            "s3": get_s3_storage(),
+            "gcs": get_gcs_storage(),
+            "audius": get_audius_storage(),
         }
 
         # local:s3:audius => [LocalStorage(), S3Storage(), AudiusStorage()]
         self.audio_path = list(
             map(
-                lambda x: self.storage_table[x](),
+                lambda x: self.storage_table[x],
                 audio_path.split(":"),
             ),
         )
@@ -111,11 +111,23 @@ class AudioStorage:
             config.gcs_results_bucket is None
             and config.s3_storage_bucket is None
         ):
-            LocalStorage().save_segment(segment, processed_filename, file_type)
+            get_local_storage().save_segment(
+                segment,
+                processed_filename,
+                file_type,
+            )
         elif config.gcs_results_bucket is not None:
-            GCSStorage().save_segment(segment, processed_filename, file_type)
+            get_gcs_storage().save_segment(
+                segment,
+                processed_filename,
+                file_type,
+            )
         elif config.s3_results_bucket is not None:
-            S3Storage().save_segment(segment, processed_filename, file_type)
+            get_s3_storage().save_segment(
+                segment,
+                processed_filename,
+                file_type,
+            )
         else:
             logging.error("que?")
 
