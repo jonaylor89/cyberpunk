@@ -1,7 +1,7 @@
 import logging
 import os
 from functools import lru_cache
-from typing import Tuple
+from typing import Optional, Tuple
 
 import boto3
 from botocore.exceptions import ClientError
@@ -98,3 +98,25 @@ class S3Storage:
             response = self.s3.upload_file(f"/tmp/{key}", bucket, key)
         except ClientError as e:
             logging.error(e)
+
+
+# Audio Storage Singleton
+_S3_STORAGE: Optional[S3Storage] = None
+
+
+def configure_s3_storage():
+    global _S3_STORAGE
+
+    logging.info(f"configuring s3 store")
+
+    _S3_STORAGE = S3Storage()
+
+
+def get_s3_storage() -> S3Storage:
+    global _S3_STORAGE
+
+    if _S3_STORAGE is None:
+        configure_s3_storage()
+
+    assert _S3_STORAGE is not None
+    return _S3_STORAGE

@@ -1,7 +1,7 @@
 import logging
 import os
 from functools import lru_cache
-from typing import Tuple
+from typing import Optional, Tuple
 
 from google.cloud import storage
 from pydub import AudioSegment
@@ -95,3 +95,25 @@ class GCSStorage:
             f"tmp/{key}",
             content_type=f"audio/{file_type}",
         )
+
+
+# GCS Storage Singleton
+_GCS_STORAGE: Optional[GCSStorage] = None
+
+
+def configure_gcs_storage():
+    global _GCS_STORAGE
+
+    logging.info(f"configuring gcs store")
+
+    _GCS_STORAGE = GCSStorage()
+
+
+def get_gcs_storage() -> GCSStorage:
+    global _GCS_STORAGE
+
+    if _GCS_STORAGE is None:
+        configure_gcs_storage()
+
+    assert _GCS_STORAGE is not None
+    return _GCS_STORAGE

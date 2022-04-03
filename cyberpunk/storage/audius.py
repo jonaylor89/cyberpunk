@@ -1,7 +1,7 @@
 import logging
 import random
 from functools import lru_cache
-from typing import Tuple
+from typing import Optional, Tuple
 
 import requests
 from pydub import AudioSegment
@@ -37,3 +37,25 @@ class AudiusStorage:
         segment = AudioSegment.from_file(f"/tmp/{key}.mp3")
 
         return segment, f"{key}.mp3"
+
+
+# Audius Storage Singleton
+_AUDIUS_STORAGE: Optional[AudiusStorage] = None
+
+
+def configure_audius_storage():
+    global _AUDIUS_STORAGE
+
+    logging.info(f"configuring audius store")
+
+    _AUDIUS_STORAGE = AudiusStorage()
+
+
+def get_audius_storage() -> AudiusStorage:
+    global _AUDIUS_STORAGE
+
+    if _AUDIUS_STORAGE is None:
+        configure_audius_storage()
+
+    assert _AUDIUS_STORAGE is not None
+    return _AUDIUS_STORAGE

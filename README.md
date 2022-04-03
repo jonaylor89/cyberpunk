@@ -96,7 +96,7 @@ curl "http://localhost:8000/unsafe/celtic_p2.mp3?reverse=true&repeat=1&slice=100
 ### Storage Options
 
 - [x] Local
-- [ ] Cloud (e.g. S3)
+- [x] Cloud (e.g. S3)
 - [x] Blockchain (Audius)
 
 

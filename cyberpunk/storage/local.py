@@ -1,6 +1,6 @@
 import logging
 from functools import lru_cache
-from typing import Tuple
+from typing import Optional, Tuple
 
 from pydub import AudioSegment
 
@@ -38,3 +38,25 @@ class LocalStorage:
             f"/tmp/{key}",
             format=file_type,
         )
+
+
+# Local Storage Singleton
+_LOCAL_STORAGE: Optional[LocalStorage] = None
+
+
+def configure_local_storage():
+    global _LOCAL_STORAGE
+
+    logging.info(f"configuring local store")
+
+    _LOCAL_STORAGE = LocalStorage()
+
+
+def get_local_storage() -> LocalStorage:
+    global _LOCAL_STORAGE
+
+    if _LOCAL_STORAGE is None:
+        configure_local_storage()
+
+    assert _LOCAL_STORAGE is not None
+    return _LOCAL_STORAGE
