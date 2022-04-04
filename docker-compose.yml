@@ -21,6 +21,7 @@ services:
       JAEGER_TRACING_ENABLED: 1
       JAEGER_AGENT_HOSTNAME: "jaeger"
       JAEGER_AGENT_PORT: 6831
+      OUTPUT_LOCATION: GCS
       GCS_RESULTS_BUCKET: "cyberpunk_results_bucket"
       GOOGLE_APPLICATION_CREDENTIALS: "/mnt/data/cyberpunk-svc-acc.json"
     ports:

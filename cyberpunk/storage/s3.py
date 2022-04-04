@@ -1,5 +1,4 @@
 import logging
-import os
 from functools import lru_cache
 from typing import Optional, Tuple
 
@@ -20,19 +19,9 @@ class S3Storage:
     def __init__(self):
         config = get_config()
 
-        self.aws_access_key_id = os.environ.get("AWS_ACCESS_KEY_ID")
-        self.aws_secret_access_key = os.environ.get("AWS_SECRET_ACCESS_KEY")
-        self.aws_region = os.environ.get("AWS_REGION")
-
-        if (
-            self.aws_access_key_id is None
-            or self.aws_secret_access_key is None
-            or self.aws_region is None
-        ):
-            raise S3StorageException(
-                "to use s3 as an audio store, the aws access key id, aws secret access key, and aws region must be "
-                "provided ",
-            )
+        self.aws_access_key_id = config.aws_access_key_id
+        self.aws_secret_access_key = config.aws_secret_access_key
+        self.aws_region = config.aws_region
 
         self.s3 = boto3.client(
             "s3",
@@ -40,8 +29,8 @@ class S3Storage:
             aws_secret_access_key=self.aws_secret_access_key,
         )
 
-        self.s3_loader_bucket = config.s3_loader_bucket
-        self.s3_loader_base_dir = config.s3_loader_base_dir
+        # self.s3_loader_bucket = config.s3_loader_bucket
+        # self.s3_loader_base_dir = config.s3_loader_base_dir
 
         self.s3_storage_bucket = config.s3_storage_bucket
         self.s3_storage_base_dir = config.s3_storage_base_dir
@@ -96,6 +85,7 @@ class S3Storage:
         )
         try:
             response = self.s3.upload_file(f"/tmp/{key}", bucket, key)
+            logging.debug(response)
         except ClientError as e:
             logging.error(e)
 

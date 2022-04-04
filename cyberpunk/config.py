@@ -15,18 +15,20 @@ class CyberpunkConfig:
 
     def __init__(
         self,
+        debug: bool = True,
+        port: int = 8080,
         audio_path: str = "local",
+        output_location: str = "local",
         local_storage_base_dir: Optional[str] = "testdata/",
-        local_results_base_dir: Optional[str] = None,
-        s3_loader_bucket: Optional[str] = None,
-        s3_loader_base_dir: Optional[str] = None,
+        # s3_loader_bucket: Optional[str] = None,
+        # s3_loader_base_dir: Optional[str] = None,
         s3_storage_bucket: Optional[str] = None,
         s3_storage_base_dir: Optional[str] = None,
         s3_results_bucket: Optional[str] = None,
         s3_results_base_dir: Optional[str] = None,
         google_application_credentials: Optional[str] = None,
-        gcs_loader_bucket: Optional[str] = None,
-        gcs_loader_base_dir: Optional[str] = None,
+        # gcs_loader_bucket: Optional[str] = None,
+        # gcs_loader_base_dir: Optional[str] = None,
         gcs_storage_bucket: Optional[str] = None,
         gcs_storage_base_dir: Optional[str] = None,
         gcs_results_bucket: Optional[str] = None,
@@ -39,8 +41,11 @@ class CyberpunkConfig:
 
         # TODO: validation lol
 
-        # local | s3 | audius
+        # local:s3:gcs:audius
         self.audio_path = audio_path
+
+        # local | gcs | s3
+        self.output_location = output_location
 
         if (
             "local" in self.audio_path.split(":")
@@ -51,15 +56,33 @@ class CyberpunkConfig:
             )
 
         self.local_storage_base_dir = local_storage_base_dir
-        self.local_results_base_dir = local_results_base_dir
 
-        if "s3" in self.audio_path.split(":") and s3_storage_bucket is None:
-            raise CyberpunkConfigException(
-                "s3_storage_bucket must be configured if `s3` in audio_path",
-            )
+        self.aws_access_key_id = os.environ.get("AWS_ACCESS_KEY_ID", None)
+        self.aws_secret_access_key = os.environ.get(
+            "AWS_SECRET_ACCESS_KEY",
+            None,
+        )
+        self.aws_region = os.environ.get("AWS_REGION", None)
 
-        self.s3_loader_bucket = s3_loader_bucket
-        self.s3_loader_base_dir = s3_loader_base_dir
+        if "s3" in self.audio_path.split(":"):
+
+            if (
+                self.aws_access_key_id is None
+                or self.aws_secret_access_key is None
+                or self.aws_region is None
+            ):
+                raise CyberpunkConfigException(
+                    "to use s3 as an audio store, the aws access key id, aws secret access key, and aws region must be "
+                    "provided ",
+                )
+
+            if s3_storage_bucket is None:
+                raise CyberpunkConfigException(
+                    "s3_storage_bucket must be configured if `s3` in audio_path",
+                )
+
+        # self.s3_loader_bucket = s3_loader_bucket
+        # self.s3_loader_base_dir = s3_loader_base_dir
 
         self.s3_storage_bucket = s3_storage_bucket
         self.s3_storage_base_dir = s3_storage_base_dir
@@ -67,22 +90,19 @@ class CyberpunkConfig:
         self.s3_results_bucket = s3_results_bucket
         self.s3_results_base_dir = s3_results_base_dir
 
-        if "gcs" in self.audio_path.split(":") and gcs_storage_bucket is None:
-            raise CyberpunkConfigException(
-                "gcs_storage_bucket must be configured if `gcs` in audio_path",
-            )
-
-        if (
-            "gcs" in self.audio_path.split(":")
-            and google_application_credentials is None
-        ):
-            raise CyberpunkConfigException(
-                "google_application_credentials must be configured if `gcs` in audio_path",
-            )
+        if "gcs" in self.audio_path.split(":"):
+            if gcs_storage_bucket is None:
+                raise CyberpunkConfigException(
+                    "gcs_storage_bucket must be configured if `gcs` in audio_path",
+                )
+            if google_application_credentials is None:
+                raise CyberpunkConfigException(
+                    "google_application_credentials must be configured if `gcs` in audio_path",
+                )
 
         self.google_application_credentials = google_application_credentials
-        self.gcs_loader_bucket = gcs_loader_bucket
-        self.gcs_loader_base_dir = gcs_loader_base_dir
+        # self.gcs_loader_bucket = gcs_loader_bucket
+        # self.gcs_loader_base_dir = gcs_loader_base_dir
         self.gcs_storage_bucket = gcs_storage_bucket
         self.gcs_storage_base_dir = gcs_storage_base_dir
         self.gcs_results_bucket = gcs_results_bucket
@@ -98,8 +118,8 @@ class CyberpunkConfig:
         return (
             f"CyberpunkConfig ( "
             f"audio_path: {self.audio_path}, "
+            f"output_location: {self.output_location}, "
             f"local_storage_base_dir: {self.local_storage_base_dir}, "
-            f"local_results_base_dir: {self.local_results_base_dir} "
             f")"
         )
 
@@ -114,27 +134,25 @@ def configure_config(provided_config: Optional[CyberpunkConfig] = None):
         _CYBERPUNK_CONFIG = provided_config
     else:
         _CYBERPUNK_CONFIG = CyberpunkConfig(
+            debug=True,
+            port=8080,
+            output_location=os.environ.get("OUTPUT_LOCATION", "local"),
             audio_path=os.environ.get("AUDIO_PATH", "local"),
             local_storage_base_dir=os.environ.get(
                 "LOCAL_STORAGE_BASE_DIR",
                 "testdata/",
             ),
-            local_results_base_dir=os.environ.get(
-                "LOCAL_RESULTS_BASE_DIR",
-                None,
-            ),
-            s3_loader_bucket=os.environ.get("S3_LOADER_BUCKET", None),
-            s3_loader_base_dir=os.environ.get("S3_LOADER_BASE_DIR", None),
+            # s3_loader_bucket=os.environ.get("S3_LOADER_BUCKET", None),
+            # s3_loader_base_dir=os.environ.get("S3_LOADER_BASE_DIR", None),
             s3_storage_bucket=os.environ.get("S3_STORAGE_BUCKET", None),
-            s3_storage_base_dir=os.environ.get("S3_STORAGE_BASE_DIR", None),
             s3_results_bucket=os.environ.get("S3_RESULTS_BUCKET", None),
             s3_results_base_dir=os.environ.get("S3_RESULTS_BASE_DIR", None),
             google_application_credentials=os.environ.get(
                 "GOOGLE_APPLICATION_CREDENTIALS",
                 None,
             ),
-            gcs_loader_bucket=os.environ.get("GCS_LOADER_BUCKET", None),
-            gcs_loader_base_dir=os.environ.get("GCS_LOADER_BASE_DIR", None),
+            # gcs_loader_bucket=os.environ.get("GCS_LOADER_BUCKET", None),
+            # gcs_loader_base_dir=os.environ.get("GCS_LOADER_BASE_DIR", None),
             gcs_storage_bucket=os.environ.get("GCS_STORAGE_BUCKET", None),
             gcs_storage_base_dir=os.environ.get("GCS_STORAGE_BASE_DIR", None),
             gcs_results_bucket=os.environ.get("GCS_RESULTS_BUCKET", None),

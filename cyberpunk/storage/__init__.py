@@ -29,19 +29,10 @@ class AudioStorageProtocol(Protocol):
 
 
 class AudioStorage:
-    def __init__(
-        self,
-        audio_path: str,
-        local_storage_base_dir: Optional[str] = None,
-        local_results_base_dir: Optional[str] = None,
-        s3_loader_bucket: Optional[str] = None,
-        s3_loader_base_dir: Optional[str] = None,
-        s3_storage_bucket: Optional[str] = None,
-        s3_storage_base_dir: Optional[str] = None,
-        s3_results_bucket: Optional[str] = None,
-        s3_results_base_dir: Optional[str] = None,
-    ):
+    def __init__(self):
         """Declare variables like base dir"""
+
+        config = get_config()
 
         self.http_loader = get_http_loader()
         self.storage_table: Dict[str, AudioStorageProtocol] = {
@@ -55,7 +46,7 @@ class AudioStorage:
         self.audio_path = list(
             map(
                 lambda x: self.storage_table[x],
-                audio_path.split(":"),
+                config.audio_path.split(":"),
             ),
         )
 
@@ -107,29 +98,26 @@ class AudioStorage:
         config = get_config()
         processed_filename = f"{request_id}.{file_type}"
 
-        if (
-            config.gcs_results_bucket is None
-            and config.s3_storage_bucket is None
-        ):
+        if config.output_location == "local":
             get_local_storage().save_segment(
                 segment,
                 processed_filename,
                 file_type,
             )
-        elif config.gcs_results_bucket is not None:
+        elif config.output_location == "gcs":
             get_gcs_storage().save_segment(
                 segment,
                 processed_filename,
                 file_type,
             )
-        elif config.s3_results_bucket is not None:
+        elif config.output_location == "s3":
             get_s3_storage().save_segment(
                 segment,
                 processed_filename,
                 file_type,
             )
         else:
-            logging.error("que?")
+            logging.error("que")
 
         return processed_filename
 
@@ -141,22 +129,9 @@ _AUDIO_STORAGE: Optional[AudioStorage] = None
 def configure_storage():
     global _AUDIO_STORAGE
 
-    config = get_config()
-    assert config is not None
-
     logging.info(f"configuring audio store")
 
-    _AUDIO_STORAGE = AudioStorage(
-        audio_path=config.audio_path,
-        local_storage_base_dir=config.local_storage_base_dir,
-        local_results_base_dir=config.local_results_base_dir,
-        s3_loader_bucket=config.s3_loader_bucket,
-        s3_loader_base_dir=config.s3_loader_base_dir,
-        s3_storage_bucket=config.s3_storage_bucket,
-        s3_storage_base_dir=config.s3_storage_base_dir,
-        s3_results_bucket=config.s3_results_bucket,
-        s3_results_base_dir=config.s3_results_base_dir,
-    )
+    _AUDIO_STORAGE = AudioStorage()
 
 
 def get_storage() -> AudioStorage:

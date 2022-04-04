@@ -42,25 +42,25 @@ def cli():
     help="Sources for audio files and in which order to search for them",
 )
 @click.option(
+    "--output-location",
+    default=lambda: os.environ.get("OUTPUT_LOCATION", "local"),
+    help="The output location for the processed audio files",
+)
+@click.option(
     "--local-storage-base-dir",
     default=lambda: os.environ.get("LOCAL_STORAGE_BASE_DIR", "testdata/"),
     help="Local directory contains the audio library",
 )
-@click.option(
-    "--local-results-base-dir",
-    default=lambda: os.environ.get("LOCAL_RESULTS_BASE_DIR", "testdata/"),
-    help="Local directory where processed audio files will be stored",
-)
-@click.option(
-    "--s3-loader-bucket",
-    default=lambda: os.environ.get("S3_LOADER_BUCKET", None),
-    help="S3 bucket containing audio needing to be pre-loaded",
-)
-@click.option(
-    "--s3-loader-base-dir",
-    default=lambda: os.environ.get("S3_LOADER_BASE_DIR", ""),
-    help="Prefix in loader s3 bucket where the audio files are located",
-)
+# @click.option(
+#     "--s3-loader-bucket",
+#     default=lambda: os.environ.get("S3_LOADER_BUCKET", None),
+#     help="S3 bucket containing audio needing to be pre-loaded",
+# )
+# @click.option(
+#     "--s3-loader-base-dir",
+#     default=lambda: os.environ.get("S3_LOADER_BASE_DIR", ""),
+#     help="Prefix in loader s3 bucket where the audio files are located",
+# )
 @click.option(
     "--s3-storage-bucket",
     default=lambda: os.environ.get("S3_STORAGE_BUCKET", None),
@@ -86,16 +86,16 @@ def cli():
     default=lambda: os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", None),
     help="Google Cloud service account credentials path",
 )
-@click.option(
-    "--gcs-loader-bucket",
-    default=lambda: os.environ.get("GCS_LOADER_BUCKET", None),
-    help="GCS bucket containing audio needing to be pre-loaded",
-)
-@click.option(
-    "--gcs-loader-base-dir",
-    default=lambda: os.environ.get("GCS_LOADER_BASE_DIR", ""),
-    help="Prefix in loader gcs bucket where the audio files are located",
-)
+# @click.option(
+#     "--gcs-loader-bucket",
+#     default=lambda: os.environ.get("GCS_LOADER_BUCKET", None),
+#     help="GCS bucket containing audio needing to be pre-loaded",
+# )
+# @click.option(
+#     "--gcs-loader-base-dir",
+#     default=lambda: os.environ.get("GCS_LOADER_BASE_DIR", ""),
+#     help="Prefix in loader gcs bucket where the audio files are located",
+# )
 @click.option(
     "--gcs-storage-bucket",
     default=lambda: os.environ.get("GCS_STORAGE_BUCKET", None),
@@ -146,17 +146,17 @@ def serve(
     port,
     cyberpunk_secret,
     audio_path,
+    output_location,
     local_storage_base_dir,
-    local_results_base_dir,
-    s3_loader_bucket,
-    s3_loader_base_dir,
+    # s3_loader_bucket,
+    # s3_loader_base_dir,
     s3_storage_bucket,
     s3_storage_base_dir,
     s3_results_bucket,
     s3_results_base_dir,
     google_application_credentials,
-    gcs_loader_bucket,
-    gcs_loader_base_dir,
+    # gcs_loader_bucket,
+    # gcs_loader_base_dir,
     gcs_storage_bucket,
     gcs_storage_base_dir,
     gcs_results_bucket,
@@ -170,18 +170,20 @@ def serve(
     print(cyberpunk_secret)
 
     config = CyberpunkConfig(
+        debug=debug,
+        port=port,
         audio_path=audio_path,
+        output_location=output_location,
         local_storage_base_dir=local_storage_base_dir,
-        local_results_base_dir=local_results_base_dir,
-        s3_loader_bucket=s3_loader_bucket,
-        s3_loader_base_dir=s3_loader_base_dir,
+        # s3_loader_bucket=s3_loader_bucket,
+        # s3_loader_base_dir=s3_loader_base_dir,
         s3_storage_bucket=s3_storage_bucket,
         s3_storage_base_dir=s3_storage_base_dir,
         s3_results_bucket=s3_results_bucket,
         s3_results_base_dir=s3_results_base_dir,
         google_application_credentials=google_application_credentials,
-        gcs_loader_bucket=gcs_loader_bucket,
-        gcs_loader_base_dir=gcs_loader_base_dir,
+        # gcs_loader_bucket=gcs_loader_bucket,
+        # gcs_loader_base_dir=gcs_loader_base_dir,
         gcs_storage_bucket=gcs_storage_bucket,
         gcs_storage_base_dir=gcs_storage_base_dir,
         gcs_results_bucket=gcs_results_bucket,
@@ -196,9 +198,9 @@ def serve(
 
     server = create_app(config)
     server.run(
-        debug=debug,
+        debug=config.debug,
         load_dotenv=True,
-        port=port,
+        port=config.port,
     )
 
 
