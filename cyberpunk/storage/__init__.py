@@ -1,7 +1,7 @@
 """Module containing various supported audio stores"""
 
 import logging
-from typing import Dict, Optional, Protocol, Tuple
+from typing import Callable, Dict, Optional, Protocol, Tuple
 from uuid import UUID
 
 from pydub import AudioSegment
@@ -35,17 +35,17 @@ class AudioStorage:
         config = get_config()
 
         self.http_loader = get_http_loader()
-        self.storage_table: Dict[str, AudioStorageProtocol] = {
-            "local": get_local_storage(),
-            "s3": get_s3_storage(),
-            "gcs": get_gcs_storage(),
-            "audius": get_audius_storage(),
+        self.storage_table: Dict[str, Callable[AudioStorageProtocol]] = {
+            "local": get_local_storage,
+            "s3": get_s3_storage,
+            "gcs": get_gcs_storage,
+            "audius": get_audius_storage,
         }
 
         # local:s3:audius => [LocalStorage(), S3Storage(), AudiusStorage()]
         self.audio_path = list(
             map(
-                lambda x: self.storage_table[x],
+                lambda x: self.storage_table[x](),
                 config.audio_path.split(":"),
             ),
         )

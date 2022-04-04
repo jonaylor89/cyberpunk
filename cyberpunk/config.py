@@ -41,6 +41,9 @@ class CyberpunkConfig:
 
         # TODO: validation lol
 
+        self.debug = debug
+        self.port = port
+
         # local:s3:gcs:audius
         self.audio_path = audio_path
 

@@ -1,5 +1,4 @@
 import logging
-import os
 from functools import lru_cache
 from typing import Optional, Tuple
 
@@ -19,21 +18,16 @@ class GCSStorage:
     def __init__(self):
         config = get_config()
 
-        self.google_application_credentials = os.environ.get(
-            "GOOGLE_APPLICATION_CREDENTIALS",
+        self.google_application_credentials = (
+            config.google_application_credentials
         )
-
-        if self.google_application_credentials is None:
-            raise GCSStorageException(
-                "to use gcs as an audio store, the google application credential's path must be provided ",
-            )
 
         self.gcs = storage.Client.from_service_account_json(
             self.google_application_credentials,
         )
 
-        self.gcs_loader_bucket = config.gcs_loader_bucket
-        self.gcs_loader_base_dir = config.gcs_loader_base_dir
+        # self.gcs_loader_bucket = config.gcs_loader_bucket
+        # self.gcs_loader_base_dir = config.gcs_loader_base_dir
 
         self.gcs_storage_bucket = config.gcs_storage_bucket
         self.gcs_storage_base_dir = config.gcs_storage_base_dir
