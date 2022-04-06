@@ -172,12 +172,12 @@ def build_presigned_gcs_url(key: str):
 
 def build_response(processed_file, file_type):
     config = get_config()
-    if config.gcs_results_bucket is None and config.s3_storage_bucket is None:
+    if config.output_location == "local":
         return build_local_stream(processed_file, file_type)
-    elif config.gcs_results_bucket is not None:
+    elif config.output_location == "gcs":
         url = build_presigned_gcs_url(processed_file)
         return redirect(url, 301)
-    elif config.s3_storage_bucket is not None:
+    elif config.output_location == "s3":
         url = build_presigned_s3_url(processed_file)
         return redirect(url, 301)
     else:
