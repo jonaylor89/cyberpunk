@@ -53,18 +53,46 @@ class GCSStorage:
         return False
 
     @lru_cache(MAX_CACHE_SIZE)
-    def get_segment(self, key: str) -> Tuple[AudioSegment, str]:
+    def get_segment(
+        self,
+        key: str,
+        full_path=False,
+    ) -> Tuple[AudioSegment, str]:
         logging.info(f"pulling key from gcs: {key}")
 
-        bucket = self.gcs.get_bucket(self.gcs_storage_bucket)
-        blob = storage.Blob(f"{self.gcs_storage_base_dir}{key}", bucket)
-        with open("f/tmp/{key}") as tmp:
-            self.gcs.download_blob_to_file(
-                blob,
-                tmp,
-            )
+        if full_path:
 
-        segment = AudioSegment.from_file(f"/tmp/{key}")
+            # extract bucket name by splitting string by '/'
+            # take the 3rd item in the list (index position 2) which is the bucket name
+            bucket = key.split("/")[2]
+
+            # extract file name by splitting string to remove gs:// prefix and bucket name
+            # rejoin to rebuild the file path
+            object_name = "/".join(key.split("/")[3:])
+
+            ext = object_name.split(".")[-1]
+
+            bucket = self.gcs.get_bucket(bucket)
+            blob = storage.Blob(object_name, bucket)
+            location: str = f"remote-audio.{ext}"
+            with open("f/tmp/{location}") as tmp:
+                self.gcs.download_blob_to_file(
+                    blob,
+                    tmp,
+                )
+
+            segment = AudioSegment.from_file(f"/tmp/{location}")
+
+        else:
+            bucket = self.gcs.get_bucket(self.gcs_storage_bucket)
+            blob = storage.Blob(f"{self.gcs_storage_base_dir}{key}", bucket)
+            with open("f/tmp/{key}") as tmp:
+                self.gcs.download_blob_to_file(
+                    blob,
+                    tmp,
+                )
+
+            segment = AudioSegment.from_file(f"/tmp/{key}")
 
         return segment, f"/tmp/{key}"
 
@@ -91,7 +119,7 @@ class GCSStorage:
         )
 
 
-# GCS Storage Singleton
+# GCS Singletons
 _GCS_STORAGE: Optional[GCSStorage] = None
 
 
