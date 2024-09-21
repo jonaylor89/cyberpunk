@@ -1,17 +1,17 @@
-[tool.poetry]
+[project]
 name = "cyberpunk"
 version = "0.2.7"
 description = "Audio Processing Server"
-authors = ["Johannes Naylor <jonaylor89@gmail.com>"]
+authors = [{ name = "Johannes Naylor", email = "jonaylor89@gmail.com" }]
 readme = "README.md"
 homepage = "https://github.com/jonaylor89/cyberpunk"
 repository = "https://github.com/jonaylor89/cyberpunk"
 keywords = ["audio", "sound", "server"]
 
-[tool.poetry.scripts]
+[tool.rye.scripts]
 cyberpunk = 'main:main'
 
-[tool.poetry.dependencies]
+[tool.rye.dependencies]
 python = "^3.9"
 pydub = "^0.25.1"
 Flask = "^2.0.2"
@@ -31,7 +31,7 @@ opentelemetry-exporter-gcp-trace = "^1.1.0"
 google-cloud-storage = "^2.2.1"
 google-auth = "^2.6.2"
 
-[tool.poetry.dev-dependencies]
+[tool.rye.dev-dependencies]
 pytest = "^5.2"
 mypy = "^0.931"
 types-requests = "^2.27.9"
@@ -42,8 +42,8 @@ flake8 = "^4.0.1"
 pre-commit = "^2.17.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.black]
 line-length = 79
